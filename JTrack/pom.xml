@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  	
+  	<modelVersion>4.0.0</modelVersion>
+  	<groupId>com.jtrack</groupId>
+  	<artifactId>JTrack</artifactId>
+  	<packaging>war</packaging>
+  	<version>0.0.1-SNAPSHOT</version>
+  	<name>JTrack Maven Webapp</name>
+  	<url>http://maven.apache.org</url>
+  
+  	<properties>
+		<spring.version>3.1.1.RELEASE</spring.version>
+		<jstl.version>1.2</jstl.version>
+		<jp.version>1.0</jp.version>
+		<hibernate.version>3.6.3.FINAL</hibernate.version>
+		<jdbc.version>11.2.0.3</jdbc.version>
+		<dom.version>1.6.1</dom.version>
+		<cglib.version>2.2.2</cglib.version>
+		<javassist.version>3.12.1.GA</javassist.version>
+		<log4j.version>1.2.17</log4j.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Spring dependencies -->
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-config</artifactId>
+	        <version>${spring.version}</version>
+    	</dependency>
+    	
+    	<dependency>
+    		<groupId>org.springframework.security</groupId>
+    		<artifactId>spring-security-web</artifactId>
+    		<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-orm</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-tx</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+		
+		<!-- JDBC -->
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>${jdbc.version}</version>
+		</dependency>
+		
+
+		<!-- JSP -->
+		
+		<dependency>
+	    	<groupId>javax.servlet</groupId>
+	        <artifactId>jstl</artifactId>
+	        <version>${jstl.version}</version>
+		</dependency>
+		
+		<!-- JP  -->		
+		
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>${jp.version}</version>
+		</dependency>
+		
+		<!-- Hibernate -->
+		
+	 	<dependency>
+		 	<groupId>org.hibernate</groupId>
+		 	<artifactId>hibernate-core</artifactId>
+		 	<version>${hibernate.version}</version>
+	 	</dependency>
+	 	
+	 	<dependency>
+    		<groupId>javassist</groupId>
+    		<artifactId>javassist</artifactId>
+    		<version>${javassist.version}</version>
+		</dependency>
+	 	
+	 	<dependency>
+		 	<groupId>dom4j</groupId>
+		 	<artifactId>dom4j</artifactId>
+		 	<version>${dom.version}</version>
+	 	</dependency>	
+	 	
+	 	<!-- CGLIB -->
+	 	
+    	<dependency>
+        	<groupId>cglib</groupId>
+        	<artifactId>cglib</artifactId>
+        	<version>${cglib.version}</version>
+    	</dependency>
+    	
+    	
+    	<!--  log4j -->
+    	
+    	<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+	 	
+ 
+	</dependencies>
+	
+	<repositories>
+    	<repository>
+      		<id>codelds</id>
+      		<url>https://code.lds.org/nexus/content/groups/main-repo</url>
+    	</repository>
+  	</repositories>
+  
+  	<build>
+    	<finalName>JTrack</finalName>
+  	</build>
+</project>
