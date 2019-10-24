@@ -1,19 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  	
-  	<modelVersion>4.0.0</modelVersion>
-  	<groupId>com.jtrack</groupId>
-  	<artifactId>JTrack</artifactId>
-  	<packaging>war</packaging>
-  	<version>0.0.1-SNAPSHOT</version>
-  	<name>JTrack Maven Webapp</name>
-  	<url>http://maven.apache.org</url>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jtrack</groupId>
+  <artifactId>JTrack</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>JTrack Maven Webapp</name>
+  <url>http://maven.apache.org</url>
   
-  	<properties>
+  <properties>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<jstl.version>1.2</jstl.version>
 		<jp.version>1.0</jp.version>
-		<hibernate.version>3.6.3.FINAL</hibernate.version>
+		<hibernate.version>3.6.10.FINAL</hibernate.version>
 		<jdbc.version>11.2.0.3</jdbc.version>
 		<dom.version>1.6.1</dom.version>
 		<cglib.version>2.2.2</cglib.version>
@@ -157,7 +156,7 @@
     	</repository>
   	</repositories>
   
-  	<build>
-    	<finalName>JTrack</finalName>
-  	</build>
+  <build>
+    <finalName>JTrack</finalName>
+  </build>
 </project>
