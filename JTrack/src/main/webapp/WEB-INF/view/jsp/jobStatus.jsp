@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="">Logout</a></div>
+                <div class="navbar-entry"><a href="logout.htm">Logout</a></div>
             </div>
         </div>
 
@@ -30,9 +30,11 @@
                 <li class="non-current">
                     <a class="tab_link" href="timesheet.htm"><span></span>Timesheet</a>
                 </li>
+                <!--
                 <li class="non-current">
                     <a class="tab_link" href="weeklyReport.htm"><span></span>Reports</a>
                 </li>
+                -->
                 <li class="current">
                     <a class="tab_link" href="jobType.htm"><span></span>Admin</a>
                 </li>
@@ -62,8 +64,13 @@
                         <a href="<c:url value="timesheetCode.htm" />"><span>Timesheet Code</span></a>
                     </li>
                     <li>
-                        <a href="<c:url value="users.htm" />"><span>Users</span></a>
-                    </li>
+	                	<c:if test="${currentUser.isAdmin}">
+	                    	<a href="<c:url value="users.htm" />"><span>Users</span></a>
+	                    </c:if>
+	                    <c:if test="${!currentUser.isAdmin}">
+	                    	<a><span>Users - No access</span></a>
+	                    </c:if>
+	                </li>
                 </ul>
             </div>
         </div>

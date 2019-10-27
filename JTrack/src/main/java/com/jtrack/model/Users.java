@@ -2,6 +2,7 @@ package com.jtrack.model;
 // Generated 25/06/2013 8:28:57 PM by Hibernate Tools 3.2.1.GA
 
 
+import javax.persistence.Transient;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +35,11 @@ public class Users  implements java.io.Serializable {
      
      private Users userCrtObj;
      private Users userModObj;
+     
+     private boolean isAdmin;
 
-    public Users() {
+
+	public Users() {
     }
 
     public Users(String userId) {
@@ -153,4 +157,13 @@ public class Users  implements java.io.Serializable {
     public void setUserModObj(Users userModObj) {
         this.userModObj = userModObj;
     }
+    
+    @Transient
+    public boolean getIsAdmin() {
+		return this.userId.equalsIgnoreCase("ADMIN");
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 }

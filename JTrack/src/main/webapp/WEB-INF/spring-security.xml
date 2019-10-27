@@ -12,13 +12,13 @@
             <intercept-url pattern="/job.htm" access="ROLE_USER" />
             <intercept-url pattern="/job*" access="ROLE_USER" />
             <intercept-url pattern="/timesheet*" access="ROLE_USER" />
-            <intercept-url pattern="/user*" access="ROLE_ADMIN" />
+            <!--  <intercept-url pattern="/user*" access="ROLE_ADMIN" /> -->
 
             <form-login 
                 login-page="/login.htm" 
                 default-target-url="/successLogin.htm"
                 authentication-failure-url="/invalidLogin.htm" />
-            <logout logout-success-url="/login.htm" />
+            <!--  <logout logout-success-url="/login.htm" /> -->
 		
 	</http>
 	

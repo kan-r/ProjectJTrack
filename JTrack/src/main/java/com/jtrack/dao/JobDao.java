@@ -167,8 +167,20 @@ public class JobDao {
 
         // Retrieve existing record
         Job oJobs = (Job) session.get(Job.class, jobs.getJobNo());
-
+      
+        oJobs.setJobName(jobs.getJobName());
         oJobs.setJobDesc(jobs.getJobDesc());
+        oJobs.setJobType(jobs.getJobType());
+        oJobs.setJobPriority(jobs.getJobPriority());
+        oJobs.setJobStatus(jobs.getJobStatus());
+        oJobs.setJobStage(jobs.getJobStage());
+        oJobs.setJobResolution(jobs.getJobResolution());
+        oJobs.setJobOrder(jobs.getJobOrder());
+        oJobs.setAssignedTo(jobs.getAssignedTo());
+        oJobs.setTimesheetCode(jobs.getTimesheetCode());
+        oJobs.setEstimatedHrs(jobs.getEstimatedHrs());
+        oJobs.setEstimatedStartDate(jobs.getEstimatedStartDate());
+        oJobs.setEstimatedEndDate(jobs.getEstimatedEndDate());
         oJobs.setActive(jobs.getActive());
         oJobs.setDateMod(new Date());
         oJobs.setUserMod(UsersService.user.getUserId());
