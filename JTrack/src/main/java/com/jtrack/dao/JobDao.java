@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JobDao {
     
-    private final int C_PAGE_SIZE = 2;
+    private final int C_PAGE_SIZE = 10;
     
     @Autowired
     private SessionFactory sessionFactory;
