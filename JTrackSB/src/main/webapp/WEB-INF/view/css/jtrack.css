@@ -1,0 +1,312 @@
+/* 
+    Document   : theme_1
+    Created on : 19/06/2013, 10:40:50 AM
+    Author     : d261288
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* -------------------- Header -------------------- */
+
+.header-region {
+	overflow: hidden;
+	padding: 10px 0 20px 0;
+	position: relative;
+}
+
+.navbar {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	display: block;
+	overflow: hidden;
+	font: normal 11px/12px Arial, sans-serif;
+	color: #333;
+}
+
+.navbar-entry {
+	float: left;
+	padding: 0 0 0 10px;
+}
+
+.navbar-entry a {
+	text-decoration: none;
+	color: #333;
+}
+
+.navbar-entry a:hover {
+	text-decoration: underline;
+}
+
+.app-title {
+	padding: 0 0 0 10px;
+	color: #888;
+	float: left;
+        font-style: italic;
+}
+
+.app-user {
+	padding: 0 0 0 10px;
+	color: #888;
+	float: left;
+}
+
+/* -------------------- Tabs -------------------- */
+
+ul#tabs {
+	clear: both;
+	padding: 0;
+	margin: 0 0 10px 0;
+	height: 40px;
+	background: url(../img/rHeader.png) 0 -50px repeat-x;
+	overflow: hidden;
+	}
+ul#tabs li, div.sBTabs ul li {
+	display: block;
+	float: left;
+	}
+	ul#tabs li a.tab_link {
+		display: block;
+		font: bold 12px/40px Arial, sans-serif;
+		padding: 0 20px;
+		color: #333;
+		text-decoration: none;
+		border-right: 1px solid #ABABAB;
+		background: url(../img/rHeader.png) 0 -50px repeat-x;
+		text-shadow: 0px 1px 0 #FFF;
+		}
+		ul#tabs li a:hover {
+			background: url(../img/rHeader.png) 0 -150px repeat-x;;
+			}
+		ul#tabs li a:active {
+			background: url(../img/rHeader.png) 0 -250px repeat-x;
+			text-shadow: 0px 1px 0 #EEE;
+			}
+	ul#tabs li.current a, ul#tabs li.current a:hover, ul#tabs li.current a:active {
+		background: url(../img/rHeader.png) 0 -450px repeat-x;
+		color: #FFF;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.35);
+		}
+
+/* Close Tab Bar */
+ul#tabs li.last {
+	float: right;
+	}
+ul#tabs li.last span {
+	display: block;
+	background: url(../img/rHeader.png) 100% 0;
+	width: 8px;
+	height: 40px;
+	float: left;
+	}
+
+
+/* First Tab */
+ul#tabs li.first-non-current {
+	}
+	ul#tabs li.first-non-current a.tab_link, ul#tabs li.first-current a.tab_link {
+		border-left: 0;
+		padding: 0 20px 0 0;
+		_padding: 0 10px 0 0;
+		border-right: 1px solid #ABABAB;
+		text-shadow: 0px 1px 0 #FFF;
+		}
+		ul#tabs li.first-current a.tab_link {
+			text-shadow: 0 -1px 0 #870101;
+			}
+		ul#tabs li.first-non-current a.tab_link span, ul#tabs li.first-current a.tab_link span {
+			display: block;
+			float: left;
+			background: url(../img/rHeader.png) 0 0 no-repeat #FFF;
+			width: 10px;
+			height: 40px;
+			margin: 0 10px 0 0;
+			}
+		ul#tabs li.first-non-current a.tab_link:hover span {
+			background: url(../img/rHeader.png) 0 -100px no-repeat #FFF;
+			}
+		ul#tabs li.first-non-current a.tab_link:active span {
+			background: url(../img/rHeader.png) 0 -200px no-repeat #FFF;
+			}
+	ul#tabs li.first-current a.tab_link {
+		background: url(../img/rHeader.png) 0 -450px repeat-x;
+		color: #FFF;
+		}
+	ul#tabs li.first-current a.tab_link span, ul#tabs li.first-current a.tab_link:hover span, ul#tabs li.first-current a.tab_link:active span {
+		background: url(../img/rHeader.png) 0 -400px repeat-x;
+		}
+                
+/* -------------------- Tabbed Navigation List -------------------- */
+
+.main-tabs-region {
+    padding: 0 0 0 0;
+}
+
+div.sHorizontalTabs {
+    padding: 0;
+    margin: 0 0 10px 0;
+    clear: both;
+    }
+    div.sHorizontalTabs div.sHorizontalTabsInner {
+        padding: 0;
+        }
+div.sHorizontalTabs div.sHorizontalTabsInner ul {
+    margin: 0;
+    padding: 0;
+    background: url(../img/sTabsHorizontal.png) 0 0px repeat-x;
+    list-style: none;
+    height: 30px;
+    overflow: hidden;
+    }
+    div.sHorizontalTabs div.sHorizontalTabsInner ul li {
+        float: left;
+        display: block;
+        margin: 0 1px 0 0;
+        }
+        div.sHorizontalTabs div.sHorizontalTabsInner ul li a {
+            display: block;
+            background: url(../img/sTabsHorizontal.png) 100% -200px no-repeat;
+            padding: 0 10px 0 0;
+            font: normal 12px/28px Arial, sans-serif;
+            height: 30px;
+            text-decoration: none;
+            color: #333;
+            text-shadow: 0 1px 0 rgba(255,255,255,1);
+            }
+            div.sHorizontalTabs div.sHorizontalTabsInner ul li a span {
+                display: block;
+                background: url(../img/sTabsHorizontal.png) 0 -150px no-repeat;
+                padding: 0 0 0 10px;
+                height: 30px;
+                }
+        div.sHorizontalTabs div.sHorizontalTabsInner ul li a:hover {
+            background: url(../img/sTabsHorizontal.png) 100% -300px no-repeat;
+            }
+            div.sHorizontalTabs div.sHorizontalTabsInner ul li a:hover span {
+                background: url(../img/sTabsHorizontal.png) 0 -250px no-repeat;
+                }
+        div.sHorizontalTabs div.sHorizontalTabsInner ul li.active a, 
+        div.sHorizontalTabs div.sHorizontalTabsInner ul li.active a:hover {
+            background: url(../img/sTabsHorizontal.png) 100% -100px no-repeat;
+            font: bold 12px/28px Arial, sans-serif;
+            color: #FFF;
+            text-shadow: 0 -1px 0 rgba(0,0,0,.35);
+            }
+            div.sHorizontalTabs div.sHorizontalTabsInner ul li.active a span, div.sHorizontalTabs div.sHorizontalTabsInner ul li.active a:hover span {
+                background: url(../img/sTabsHorizontal.png) 0 -50px no-repeat;
+                }
+                
+/* -------------------- Buttons ------------------------- */ 
+
+.button-region {
+        padding: 5px 0 10px 0;
+}
+
+.button-region-2 {
+        padding: 5px 0 5px 0;
+}
+
+.button {
+    font: bold 12px Arial, sans-serif;
+    text-decoration: none;
+    background-color: #EEEEEE;
+    color: #333333;
+    padding: 4px 8px 4px 8px;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+    width: 60px;
+}
+
+/* -------------------- Report Table -------------------- */
+
+.report-region {
+        padding: 0 0 0 0;
+}
+
+.report-standard {
+        empty-cells: show;
+        border: 1px solid #999;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        background: url(../img/sReportBG-Standard.png) 0 0 repeat-x #FFF;
+        padding: 6px 0;
+}
+
+.report-standard th {
+        color:#333;
+        font: bold 12px/12px Arial, sans-serif;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+        padding: 0px 10px 4px;
+        background: none transparent;
+        border-bottom: 1px solid #999;
+}
+
+.report-standard th a {
+        color:#333;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+        text-decoration: underline;
+}
+
+.report-standard td {
+        background-color: #FFF;
+        padding: 4px 10px;
+        border-bottom: 1px solid #DDD;
+        font: 12px/12px Arial, sans-serif;
+}
+
+.report-standard td a {
+        text-decoration: underline;
+}
+
+.report-standard td a:hover {
+        color: red;
+}
+
+.report-standard tr td {
+        border-bottom: 1px solid #DDD;
+}
+
+/* Hide Last Border Bottom */
+.report-standard tr:last-child td {
+        border-bottom: none;
+}
+
+.report-standard tr.highlight-row {
+	background-color: #FFF;
+}
+
+.report-standard tr.highlight-row-2 {
+	background-color: #f2f2f2;
+}
+
+/* -------------------- Form -------------------- */
+
+.form-region {
+        padding: 0 0 0 0;
+}
+
+.error {
+	color: #ff0000;
+	background-color: #ffEEEE;
+	border: 3px solid #ff0000;
+	padding: 8px;
+	margin: 8px;
+        width: 320px;
+}
+
+.read-only {
+    color: #6b849a;
+    text-shadow: 1px 1px #FFFFFF;
+    background-color: #F9F9F9;
+    cursor: default;
+}
+
+.text-field{
+    width: 200px;
+}
+
+.date-field{
+    width: 200px;
+}
