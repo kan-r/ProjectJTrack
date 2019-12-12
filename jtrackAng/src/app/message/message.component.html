@@ -1,0 +1,8 @@
+<div *ngIf="messageService.messages?.length" class="alert alert-info">
+    <strong>Info!</strong>
+    <div *ngFor='let message of messageService.messages' class="text-info"> {{message}} </div>
+</div>
+<div *ngIf="messageService.errors?.length" class="alert alert-danger">
+    <strong>Error!</strong>
+    <div *ngFor='let error of messageService.errors' class="text-danger"> {{error}} </div>
+</div>
