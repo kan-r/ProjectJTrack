@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class JobTypeService {
 
 	public List<JobType> getJobTypeList(){
 		logger.info("getJobTypeList()");
-		return jobTypeDao.findAll();
+		return jobTypeDao.findAll(Sort.by("jobType"));
 	}
 	
 	public JobType getJobType(String jobTypeId){

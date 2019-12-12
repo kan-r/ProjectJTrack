@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,15 +34,19 @@ public class TimesheetService {
 
 	public List<Timesheet> getTimesheetList(){
 		logger.info("getTimesheetList()");
-		return timesheetDao.findAll();
+		return timesheetDao.findAll(Sort.by("userId", "workedDate"));
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<Timesheet> getTimesheetList(String userId, Date workedDateFrom, Date workedDateTo){
 		
 		logger.info("getTimesheetList({}, {}, {})", userId, workedDateFrom, workedDateTo);
 		
 		return timesheetDao.findAll(new Specification<Timesheet>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public Predicate toPredicate(Root<Timesheet> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -60,7 +65,7 @@ public class TimesheetService {
 				
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
-		});
+		}, Sort.by("userId", "workedDate"));
 	}
 	
 	public Timesheet getTimesheet(String timesheetId){
@@ -91,6 +96,11 @@ public class TimesheetService {
 	
 	public boolean timesheetExists(String timesheetId) {
 		Timesheet timesheetExisting = getTimesheet(timesheetId);
+		return (timesheetExisting != null);
+	}
+	
+	public boolean timesheetExists(String userId, long jobNo, Date workedDate) {
+		Timesheet timesheetExisting = getTimesheet(userId, jobNo, workedDate);
 		return (timesheetExisting != null);
 	}
 	

@@ -1,6 +1,7 @@
 package com.jtrack.model;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +14,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 
 @Entity
@@ -101,24 +101,20 @@ public class Job {
     @Column(name="JOB_REF")
     private String jobRef;
     
-    @Transient
     @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "PARENT_JOB_NO", referencedColumnName = "JOB_NO")
+    @JoinColumn(name = "PARENT_JOB_NO", insertable = false, updatable = false)
     private Job parentJobObj;
     
-    @Transient
     @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "ASSIGNED_TO", referencedColumnName = "USER_ID")
+    @JoinColumn(name = "ASSIGNED_TO", insertable = false, updatable = false)
     private User assignedToObj;
     
-    @Transient
     @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "USER_CRT", referencedColumnName = "USER_ID")
+	@JoinColumn(name = "USER_CRT", insertable = false, updatable = false)
     private User userCrtObj;
-    
-    @Transient
-    @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "USER_MOD", referencedColumnName = "USER_ID")
+	
+	@ManyToOne(fetch=FetchType.EAGER, optional=true)
+	@JoinColumn(name = "USER_MOD", insertable = false, updatable = false)
     private User userModObj;
     
 	public Long getJobNo() {

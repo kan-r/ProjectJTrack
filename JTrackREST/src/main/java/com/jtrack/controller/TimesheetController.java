@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jtrack.model.Timesheet;
+import com.jtrack.model.TimesheetSO;
 import com.jtrack.service.TimesheetService;
 
 @RestController
@@ -24,6 +25,14 @@ public class TimesheetController {
 	@GetMapping(path="/timesheet")
 	public List<Timesheet> getTimesheetList(){
 		return timesheetService.getTimesheetList();
+	}
+	
+	@PostMapping(path="/timesheet/SO")
+	public List<Timesheet> getTimesheetList(@RequestBody TimesheetSO timesheetSO){
+		return timesheetService.getTimesheetList(
+				timesheetSO.getUserId(), 
+				timesheetSO.getWorkedDateFrom(), 
+				timesheetSO.getWorkedDateTo());
 	}
 	
 	@GetMapping(path="/timesheet/{id}")
@@ -39,7 +48,7 @@ public class TimesheetController {
 
 	@PostMapping("/timesheet")
 	public ResponseEntity<Object> addTimesheet(@RequestBody Timesheet timesheet) {
-		if(timesheetService.timesheetExists(timesheet.getTimesheetId())) {
+		if(timesheetService.timesheetExists(timesheet.getUserId(), timesheet.getJobNo(), timesheet.getWorkedDate())) {
 			return ResponseEntity.badRequest().body("Timesheet already exists");
 		}
 		

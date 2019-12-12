@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jtrack.model.Job;
+import com.jtrack.model.JobSO;
 import com.jtrack.service.JobService;
 
 @RestController
@@ -24,6 +25,16 @@ public class JobController {
 	@GetMapping(path="/job")
 	public List<Job> getJobList(){
 		return jobService.getJobList();
+	}
+	
+	@GetMapping(path="/parentJob")
+	public List<Job> getParentJobList(){
+		return jobService.getJobList("Project");
+	}
+	
+	@PostMapping(path="/job/SO")
+	public List<Job> getJobList(@RequestBody JobSO jobSO){
+		return jobService.getJobList(jobSO);
 	}
 	
 	@GetMapping(path="/job/{id}")

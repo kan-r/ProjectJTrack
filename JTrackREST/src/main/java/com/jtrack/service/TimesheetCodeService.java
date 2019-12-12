@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class TimesheetCodeService {
 
 	public List<TimesheetCode> getTimesheetCodeList(){
 		logger.info("getTimesheetCodeList()");
-		return timesheetCodeDao.findAll();
+		return timesheetCodeDao.findAll(Sort.by("timesheetCode"));
 	}
 	
 	public TimesheetCode getTimesheetCode(String timesheetCodeId){

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 
 import com.jtrack.dao.UserDao;
 import com.jtrack.model.User;
@@ -33,7 +34,7 @@ class JTrackRestApplicationTests {
 		userList.add(new User("D2161", "Tharani", "Ranganathan", true, null, "ADMIN", null, "D2161"));
 		userList.add(new User("D2162", "Tharani", "Ranganathan", true, null, "D2161", null, null));
 		
-		when(userDao.findAll()).thenReturn(userList);
+		when(userDao.findAll(Sort.by("userId"))).thenReturn(userList);
 		assertEquals(3, userService.getUserList().size());
 	}
 	
