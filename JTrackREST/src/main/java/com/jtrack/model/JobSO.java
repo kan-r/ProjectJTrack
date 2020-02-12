@@ -7,6 +7,10 @@ public class JobSO {
     private String jobStatus = "";
     private String assignedTo = "";
     private boolean includeChildJobs = false;
+    private String jobNameChild = "";
+    private String jobTypeChild = "";
+    private String jobStatusChild = "";
+    private String assignedToChild = "";
     
 	public String getJobName() {
 		return jobName;
@@ -38,10 +42,36 @@ public class JobSO {
 	public void setIncludeChildJobs(boolean includeChildJobs) {
 		this.includeChildJobs = includeChildJobs;
 	}
+	public String getJobNameChild() {
+		return jobNameChild;
+	}
+	public void setJobNameChild(String jobNameChild) {
+		this.jobNameChild = jobNameChild;
+	}
+	public String getJobTypeChild() {
+		return jobTypeChild;
+	}
+	public void setJobTypeChild(String jobTypeChild) {
+		this.jobTypeChild = jobTypeChild;
+	}
+	public String getJobStatusChild() {
+		return jobStatusChild;
+	}
+	public void setJobStatusChild(String jobStatusChild) {
+		this.jobStatusChild = jobStatusChild;
+	}
+	public String getAssignedToChild() {
+		return assignedToChild;
+	}
+	public void setAssignedToChild(String assignedToChild) {
+		this.assignedToChild = assignedToChild;
+	}
 	
 	@Override
 	public String toString() {
 		return "JobSO [jobName=" + jobName + ", jobType=" + jobType + ", jobStatus=" + jobStatus + ", assignedTo="
-				+ assignedTo + ", includeChildJobs=" + includeChildJobs + "]";
+				+ assignedTo + ", includeChildJobs=" + includeChildJobs + ", jobNameChild=" + jobNameChild
+				+ ", jobTypeChild=" + jobTypeChild + ", jobStatusChild=" + jobStatusChild + ", assignedToChild="
+				+ assignedToChild + "]";
 	}
 }

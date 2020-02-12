@@ -43,6 +43,10 @@ public class UserService {
 		return (userExisting != null);
 	}
 	
+	public boolean userValid(String userId) {
+		return (userId != null && !userId.trim().isEmpty());
+	}
+	
 	public User addUser(User user) {
 		logger.info("addUser({})", user);
 		user.setDateCrt(new Date());

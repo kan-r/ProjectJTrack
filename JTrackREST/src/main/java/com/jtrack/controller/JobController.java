@@ -72,6 +72,14 @@ public class JobController {
 			return ResponseEntity.badRequest().body("Job does not exist");
 		}
 		
+		if(jobService.childJobExists(id)) {
+			return ResponseEntity.badRequest().body("Child job exists");
+		}
+		
+		if(jobService.timesheetExists(id)) {
+			return ResponseEntity.badRequest().body("Timesheet entry exists");
+		}
+		
 		jobService.deleteJob(id);
 		
 		return ResponseEntity.ok().build();

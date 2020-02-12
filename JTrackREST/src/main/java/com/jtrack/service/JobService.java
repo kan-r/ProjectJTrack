@@ -50,6 +50,42 @@ public class JobService {
 		return jobDao.findByParentJobNo(parentJobNo, Sort.by("jobNo"));
 	}
 	
+	private List<Job> getChildJobList(Long parentJobNo, JobSO jobSO) {
+		
+		logger.info("getChildJobList({}, {})", parentJobNo, jobSO);
+		
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Job> criteriaQuery = criteriaBuilder.createQuery(Job.class);
+		Root<Job> job = criteriaQuery.from(Job.class);
+		
+		List<Predicate> predicates = new ArrayList<>();
+		
+		predicates.add(criteriaBuilder.and(criteriaBuilder.equal(job.get("parentJobNo"), parentJobNo)));
+		
+		if(!jobSO.getJobNameChild().isEmpty()){
+			predicates.add(criteriaBuilder.and(criteriaBuilder.like(job.get("jobName"), jobSO.getJobNameChild())));
+        }
+		
+		if(!jobSO.getJobTypeChild().isEmpty()){
+			predicates.add(criteriaBuilder.and(criteriaBuilder.equal(job.get("jobType"), jobSO.getJobTypeChild())));
+        }
+        
+        if(!jobSO.getJobStatusChild().isEmpty()){
+            predicates.add(criteriaBuilder.and(criteriaBuilder.equal(job.get("jobStatus"), jobSO.getJobStatusChild())));
+        }
+        
+        if(!jobSO.getAssignedToChild().isEmpty()){
+            predicates.add(criteriaBuilder.and(criteriaBuilder.equal(job.get("assignedTo"), jobSO.getAssignedToChild())));
+        }
+		
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
+        criteriaQuery.orderBy(criteriaBuilder.asc(job.get("jobNo")));
+        TypedQuery<Job> query = entityManager.createQuery(criteriaQuery);
+        List<Job> result = query.getResultList();
+        
+		return result;
+	}
+	
 	public List<Job> getJobList(JobSO jobSO) {
 		
 		logger.info("getJobList({})", jobSO);
@@ -60,6 +96,7 @@ public class JobService {
 		
 		List<Predicate> predicates = new ArrayList<>();
 		
+		predicates.add(criteriaBuilder.and(criteriaBuilder.isNull(job.get("parentJobNo"))));
 		
 		if(!jobSO.getJobName().isEmpty()){
 			predicates.add(criteriaBuilder.and(criteriaBuilder.like(job.get("jobName"), jobSO.getJobName())));
@@ -88,8 +125,9 @@ public class JobService {
         	for(int i = 0; i < result.size(); i++){
         		Job pJ = result.get(i);
         		res.add(pJ);
+        		
         		if(pJ.getParentJobNo() == null) {
-        			List<Job> cJList = getChildJobList(pJ.getJobNo());
+        			List<Job> cJList = getChildJobList(pJ.getJobNo(), jobSO);
         			for(int j = 0; j < cJList.size(); j++){
         				if(!res.contains(cJList.get(j))) {
         					res.add(cJList.get(j));
@@ -114,22 +152,56 @@ public class JobService {
 		return (jobExisting != null);
 	}
 	
+	public boolean childJobExists(long jobNo) {
+		List<Job> jobList = getChildJobList(jobNo);
+		return (jobList.size() > 0);
+	}
+	
+	public boolean timesheetExists(long jobNo) {
+		return (jobDao.getTimesheetCount(jobNo) > 0);
+	}
+	
 	public Job addJob(Job job) {
 		logger.info("addJob({})", job);
+		
 		job.setDateCrt(new Date());
 		 
-	    return jobDao.save(job);
+		Job j = jobDao.save(job);
+		refreshParentJob(job);
+		
+		return j;
 	}
 	
 	public void deleteJob(long jobNo) {
 		logger.info("deleteJob({})", jobNo);
-		jobDao.deleteByJobNo(jobNo);
+		
+		Job job = getJob(jobNo);
+		jobDao.delete(job);
+		refreshParentJob(job);
 	}
 	
 	public Job updateJob(Job job) {
 		logger.info("updateJob({})", job);
+		
 		job.setDateMod(new Date());
 		
-		return jobDao.save(job);
+		Job j = jobDao.save(job);
+		refreshParentJob(job);
+		
+		return j;
+	}
+	
+	private void refreshParentJob(Job job) {
+		logger.info("updateParentJob({})", job);
+		
+		if(job.getParentJobNo() == null) {
+			return;
+		}
+			
+		try {
+			jobDao.refreshParentJob(job.getParentJobNo());
+		}catch(Exception e) {
+			
+		}
 	}
 }

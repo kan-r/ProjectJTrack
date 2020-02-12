@@ -112,19 +112,39 @@ public class TimesheetService {
         
         timesheet.setTimesheetId(timesheetId);
 		timesheet.setDateCrt(new Date());
-		 
-	    return timesheetDao.save(timesheet);
+		
+		Timesheet t = timesheetDao.save(timesheet);
+		refreshJob(timesheet.getJobNo());
+		return t;
 	}
 	
 	public void deleteTimesheet(String timesheetId) {
 		logger.info("deleteTimesheet({})", timesheetId);
+		
+		long jobNo = getTimesheet(timesheetId).getJobNo();
+		
 		timesheetDao.deleteById(timesheetId);
+		refreshJob(jobNo);
 	}
 	
 	public Timesheet updateTimesheet(Timesheet timesheet) {
 		logger.info("updateTimesheet({})", timesheet);
+		
 		timesheet.setDateMod(new Date());
 		
-		return timesheetDao.save(timesheet);
+		Timesheet t = timesheetDao.save(timesheet);
+		refreshJob(timesheet.getJobNo());
+		return t;
+	}
+	
+	private void refreshJob(long jobNo) {
+		try {
+			timesheetDao.refreshCompletedHrsInJob(jobNo);
+			timesheetDao.refreshCompletedHrsInParentJob(jobNo);
+			timesheetDao.refreshStatusInJob(jobNo);
+			timesheetDao.refreshStatusInParentJob(jobNo);
+		}catch(Exception e) {
+			
+		}
 	}
 }

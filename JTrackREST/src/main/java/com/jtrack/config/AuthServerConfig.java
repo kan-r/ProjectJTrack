@@ -46,7 +46,7 @@ public class AuthServerConfig extends WebSecurityConfigurerAdapter implements Au
 	    return super.authenticationManagerBean();
 	}    
 	
-	private int expiration = 3600;
+	private int expirationInSecs = 3600;
 	
 	/**
      * Setting up the endpointsconfigurer authentication manager.
@@ -72,14 +72,14 @@ public class AuthServerConfig extends WebSecurityConfigurerAdapter implements Au
         	.withClient("jtrackAdmin")
 	        	.secret(passwordEncoder.encode("admin"))
 	        	.authorizedGrantTypes("password", "refresh_toekn")
-	        	.accessTokenValiditySeconds(expiration)
+	        	.accessTokenValiditySeconds(expirationInSecs)
 	        	.resourceIds("oauth2-resource")
 	        	.scopes("read","write")
         	.and()
         	.withClient("jTrackUser")
 	        	.secret(passwordEncoder.encode("user"))
 	        	.authorizedGrantTypes("password", "refresh_toekn")
-	        	.accessTokenValiditySeconds(expiration)
+	        	.accessTokenValiditySeconds(expirationInSecs)
 	        	.resourceIds("oauth2-resource")
 	        	.scopes("read");
     }

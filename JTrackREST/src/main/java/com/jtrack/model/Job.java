@@ -62,19 +62,19 @@ public class Job {
     @Column(name="COMPLETED_HRS")
     private Double completedHrs;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ESTIMATED_START_DATE")
     private Date estimatedStartDate;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ACTUAL_START_DATE")
     private Date actualStartDate;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ESTIMATED_END_DATE")
     private Date estimatedEndDate;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ACTUAL_END_DATE")
     private Date actualEndDate;
     

@@ -39,6 +39,10 @@ public class UserController {
 
 	@PostMapping("/user")
 	public ResponseEntity<Object> addUser(@RequestBody User user) {
+		if(!userService.userValid(user.getUserId())) {
+			return ResponseEntity.badRequest().body("User ID is invalid");
+		}
+		
 		if(userService.userExists(user.getUserId())) {
 			return ResponseEntity.badRequest().body("User already exists");
 		}
