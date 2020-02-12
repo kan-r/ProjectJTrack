@@ -3,7 +3,7 @@ import { User } from '../user/user';
 export class JobPriority {
     jobPriority: string;
     jobPriorityDesc: string;
-    active: boolean;
+    active: boolean = true;
     dateCrt: Date;
     userCrt: string;
     dateMod: Date;

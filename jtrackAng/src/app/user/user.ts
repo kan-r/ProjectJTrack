@@ -2,7 +2,7 @@ export class User {
     userId: string;
     firstName: string;
     lastName: string;
-    active: boolean;
+    active: boolean = true;
     dateCrt: Date;
     userCrt: string;
     dateMod: Date;

@@ -41,6 +41,12 @@ export class JobStatusService {
     }
   
     addJobStatus(jobStatus: JobStatus): Observable<JobStatus> {
+      let j  = jobStatus.jobStatus;
+      if(j == null || j.trim() === ''){
+          this.logError('Job Status is required');
+          return throwError('Job Status is required');
+      }
+
       this.clearError();
       return this.httpClient.post<JobStatus>(this.baseUrl, jobStatus, this.authService.getHttpOptions())
         .pipe(
@@ -76,10 +82,7 @@ export class JobStatusService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T> (operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-        this.logError(`${operation} failed: ${error.error}`);
-        return throwError(error);
-      };
+      return this.messageService.handleError(operation, result);
     }
   
     private log(message: string) {

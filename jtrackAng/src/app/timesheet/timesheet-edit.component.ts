@@ -8,7 +8,6 @@ import { TimesheetCodeService } from '../timesheet-code/timesheet-code.service';
 @Component({
   selector: 'app-timesheet-edit',
   templateUrl: './timesheet-edit.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./timesheet-edit.component.css']
 })
 export class TimesheetEditComponent implements OnInit {

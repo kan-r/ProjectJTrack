@@ -1,11 +1,11 @@
 <form (ngSubmit)="updateUser()">
-	<div class="button-region-2">
+	<div class="button-region">
 		<a [routerLink] = "['/User']" class="button">Cancel</a>
 		<input type="submit" value="Save" class="button" />
 	</div>
 
-	<div class="report-region">
-		<table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
+	<div class="form-region-2">
+		<table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
 			<tr>
 				<th><div>Edit User</div></th>
 			</tr>
@@ -17,7 +17,7 @@
 								<label for="userId">User ID</label>
 							</td>
 							<td  colspan="1" rowspan="1" align="left" valign="middle">
-								<input name="userId" [(ngModel)] = "userModel.userId" readonly="true" class="read-only" />
+								<input name="userId" [(ngModel)] = "userModel.userId" disabled="true" />
 							</td>
 						</tr>
 						<tr>

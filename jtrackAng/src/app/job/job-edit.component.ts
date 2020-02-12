@@ -20,7 +20,6 @@ import { UserService } from '../user/user.service';
 @Component({
   selector: 'app-job-edit',
   templateUrl: './job-edit.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./job-edit.component.css']
 })
 export class JobEditComponent implements OnInit {
@@ -70,7 +69,7 @@ export class JobEditComponent implements OnInit {
   updateJob(): void{
     this.jobService.updateJob(this.jobModel)
       .subscribe(
-        _ => {this.router.navigate(['/Job']);}
+        _ => this.router.navigate(['/Job'])
       );
   }
 }

@@ -8,7 +8,7 @@ export class Timesheet {
     workedDate: Date;
     workedHrs: number;
     timesheetCode: string;
-    active: boolean;
+    active: boolean = true;
     dateCrt: Date;
     userCrt: string;
     dateMod: Date;

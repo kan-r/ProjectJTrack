@@ -41,6 +41,12 @@ export class UserService {
   }
 
   addUser(user: User): Observable<User> {
+    let t = user.userId;
+    if(t == null || t.trim() === ''){
+      this.logError('User ID is required');
+      return throwError('User ID is required');
+    }
+
     this.clearError();
     return this.httpClient.post<User>(this.baseUrl, user, this.authService.getHttpOptions())
       .pipe(
@@ -76,10 +82,7 @@ export class UserService {
    * @param result - optional value to return as the observable result
    */
   private handleError<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      this.logError(`${operation} failed: ${error.error}`);
-      return throwError(error);
-    };
+    return this.messageService.handleError(operation, result);
   }
 
   private log(message: string) {

@@ -6,7 +6,6 @@ import { JobPriorityService } from './job-priority.service';
 @Component({
   selector: 'app-job-priority-edit',
   templateUrl: './job-priority-edit.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./job-priority-edit.component.css']
 })
 export class JobPriorityEditComponent implements OnInit {

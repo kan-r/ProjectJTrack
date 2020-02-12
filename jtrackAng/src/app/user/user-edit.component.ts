@@ -6,7 +6,6 @@ import { UserService } from './user.service';
 @Component({
   selector: 'app-user-edit',
   templateUrl: './user-edit.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./user-edit.component.css']
 })
 export class UserEditComponent implements OnInit {

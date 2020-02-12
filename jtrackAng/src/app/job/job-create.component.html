@@ -1,11 +1,11 @@
 <form (ngSubmit)="addJob()">
-    <div class="button-region-2">
+    <div class="button-region">
         <a [routerLink] = "['/Job']" class="button">Cancel</a>
         <input type="submit" value="Save" class="button" />
     </div>
 
-    <div class="report-region">
-        <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
+    <div class="form-region-2">
+        <table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
             <tr>
                 <th><div>Create Job </div></th>
             </tr>
@@ -112,7 +112,7 @@
                         </tr>
                         <tr>
                             <td nowrap="nowrap" align="right">
-                                <label for="estimatedHrs">Job Order</label>
+                                <label for="estimatedHrs">Estimated Hrs</label>
                             </td>
                             <td  colspan="1" rowspan="1" align="left" valign="middle">
                                 <input name="estimatedHrs" [(ngModel)] = "jobModel.estimatedHrs" />

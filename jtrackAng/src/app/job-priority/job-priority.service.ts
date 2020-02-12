@@ -41,6 +41,12 @@ export class JobPriorityService {
     }
   
     addJobPriority(jobPriority: JobPriority): Observable<JobPriority> {
+      let j  = jobPriority.jobPriority;
+      if(j == null || j.trim() === ''){
+          this.logError('Job Priority is required');
+          return throwError('Job Priority is required');
+      }
+
       this.clearError();
       return this.httpClient.post<JobPriority>(this.baseUrl, jobPriority, this.authService.getHttpOptions())
         .pipe(
@@ -76,10 +82,7 @@ export class JobPriorityService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T> (operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-        this.logError(`${operation} failed: ${error.error}`);
-        return throwError(error);
-      };
+      return this.messageService.handleError(operation, result);
     }
   
     private log(message: string) {

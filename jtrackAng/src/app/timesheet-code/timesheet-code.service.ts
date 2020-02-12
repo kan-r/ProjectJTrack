@@ -41,6 +41,12 @@ export class TimesheetCodeService {
     }
   
     addTimesheetCode(timesheetCode: TimesheetCode): Observable<TimesheetCode> {
+      let t = timesheetCode.timesheetCode;
+      if(t == null || t.trim() === ''){
+        this.logError('Timesheet Code is required');
+        return throwError('Timesheet Code is required');
+      }
+
       this.clearError();
       return this.httpClient.post<TimesheetCode>(this.baseUrl, timesheetCode, this.authService.getHttpOptions())
         .pipe(
@@ -76,10 +82,7 @@ export class TimesheetCodeService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T> (operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-        this.logError(`${operation} failed: ${error.error}`);
-        return throwError(error);
-      };
+      return this.messageService.handleError(operation, result);
     }
   
     private log(message: string) {

@@ -11,7 +11,7 @@ import { UserService } from '../user/user.service';
 @Component({
   selector: 'app-job',
   templateUrl: './job.component.html',
-  styleUrls: ['./job.component.css']
+  // styleUrls: ['./job.component.css']
 })
 export class JobComponent implements OnInit {
 
@@ -28,7 +28,7 @@ export class JobComponent implements OnInit {
     private userService: UserService) { }
 
   ngOnInit() {
-    this.jobService.getJobList().subscribe(data => this.jobList = data);
+    this.getJobList();
     this.jobTypeService.getJobTypeList().subscribe(data => this.jobTypeList = data);
     this.jobStatusService.getJobStatusList().subscribe(data => this.jobStatusList = data);
     this.userService.getUserList().subscribe(data => this.assignedToList = data);
@@ -44,7 +44,7 @@ export class JobComponent implements OnInit {
   deleteJob(jobNo: string): void {
     this.jobService.deleteJob(jobNo)
       .subscribe(
-        _ => {this.jobService.getJobList().subscribe(data => this.jobList = data);}
+        _ => {this.getJobList()}
       );
   }
 }

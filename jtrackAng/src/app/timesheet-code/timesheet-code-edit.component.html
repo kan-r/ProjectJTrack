@@ -1,11 +1,11 @@
 <form (ngSubmit)="updateTimesheetCode()">
-    <div class="button-region-2">
+    <div class="button-region">
         <a [routerLink] = "['/TimesheetCode']" class="button">Cancel</a>
         <input type="submit" value="Save" class="button" />
     </div>
 
-    <div class="report-region">
-        <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
+    <div class="form-region-2">
+        <table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
             <tr>
                 <th><div>Edit Timesheet Code</div></th>
             </tr>
@@ -17,7 +17,7 @@
                                 <label for="timesheetCode">Timesheet Code</label>
                             </td>
                             <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                <input name="timesheetCode" [(ngModel)] = "timesheetCodeModel.timesheetCode" readonly="true" class="read-only" />
+                                <input name="timesheetCode" [(ngModel)] = "timesheetCodeModel.timesheetCode" disabled="true" />
                             </td>
                         </tr>
                         <tr>

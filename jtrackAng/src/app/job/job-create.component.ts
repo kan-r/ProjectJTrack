@@ -20,7 +20,6 @@ import { UserService } from '../user/user.service';
 @Component({
   selector: 'app-job-create',
   templateUrl: './job-create.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./job-create.component.css']
 })
 export class JobCreateComponent implements OnInit {

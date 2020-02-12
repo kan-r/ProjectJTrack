@@ -19,7 +19,7 @@ export class Job {
     estimatedEndDate: Date;
     actualEndDate: Date;
     parentJobNo: number;
-    active: boolean;
+    active: boolean = true;
     dateCrt: Date;
     userCrt: string;
     dateMod: Date;
@@ -36,5 +36,9 @@ export class JobSO {
     jobType: string = "";
     jobStatus: string = "";
     assignedTo: string = "";
-    includeChildJobs: boolean = false;
+    includeChildJobs: boolean = true;
+    jobNameChild: string  = "";
+    jobTypeChild: string = "";
+    jobStatusChild: string = "";
+    assignedToChild: string = "";
 }

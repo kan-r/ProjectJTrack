@@ -6,7 +6,6 @@ import { JobResolutionService } from './job-resolution.service';
 @Component({
   selector: 'app-job-resolution-edit',
   templateUrl: './job-resolution-edit.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./job-resolution-edit.component.css']
 })
 export class JobResolutionEditComponent implements OnInit {

@@ -1,11 +1,11 @@
 <form (ngSubmit)="updateJobResolution()">
-    <div class="button-region-2">
+    <div class="button-region">
         <a [routerLink] = "['/JobResolution']" class="button">Cancel</a>
         <input type="submit" value="Save" class="button" />
     </div>
 
-    <div class="report-region">
-        <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
+    <div class="form-region-2">
+        <table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
             <tr>
                 <th><div>Edit Job Resolution</div></th>
             </tr>
@@ -17,7 +17,7 @@
                                 <label for="jobResolution">Job Resolution</label>
                             </td>
                             <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                <input name="jobResolution" [(ngModel)] = "jobResolutionModel.jobResolution" readonly="true" class="read-only" />
+                                <input name="jobResolution" [(ngModel)] = "jobResolutionModel.jobResolution" disabled="true" />
                             </td>
                         </tr>
                         <tr>

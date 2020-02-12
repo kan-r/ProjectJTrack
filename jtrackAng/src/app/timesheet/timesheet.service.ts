@@ -52,6 +52,21 @@ export class TimesheetService {
     }
   
     addTimesheet(timesheet: Timesheet): Observable<Timesheet> {
+      if(timesheet.userId == null || timesheet.userId.trim() === ''){
+          this.logError('User is required');
+          return throwError('User is required');
+      }
+
+      if(timesheet.jobNo == null){
+        this.logError('Job is required');
+        return throwError('Job is required');
+      }
+
+      if(timesheet.workedDate == null){
+        this.logError('Worked Date is required');
+        return throwError('Worked Date is required');
+      }
+
       this.clearError();
       return this.httpClient.post<Timesheet>(this.baseUrl, timesheet, this.authService.getHttpOptions())
         .pipe(
@@ -87,10 +102,7 @@ export class TimesheetService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T> (operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-        this.logError(`${operation} failed: ${error.error}`);
-        return throwError(error);
-      };
+      return this.messageService.handleError(operation, result);
     }
   
     private log(message: string) {

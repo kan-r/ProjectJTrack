@@ -3,7 +3,7 @@ import { User } from '../user/user';
 export class TimesheetCode {
     timesheetCode: string;
     timesheetCodeDesc: string;
-    active: boolean;
+    active: boolean = true;
     dateCrt: Date;
     userCrt: string;
     dateMod: Date;

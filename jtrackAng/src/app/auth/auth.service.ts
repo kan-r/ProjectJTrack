@@ -68,8 +68,14 @@ export class AuthService {
   
     this.httpClient.post(tokenUrl, params.toString(), httpOptions)
       .subscribe(
-        data => { this.addToSessionStorage(user, data) },
-        error => { this.logError(error.error.error_description) }
+        data => { 
+          this.addToSessionStorage(user, data);
+          this.postLoginHist(user); 
+        },
+        error => { 
+          // this.logError(error.error.error_description) 
+          this.logError(error)
+        }
       ); 
   }
 
@@ -92,6 +98,18 @@ export class AuthService {
     this.setCurrentUser("");
   }
 
+  private postLoginHist(userId){
+    let loginHist = {
+        userId: userId.toUpperCase()
+    }
+
+    this.httpClient.post(ConfigService.baseUrl + '/loginHist', loginHist, this.getHttpOptions())
+      .subscribe(
+        data => {},
+        error => {}
+      ); 
+}
+
   private setCurrentUser(user: string){
     this.currentUser.next(user);
   }
@@ -102,7 +120,7 @@ export class AuthService {
       let sessJSON = JSON.parse(sessObj);
 
       if(new Date().getTime() > sessJSON.expires_at){
-        this.logError("Access token expired");
+        this.logError("Session expired");
         this.logOut();
         return;
       }
@@ -116,8 +134,9 @@ export class AuthService {
     this.messageService.log(`AuthService: ${message}`);
   }
 
-  private logError(error: string) {
-    this.messageService.logError(`AuthService: ${error}`);
+  private logError(error: any) {
+    let err = this.messageService.extractError(error);
+    this.messageService.logError(`AuthService: ${err}`);
   }
 
   private clearError(){

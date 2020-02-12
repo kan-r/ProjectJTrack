@@ -41,6 +41,12 @@ export class JobResolutionService {
     }
   
     addJobResolution(jobResolution: JobResolution): Observable<JobResolution> {
+      let j  = jobResolution.jobResolution;
+      if(j == null || j.trim() === ''){
+          this.logError('Job Resolution is required');
+          return throwError('Job Resolution is required');
+      }
+
       this.clearError();
       return this.httpClient.post<JobResolution>(this.baseUrl, jobResolution, this.authService.getHttpOptions())
         .pipe(
@@ -76,10 +82,7 @@ export class JobResolutionService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T> (operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-        this.logError(`${operation} failed: ${error.error}`);
-        return throwError(error);
-      };
+      return this.messageService.handleError(operation, result);
     }
   
     private log(message: string) {

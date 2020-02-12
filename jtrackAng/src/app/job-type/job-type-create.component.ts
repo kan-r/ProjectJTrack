@@ -6,7 +6,6 @@ import { JobTypeService } from './job-type.service';
 @Component({
   selector: 'app-job-type-create',
   templateUrl: './job-type-create.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./job-type-create.component.css']
 })
 export class JobTypeCreateComponent implements OnInit {

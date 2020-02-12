@@ -61,6 +61,12 @@ export class JobService {
     }
   
     addJob(job: Job): Observable<Job> {
+      let jobName  = job.jobName;
+      if(jobName == null || jobName.trim() === ''){
+          this.logError('Job Name is required');
+          return throwError('Job Name is required');
+      }
+
       this.clearError();
       return this.httpClient.post<Job>(this.baseUrl, job, this.authService.getHttpOptions())
         .pipe(
@@ -96,10 +102,11 @@ export class JobService {
      * @param result - optional value to return as the observable result
      */
     private handleError<T> (operation = 'operation', result?: T) {
-      return (error: any): Observable<T> => {
-        this.logError(`${operation} failed: ${error.error}`);
-        return throwError(error);
-      };
+      // return (error: any): Observable<T> => {
+      //   this.logError(`${operation} failed: ${error.error}`);
+      //   return throwError(error);
+      // };
+      return this.messageService.handleError(operation, result);
     }
   
     private log(message: string) {

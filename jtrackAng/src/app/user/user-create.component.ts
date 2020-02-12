@@ -6,7 +6,6 @@ import { UserService } from './user.service';
 @Component({
   selector: 'app-user-create',
   templateUrl: './user-create.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./user-create.component.css']
 })
 export class UserCreateComponent implements OnInit {

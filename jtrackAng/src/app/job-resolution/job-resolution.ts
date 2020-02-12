@@ -3,7 +3,7 @@ import { User } from '../user/user';
 export class JobResolution {
     jobResolution: string;
     jobResolutionDesc: string;
-    active: boolean;
+    active: boolean = true;
     dateCrt: Date;
     userCrt: string;
     dateMod: Date;

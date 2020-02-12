@@ -7,8 +7,7 @@ import { UserService } from '../user/user.service';
 @Component({
   selector: 'app-timesheet',
   templateUrl: './timesheet.component.html',
-  // styleUrls: ['../css/jtrack.css']
-  styleUrls: ['./timesheet.component.css']
+  // styleUrls: ['./timesheet.component.css']
 })
 export class TimesheetComponent implements OnInit {
 

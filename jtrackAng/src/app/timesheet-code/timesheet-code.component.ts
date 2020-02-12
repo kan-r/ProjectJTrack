@@ -5,7 +5,6 @@ import { TimesheetCodeService } from './timesheet-code.service';
 @Component({
   selector: 'app-timesheet-code',
   templateUrl: './timesheet-code.component.html',
-  styleUrls: ['../css/jtrack.css']
   // styleUrls: ['./timesheet-code.component.css']
 })
 export class TimesheetCodeComponent implements OnInit {
