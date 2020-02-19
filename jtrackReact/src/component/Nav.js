@@ -9,7 +9,7 @@ class Navmenu extends Component {
         if(key === '/Logout'){
             AuthService.logout();
             this.props.updateAppUser('');
-            this.props.history.push("/Login");
+            this.props.history.push("/Login?logout=true");
         }
     }
 

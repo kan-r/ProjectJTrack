@@ -1,5 +1,11 @@
 
-class AuthService {
+class GenService {
+
+    getParams(search){
+       
+        let queryString = require('query-string');
+        return queryString.parse(search);
+    }
 
     formatDateTime(dtTime){
         let options = {
@@ -47,4 +53,4 @@ class AuthService {
     }
 }
 
-export default new AuthService();
+export default new GenService();

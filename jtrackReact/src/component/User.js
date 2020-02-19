@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import GenService from '../service/GenService';
 import UserService from '../service/UserService';
+import AuthService from '../service/AuthService';
 import Message from './Message';
 
 class User extends Component {
@@ -10,6 +11,7 @@ class User extends Component {
         super(props)
         this.state = {
             userList: [],
+            isUserAdmin: false,
             msgObj: {
               msg: '',
               isError: true
@@ -18,6 +20,7 @@ class User extends Component {
     }
 
     componentDidMount() {
+        this.setState({ isUserAdmin: AuthService.isUserAdmin() })
         this.getUserList();
     }
 
@@ -55,7 +58,8 @@ class User extends Component {
             <div>
                 <Message msgObj={this.state.msgObj} />
                 <div className="button-region">
-                    <Link to='/UserCreate' className="button">Create</Link>
+                    {this.state.isUserAdmin && <Link to='/UserCreate' className="button">Create</Link>}
+                    {!this.state.isUserAdmin && <Link to='/UserCreate' className="button" className="button-disabled">Create</Link>}
                 </div>
                 <div className="report-region-2">
                     <table cellPadding="0" border="0" cellSpacing="0" summary="" className="report-standard">
@@ -76,8 +80,10 @@ class User extends Component {
                         <tbody>
                             {this.state.userList.map((user) => (
                                 <tr key={user.userId} className="highlight-row">
-                                    <td><Link to={`/UserEdit/${user.userId}`}>Edit</Link></td>
-                                    <td><a href="#" onClick = {this.deleteUser.bind(this, user.userId)}>Delete</a></td>
+                                    {this.state.isUserAdmin && <td><Link to={`/UserEdit/${user.userId}`}>Edit</Link></td>}
+                                    {!this.state.isUserAdmin && <td><Link to={`/UserEdit/${user.userId}`} className="link-disabled">Edit</Link></td>}
+                                    {this.state.isUserAdmin && <td><a href="#" onClick = {this.deleteUser.bind(this, user.userId)}>Delete</a></td>}
+                                    {!this.state.isUserAdmin && <td><a href="#" onClick = {this.deleteUser.bind(this, user.userId)} className="link-disabled">Delete</a></td>}
                                     <td>{user.userId}</td>
                                     <td>{user.firstName}</td>
                                     <td>{user.lastName}</td>

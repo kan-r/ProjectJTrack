@@ -11,6 +11,7 @@ class UserEdit extends Component {
         this.state = {
             user: {
                 userId: '',
+                pword: '',
                 firstName: '',
                 lastName: '',
                 active: true,
@@ -66,6 +67,12 @@ class UserEdit extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        let pword  = this.state.user.pword;
+        if(pword == null || pword.trim() === ''){
+            this.updateMessage('Password is required', true);
+            return;
+        }
+
         UserService.updateUser(this.state.user)
         .then(res => {
             this.updateMessage('');
@@ -111,6 +118,14 @@ class UserEdit extends Component {
                                                     </td>
                                                     <td  colSpan="1" rowSpan="1" align="left" valign="middle">
                                                         <input name="userId" value={this.state.user.userId} onChange={this.handleChange} disabled={true} />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td nowrap="nowrap" align="right">
+                                                        <label>Password</label>
+                                                    </td>
+                                                    <td  colSpan="1" rowSpan="1" align="left" valign="middle">
+                                                        <input name="pword" value={this.state.user.pword} onChange={this.handleChange} />
                                                     </td>
                                                 </tr>
                                                 <tr>

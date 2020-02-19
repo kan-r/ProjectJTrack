@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import AuthService from '../service/AuthService';
+import GenService from '../service/GenService';
 import Message from './Message';
 
 class Login extends Component {
@@ -18,6 +19,13 @@ class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.loginCallback = this.loginCallback.bind(this);
+    }
+
+    componentDidMount(){
+        let params = GenService.getParams(this.props.location.search);
+        if(params.logout){
+            this.updateMessage('Logged out');
+        }
     }
 
     handleChange(event) {
