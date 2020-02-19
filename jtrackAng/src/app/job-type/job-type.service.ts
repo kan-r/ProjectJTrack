@@ -21,7 +21,7 @@ export class JobTypeService {
     private baseUrl: string = ConfigService.baseUrl + "/jobType";
 
     getJobTypeList(): Observable<JobType[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<JobType[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Job Type list')),
@@ -30,7 +30,7 @@ export class JobTypeService {
     }
   
     getJobType(jobType: string): Observable<JobType>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobType}`;
   
       return this.httpClient.get<JobType>(url, this.authService.getHttpOptions())
@@ -47,7 +47,7 @@ export class JobTypeService {
           return throwError('Job Type is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<JobType>(this.baseUrl, jobType, this.authService.getHttpOptions())
         .pipe(
           tap((newJobType: JobType) => this.log(`Created Job Type ${newJobType.jobType}`)),
@@ -56,7 +56,7 @@ export class JobTypeService {
     }
   
     updateJobType(jobType: JobType): Observable<JobType> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<JobType>(this.baseUrl, jobType, this.authService.getHttpOptions())
         .pipe(
           tap((newJobType: JobType) => this.log(`Updated Job Type ${newJobType.jobType}`)),
@@ -65,7 +65,7 @@ export class JobTypeService {
     }
   
     deleteJobType(jobType: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobType}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -86,14 +86,19 @@ export class JobTypeService {
     }
   
     private log(message: string) {
-      this.messageService.log(`JobTypeService: ${message}`);
+      this.messageService.log(message);
     }
   
-    private logError(error: string) {
-      this.messageService.logError(`JobTypeService: ${error}`);
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
     }
-
-    private clearError(){
-      this.messageService.clearError();
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

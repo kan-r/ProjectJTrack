@@ -21,7 +21,7 @@ export class JobService {
     private baseUrl: string = ConfigService.baseUrl + "/job";
 
     getJobList(): Observable<Job[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<Job[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Job  list')),
@@ -30,7 +30,7 @@ export class JobService {
     }
 
     getJobList2(jobSO: JobSO): Observable<Job[]>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/SO`;
       return this.httpClient.post<Job[]>(url, jobSO, this.authService.getHttpOptions())
         .pipe(
@@ -40,7 +40,7 @@ export class JobService {
     }
 
     getParentJobList(): Observable<Job[]>{
-      this.clearError();
+      this.clearMessage();
       const url: string = ConfigService.baseUrl + "/parentJob";
       return this.httpClient.get<Job[]>(url, this.authService.getHttpOptions())
         .pipe(
@@ -50,7 +50,7 @@ export class JobService {
     }
   
     getJob(jobNo: string): Observable<Job>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobNo}`;
   
       return this.httpClient.get<Job>(url, this.authService.getHttpOptions())
@@ -67,7 +67,7 @@ export class JobService {
           return throwError('Job Name is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<Job>(this.baseUrl, job, this.authService.getHttpOptions())
         .pipe(
           tap((newJob: Job) => this.log(`Created Job  ${newJob.jobNo}`)),
@@ -76,7 +76,7 @@ export class JobService {
     }
   
     updateJob(job: Job): Observable<Job> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<Job>(this.baseUrl, job, this.authService.getHttpOptions())
         .pipe(
           tap((newJob: Job) => this.log(`Updated Job  ${newJob.jobNo}`)),
@@ -85,7 +85,7 @@ export class JobService {
     }
   
     deleteJob(jobNo: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobNo}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -108,16 +108,21 @@ export class JobService {
       // };
       return this.messageService.handleError(operation, result);
     }
-  
-    private log(message: string) {
-      this.messageService.log(`JobService: ${message}`);
-    }
-  
-    private logError(error: string) {
-      this.messageService.logError(`JobService: ${error}`);
-    }
 
-    private clearError(){
-      this.messageService.clearError();
+    private log(message: string) {
+      this.messageService.log(message);
+    }
+  
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
+    }
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

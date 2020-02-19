@@ -21,7 +21,7 @@ export class UserService {
   private baseUrl: string = ConfigService.baseUrl + "/user";
 
   getUserList(): Observable<User[]>{
-    this.clearError();
+    this.clearMessage();
     return this.httpClient.get<User[]>(this.baseUrl, this.authService.getHttpOptions())
       .pipe(
         tap(_ => this.log('Got User list')),
@@ -30,7 +30,7 @@ export class UserService {
   }
 
   getUser(userId: string): Observable<User>{
-    this.clearError();
+    this.clearMessage();
     const url = `${this.baseUrl}/${userId}`;
 
     return this.httpClient.get<User>(url, this.authService.getHttpOptions())
@@ -47,7 +47,13 @@ export class UserService {
       return throwError('User ID is required');
     }
 
-    this.clearError();
+    let p = user.pword;
+    if(p == null || p.trim() === ''){
+      this.logError('Password is required');
+      return throwError('Password is required');
+    }
+
+    this.clearMessage();
     return this.httpClient.post<User>(this.baseUrl, user, this.authService.getHttpOptions())
       .pipe(
         tap((newUser: User) => this.log(`Created User with User ID = ${newUser.userId}`)),
@@ -56,7 +62,13 @@ export class UserService {
   }
 
   updateUser(user: User): Observable<User> {
-    this.clearError();
+    let p = user.pword;
+    if(p == null || p.trim() === ''){
+      this.logError('Password is required');
+      return throwError('Password is required');
+    }
+    
+    this.clearMessage();
     return this.httpClient.put<User>(this.baseUrl, user, this.authService.getHttpOptions())
       .pipe(
         tap((newUser: User) => this.log(`Updated User with User ID = ${newUser.userId}`)),
@@ -65,7 +77,7 @@ export class UserService {
   }
 
   deleteUser(userId: string): Observable<Object> {
-    this.clearError();
+    this.clearMessage();
     const url = `${this.baseUrl}/${userId}`;
 
     return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -86,14 +98,19 @@ export class UserService {
   }
 
   private log(message: string) {
-    this.messageService.log(`UserService: ${message}`);
+    this.messageService.log(message);
   }
 
-  private logError(error: string) {
-    this.messageService.logError(`UserService: ${error}`);
+  private logInfo(info: string) {
+    this.messageService.logInfo(info);
   }
 
-  private clearError(){
-    this.messageService.clearError();
+  private logError(error: any) {
+    let err = this.messageService.extractError(error);
+    this.messageService.logError(err);
+  }
+
+  private clearMessage(){
+    this.messageService.clearMessage();
   }
 }

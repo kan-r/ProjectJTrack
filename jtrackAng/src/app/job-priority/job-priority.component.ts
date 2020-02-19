@@ -11,7 +11,8 @@ export class JobPriorityComponent implements OnInit {
 
   jobPriorityList: JobPriority[];
 
-  constructor(private jobPriorityService: JobPriorityService) { }
+  constructor(
+    private jobPriorityService: JobPriorityService) { }
 
   ngOnInit() {
     this.jobPriorityService.getJobPriorityList().subscribe(data => this.jobPriorityList = data);

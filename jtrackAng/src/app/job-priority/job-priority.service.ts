@@ -21,7 +21,7 @@ export class JobPriorityService {
     private baseUrl: string = ConfigService.baseUrl + "/jobPriority";
 
     getJobPriorityList(): Observable<JobPriority[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<JobPriority[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Job Priority list')),
@@ -30,7 +30,7 @@ export class JobPriorityService {
     }
   
     getJobPriority(jobPriority: string): Observable<JobPriority>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobPriority}`;
   
       return this.httpClient.get<JobPriority>(url, this.authService.getHttpOptions())
@@ -47,7 +47,7 @@ export class JobPriorityService {
           return throwError('Job Priority is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<JobPriority>(this.baseUrl, jobPriority, this.authService.getHttpOptions())
         .pipe(
           tap((newJobPriority: JobPriority) => this.log(`Created Job Priority ${newJobPriority.jobPriority}`)),
@@ -56,7 +56,7 @@ export class JobPriorityService {
     }
   
     updateJobPriority(jobPriority: JobPriority): Observable<JobPriority> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<JobPriority>(this.baseUrl, jobPriority, this.authService.getHttpOptions())
         .pipe(
           tap((newJobPriority: JobPriority) => this.log(`Updated Job Priority ${newJobPriority.jobPriority}`)),
@@ -65,7 +65,7 @@ export class JobPriorityService {
     }
   
     deleteJobPriority(jobPriority: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobPriority}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -86,14 +86,19 @@ export class JobPriorityService {
     }
   
     private log(message: string) {
-      this.messageService.log(`JobPriorityService: ${message}`);
+      this.messageService.log(message);
     }
   
-    private logError(error: string) {
-      this.messageService.logError(`JobPriorityService: ${error}`);
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
     }
-
-    private clearError(){
-      this.messageService.clearError();
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

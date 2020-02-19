@@ -21,7 +21,7 @@ export class TimesheetService {
     private baseUrl: string = ConfigService.baseUrl + "/timesheet";
 
     getTimesheetList(): Observable<Timesheet[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<Timesheet[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Timesheet  list')),
@@ -30,7 +30,7 @@ export class TimesheetService {
     }
 
     getTimesheetList2(timesheetSO: TimesheetSO): Observable<Timesheet[]> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/SO`;
 
       return this.httpClient.post<Timesheet[]>(url, timesheetSO, this.authService.getHttpOptions())
@@ -41,7 +41,7 @@ export class TimesheetService {
     }
   
     getTimesheet(timesheetId: string): Observable<Timesheet>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${timesheetId}`;
   
       return this.httpClient.get<Timesheet>(url, this.authService.getHttpOptions())
@@ -67,7 +67,7 @@ export class TimesheetService {
         return throwError('Worked Date is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<Timesheet>(this.baseUrl, timesheet, this.authService.getHttpOptions())
         .pipe(
           tap((newTimesheet: Timesheet) => this.log(`Created Timesheet  ${newTimesheet.timesheetId}`)),
@@ -76,7 +76,7 @@ export class TimesheetService {
     }
   
     updateTimesheet(timesheet: Timesheet): Observable<Timesheet> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<Timesheet>(this.baseUrl, timesheet, this.authService.getHttpOptions())
         .pipe(
           tap((newTimesheet: Timesheet) => this.log(`Updated Timesheet  ${newTimesheet.timesheetId}`)),
@@ -85,7 +85,7 @@ export class TimesheetService {
     }
   
     deleteTimesheet(timesheetId: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${timesheetId}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -106,14 +106,19 @@ export class TimesheetService {
     }
   
     private log(message: string) {
-      this.messageService.log(`TimesheetService: ${message}`);
+      this.messageService.log(message);
     }
   
-    private logError(error: string) {
-      this.messageService.logError(`TimesheetService: ${error}`);
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
     }
-
-    private clearError(){
-      this.messageService.clearError();
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

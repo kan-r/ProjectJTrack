@@ -11,7 +11,8 @@ export class TimesheetCodeComponent implements OnInit {
 
   timesheetCodeList: TimesheetCode[];
 
-  constructor(private timesheetCodeService: TimesheetCodeService) { }
+  constructor(
+    private timesheetCodeService: TimesheetCodeService) { }
 
   ngOnInit() {
     this.timesheetCodeService.getTimesheetCodeList().subscribe(data => this.timesheetCodeList = data);

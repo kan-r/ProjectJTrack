@@ -13,6 +13,9 @@ export class AuthService {
   private currentUser = new Subject<string>();
   currentUserObservable = this.currentUser.asObservable();
 
+  private SESSION_ATTRIBUTE_USER = 'USER';
+  private SESSION_ATTRIBUTE_TOKEN = 'TOKEN';
+
   private successUrl: string = "/Job";
 
   constructor(
@@ -29,8 +32,12 @@ export class AuthService {
     return (this.getAccessToken() !== null);
   }
 
+  isUserAdmin(): boolean {
+    return (this.getAppUser() === 'ADMIN');
+  }
+
   logOut(): void {
-    this.log("Logged out");
+    this.logInfo("Logged out");
     this.removeFromSessionStorage();
     this.router.navigate(['/Login']);
   }
@@ -47,7 +54,7 @@ export class AuthService {
 
   private obtainAccessToken(user: string, password: string): void {
 
-    this.clearError();
+    this.clearMessage();
 
     let  tokenUrl: string = ConfigService.baseUrl + "/oauth/token";
 
@@ -87,14 +94,18 @@ export class AuthService {
       'expires_at': expireDate,
       'scope': token.scope
     };
-    sessionStorage.setItem("sess_obj", JSON.stringify(sessObj));
+
+    sessionStorage.setItem(this.SESSION_ATTRIBUTE_TOKEN, JSON.stringify(sessObj));
+    sessionStorage.setItem(this.SESSION_ATTRIBUTE_USER, user.toUpperCase());
+
     this.setCurrentUser(user);
+  
     this.router.navigate([this.successUrl]);
-    this.log(token.access_token);
   }
 
   private removeFromSessionStorage(): void {
-    sessionStorage.removeItem('sess_obj');
+    sessionStorage.removeItem(this.SESSION_ATTRIBUTE_TOKEN);
+    sessionStorage.removeItem(this.SESSION_ATTRIBUTE_USER);
     this.setCurrentUser("");
   }
 
@@ -108,14 +119,14 @@ export class AuthService {
         data => {},
         error => {}
       ); 
-}
+  }
 
   private setCurrentUser(user: string){
     this.currentUser.next(user);
   }
 
   private getAccessToken(): string {
-    let sessObj = sessionStorage.getItem('sess_obj');
+    let sessObj = sessionStorage.getItem(this.SESSION_ATTRIBUTE_TOKEN);
     if(sessObj !== null){
       let sessJSON = JSON.parse(sessObj);
 
@@ -130,16 +141,21 @@ export class AuthService {
     return null;
   }
 
-  private log(message: string) {
-    this.messageService.log(`AuthService: ${message}`);
+  getAppUser(): string {
+    return sessionStorage.getItem(this.SESSION_ATTRIBUTE_USER);
+  }
+
+
+  private logInfo(info: string) {
+    this.messageService.logInfo(info);
   }
 
   private logError(error: any) {
     let err = this.messageService.extractError(error);
-    this.messageService.logError(`AuthService: ${err}`);
+    this.messageService.logError(err);
   }
 
-  private clearError(){
-    this.messageService.clearError();
+  private clearMessage(){
+    this.messageService.clearMessage();
   }
 }

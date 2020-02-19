@@ -11,7 +11,8 @@ export class JobResolutionComponent implements OnInit {
 
   jobResolutionList: JobResolution[];
 
-  constructor(private jobResolutionService: JobResolutionService) { }
+  constructor(
+    private jobResolutionService: JobResolutionService) { }
 
   ngOnInit() {
     this.jobResolutionService.getJobResolutionList().subscribe(data => this.jobResolutionList = data);

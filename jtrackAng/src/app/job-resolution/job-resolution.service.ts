@@ -21,7 +21,7 @@ export class JobResolutionService {
     private baseUrl: string = ConfigService.baseUrl + "/jobResolution";
 
     getJobResolutionList(): Observable<JobResolution[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<JobResolution[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Job Resolution list')),
@@ -30,7 +30,7 @@ export class JobResolutionService {
     }
   
     getJobResolution(jobResolution: string): Observable<JobResolution>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobResolution}`;
   
       return this.httpClient.get<JobResolution>(url, this.authService.getHttpOptions())
@@ -47,7 +47,7 @@ export class JobResolutionService {
           return throwError('Job Resolution is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<JobResolution>(this.baseUrl, jobResolution, this.authService.getHttpOptions())
         .pipe(
           tap((newJobResolution: JobResolution) => this.log(`Created Job Resolution ${newJobResolution.jobResolution}`)),
@@ -56,7 +56,7 @@ export class JobResolutionService {
     }
   
     updateJobResolution(jobResolution: JobResolution): Observable<JobResolution> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<JobResolution>(this.baseUrl, jobResolution, this.authService.getHttpOptions())
         .pipe(
           tap((newJobResolution: JobResolution) => this.log(`Updated Job Resolution ${newJobResolution.jobResolution}`)),
@@ -65,7 +65,7 @@ export class JobResolutionService {
     }
   
     deleteJobResolution(jobResolution: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobResolution}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -86,14 +86,19 @@ export class JobResolutionService {
     }
   
     private log(message: string) {
-      this.messageService.log(`JobResolutionService: ${message}`);
+      this.messageService.log(message);
     }
   
-    private logError(error: string) {
-      this.messageService.logError(`JobResolutionService: ${error}`);
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
     }
-
-    private clearError(){
-      this.messageService.clearError();
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

@@ -7,6 +7,7 @@ import { JobStatus } from '../job-status/job-status';
 import { JobStatusService } from '../job-status/job-status.service';
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
+import { MessageService } from '../message/message.service';
 
 @Component({
   selector: 'app-job',
@@ -25,9 +26,11 @@ export class JobComponent implements OnInit {
     private jobService: JobService,
     private jobTypeService: JobTypeService,
     private jobStatusService: JobStatusService,
-    private userService: UserService) { }
+    private userService: UserService,
+    private messageService: MessageService) { }
 
   ngOnInit() {
+    this.messageService.clearMessage();
     this.getJobList();
     this.jobTypeService.getJobTypeList().subscribe(data => this.jobTypeList = data);
     this.jobStatusService.getJobStatusList().subscribe(data => this.jobStatusList = data);

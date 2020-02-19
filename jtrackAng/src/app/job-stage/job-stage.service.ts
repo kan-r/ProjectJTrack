@@ -21,7 +21,7 @@ export class JobStageService {
     private baseUrl: string = ConfigService.baseUrl + "/jobStage";
 
     getJobStageList(): Observable<JobStage[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<JobStage[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Job Stage list')),
@@ -30,7 +30,7 @@ export class JobStageService {
     }
   
     getJobStage(jobStage: string): Observable<JobStage>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobStage}`;
   
       return this.httpClient.get<JobStage>(url, this.authService.getHttpOptions())
@@ -47,7 +47,7 @@ export class JobStageService {
           return throwError('Job Stage is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<JobStage>(this.baseUrl, jobStage, this.authService.getHttpOptions())
         .pipe(
           tap((newJobStage: JobStage) => this.log(`Created Job Stage ${newJobStage.jobStage}`)),
@@ -56,7 +56,7 @@ export class JobStageService {
     }
   
     updateJobStage(jobStage: JobStage): Observable<JobStage> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<JobStage>(this.baseUrl, jobStage, this.authService.getHttpOptions())
         .pipe(
           tap((newJobStage: JobStage) => this.log(`Updated Job Stage ${newJobStage.jobStage}`)),
@@ -65,7 +65,7 @@ export class JobStageService {
     }
   
     deleteJobStage(jobStage: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${jobStage}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -86,14 +86,19 @@ export class JobStageService {
     }
   
     private log(message: string) {
-      this.messageService.log(`JobStageService: ${message}`);
+      this.messageService.log(message);
     }
   
-    private logError(error: string) {
-      this.messageService.logError(`JobStageService: ${error}`);
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
     }
-
-    private clearError(){
-      this.messageService.clearError();
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

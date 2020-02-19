@@ -11,30 +11,28 @@ export class MessageService {
   constructor(
     private router: Router) { }
 
-  private debug: boolean = ConfigService.debug;
+  info: string = "";
+  error: string = "";
 
-  messages: string[] = [];
-  errors: string[] = [];
-
-  log(message: string) {
-    if (this.debug) {
-      this.messages.push(message);
-    }
+  logInfo(info: string) {
+    this.info = info;
+    this.error = "";
   }
 
   logError(error: string){
-    if (!this.debug) {
-      this.clearError();
+    this.error = error;
+    this.info = "";
+  }
+
+  clearMessage() {
+    this.info = "";
+    this.error = "";
+  }
+
+  log(messgae: string){
+    if(ConfigService.debug){
+      console.log(messgae);
     }
-    this.errors.push(error);  
-  }
-
-  clear() {
-    this.messages = [];
-  }
-
-  clearError() {
-    this.errors = [];
   }
 
   /**

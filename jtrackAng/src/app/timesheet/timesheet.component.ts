@@ -15,11 +15,13 @@ export class TimesheetComponent implements OnInit {
   userList: User[];
   timesheetSOModel: TimesheetSO = new TimesheetSO();
 
-  constructor(private timesheetService: TimesheetService, private userService: UserService) { }
+  constructor(
+    private timesheetService: TimesheetService, 
+    private userService: UserService) { }
 
   ngOnInit() {
-    this.timesheetService.getTimesheetList().subscribe(data => this.timesheetList = data);
     this.userService.getUserList().subscribe(data => this.userList = data);
+    this.timesheetService.getTimesheetList().subscribe(data => this.timesheetList = data);
   }
 
   getTimeSheetList(): void {

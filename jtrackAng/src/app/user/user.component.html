@@ -1,5 +1,6 @@
 <div class="button-region">
-   <a [routerLink] = "['/UserCreate']" class="button">Create</a>
+   <a *ngIf="isCurrentUserAdmin" [routerLink] = "['/UserCreate']" class="button">Create</a>
+   <a *ngIf="!isCurrentUserAdmin" [routerLink] = "['/UserCreate']" class="button-disabled">Create</a>
 </div>
 <div class="report-region-2">
  <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
@@ -16,8 +17,10 @@
       <th>User Modified</th>
    </tr>
    <tr *ngFor = 'let user of userList' class="highlight-row">
-      <td><a [routerLink] = "['/UserEdit', user.userId]">Edit</a></td>
-      <td><a [routerLink] = "" (click) = "deleteUser(user.userId)">Delete</a></td>
+      <td *ngIf="isCurrentUserAdmin"><a [routerLink] = "['/UserEdit', user.userId]">Edit</a></td>
+      <td *ngIf="!isCurrentUserAdmin"><a style="color: #C6C6C6; text-decoration: underline;">Edit</a></td>
+      <td *ngIf="isCurrentUserAdmin"><a [routerLink] = "" (click) = "deleteUser(user.userId)">Delete</a></td>
+      <td *ngIf="!isCurrentUserAdmin"><a style="color: #C6C6C6; text-decoration: underline;">Delete</a></td>
       <td>{{user.userId}}</td>
       <td>{{user.firstName}}</td>
       <td>{{user.lastName}}</td>

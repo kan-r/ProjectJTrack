@@ -21,7 +21,7 @@ export class TimesheetCodeService {
     private baseUrl: string = ConfigService.baseUrl + "/timesheetCode";
 
     getTimesheetCodeList(): Observable<TimesheetCode[]>{
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.get<TimesheetCode[]>(this.baseUrl, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Timesheet Code list')),
@@ -30,7 +30,7 @@ export class TimesheetCodeService {
     }
   
     getTimesheetCode(timesheetCode: string): Observable<TimesheetCode>{
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${timesheetCode}`;
   
       return this.httpClient.get<TimesheetCode>(url, this.authService.getHttpOptions())
@@ -47,7 +47,7 @@ export class TimesheetCodeService {
         return throwError('Timesheet Code is required');
       }
 
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.post<TimesheetCode>(this.baseUrl, timesheetCode, this.authService.getHttpOptions())
         .pipe(
           tap((newTimesheetCode: TimesheetCode) => this.log(`Created Timesheet Code ${newTimesheetCode.timesheetCode}`)),
@@ -56,7 +56,7 @@ export class TimesheetCodeService {
     }
   
     updateTimesheetCode(timesheetCode: TimesheetCode): Observable<TimesheetCode> {
-      this.clearError();
+      this.clearMessage();
       return this.httpClient.put<TimesheetCode>(this.baseUrl, timesheetCode, this.authService.getHttpOptions())
         .pipe(
           tap((newTimesheetCode: TimesheetCode) => this.log(`Updated Timesheet Code ${newTimesheetCode.timesheetCode}`)),
@@ -65,7 +65,7 @@ export class TimesheetCodeService {
     }
   
     deleteTimesheetCode(timesheetCode: string): Observable<Object> {
-      this.clearError();
+      this.clearMessage();
       const url = `${this.baseUrl}/${timesheetCode}`;
   
       return this.httpClient.delete<Object>(url, this.authService.getHttpOptions())
@@ -86,14 +86,19 @@ export class TimesheetCodeService {
     }
   
     private log(message: string) {
-      this.messageService.log(`TimesheetCodeService: ${message}`);
+      this.messageService.log(message);
     }
   
-    private logError(error: string) {
-      this.messageService.logError(`TimesheetCodeService: ${error}`);
+    private logInfo(info: string) {
+      this.messageService.logInfo(info);
     }
-
-    private clearError(){
-      this.messageService.clearError();
+  
+    private logError(error: any) {
+      let err = this.messageService.extractError(error);
+      this.messageService.logError(err);
+    }
+  
+    private clearMessage(){
+      this.messageService.clearMessage();
     }
 }

@@ -11,7 +11,8 @@ export class JobStatusComponent implements OnInit {
 
   jobStatusList: JobStatus[];
 
-  constructor(private jobStatusService: JobStatusService) { }
+  constructor(
+    private jobStatusService: JobStatusService) { }
 
   ngOnInit() {
     this.jobStatusService.getJobStatusList().subscribe(data => this.jobStatusList = data);

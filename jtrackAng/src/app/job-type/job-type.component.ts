@@ -11,7 +11,8 @@ export class JobTypeComponent implements OnInit {
 
   jobTypeList: JobType[];
 
-  constructor(private jobTypeService: JobTypeService) { }
+  constructor(
+    private jobTypeService: JobTypeService) { }
 
   ngOnInit() {
     this.jobTypeService.getJobTypeList().subscribe(data => this.jobTypeList = data);

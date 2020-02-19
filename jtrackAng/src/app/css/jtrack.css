@@ -13,22 +13,40 @@
 }
 
 .button {
-    font: bold 12px Arial, sans-serif;
-    text-decoration: none;
-    background-color: #EEEEEE;
-    color: #333333;
-    padding: 4px 8px 4px 8px;
-    border-top: 1px solid #CCCCCC;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-    border-left: 1px solid #CCCCCC;
-    width: 60px;
-    float: left;
+        font: bold 12px Arial, sans-serif;
+        text-decoration: none;
+        background-color: #EEEEEE;
+        color: #333333;
+        padding: 4px 8px 4px 8px;
+        border-top: 1px solid #CCCCCC;
+        border-right: 1px solid #333333;
+        border-bottom: 1px solid #333333;
+        border-left: 1px solid #CCCCCC;
+        width: 60px;
+        float: left;
 }
 
 .button:hover {
-    background-color: #BBBBBB;
-    cursor: grab;
+        background-color: #BBBBBB;
+        cursor: grab;
+}
+
+.button-disabled {
+        font: bold 12px Arial, sans-serif;
+        text-decoration: none;
+        /* background-color: #EEEEEE; */
+        color: #333333;
+        padding: 4px 8px 4px 8px;
+        border-top: 1px solid #CCCCCC;
+        border-right: 1px solid #333333;
+        border-bottom: 1px solid #333333;
+        border-left: 1px solid #CCCCCC;
+        width: 60px;
+        float: left;
+        pointer-events: none;
+        cursor: not-allowed;
+        background-color: #EBEBE4;
+        color: #C6C6C6;
 }
 
 /* -------------------- Report -------------------- */
