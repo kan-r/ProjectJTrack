@@ -43,6 +43,9 @@ public class User {
 	 @Column(name="USER_MOD")
      private String userMod;
 	 
+	 @Column(name="PWORD")
+     private String pword;
+	 
 	 @OneToOne(fetch=FetchType.EAGER, optional=true)
 	 @JoinColumn(name = "USER_CRT", insertable = false, updatable = false)
 	 private UserName userCrtObj;
@@ -158,10 +161,18 @@ public class User {
 		this.isAdmin = isAdmin;
 	}
 
+	public String getPword() {
+		return pword;
+	}
+
+	public void setPword(String pword) {
+		this.pword = pword;
+	}
+
 	@Override
 	public String toString() {
-		return "Users [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", active=" + active
+		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", active=" + active
 				+ ", dateCrt=" + dateCrt + ", userCrt=" + userCrt + ", dateMod=" + dateMod + ", userMod=" + userMod
-				+ "]";
+				+ ", pword=" + pword + "]";
 	}
 }

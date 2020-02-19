@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.User;
 import com.jtrack.service.UserService;
 
@@ -39,34 +40,32 @@ public class UserController {
 
 	@PostMapping("/user")
 	public ResponseEntity<Object> addUser(@RequestBody User user) {
-		if(!userService.userValid(user.getUserId())) {
-			return ResponseEntity.badRequest().body("User ID is invalid");
-		}
 		
-		if(userService.userExists(user.getUserId())) {
-			return ResponseEntity.badRequest().body("User already exists");
+		try {
+			 return ResponseEntity.ok(userService.addUser(user));
+		} catch (InvalidDataException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		
-		return ResponseEntity.ok(userService.addUser(user));
 	}
 	
 	@PutMapping("/user")
 	public ResponseEntity<Object> updateUser(@RequestBody User user) {
-		if(!userService.userExists(user.getUserId())) {
-			return ResponseEntity.badRequest().body("User does not exist");
-		}
 		
-		return ResponseEntity.ok(userService.updateUser(user));
+		try {
+			return ResponseEntity.ok(userService.updateUser(user));
+		} catch (InvalidDataException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@DeleteMapping("/user/{id}")
 	public ResponseEntity<Object> deleteUser(@PathVariable String id) {
-		if(!userService.userExists(id)) {
-			return ResponseEntity.badRequest().body("User does not exist");
+		
+		try {
+			userService.deleteUser(id);
+			return ResponseEntity.ok().build();
+		} catch (InvalidDataException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		
-		userService.deleteUser(id);
-		
-		return ResponseEntity.ok().build();
 	}
 }

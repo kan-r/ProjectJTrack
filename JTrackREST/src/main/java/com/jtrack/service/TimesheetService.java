@@ -31,10 +31,13 @@ public class TimesheetService {
 	
 	@Autowired
 	private TimesheetDao timesheetDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<Timesheet> getTimesheetList(){
 		logger.info("getTimesheetList()");
-		return timesheetDao.findAll(Sort.by("userId", "workedDate"));
+		return timesheetDao.findAll(Sort.by("userId", "jobNo", "workedDate"));
 	}
 	
 	public List<Timesheet> getTimesheetList(String userId, Date workedDateFrom, Date workedDateTo){
@@ -65,7 +68,7 @@ public class TimesheetService {
 				
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
-		}, Sort.by("userId", "workedDate"));
+		}, Sort.by("userId", "jobNo", "workedDate"));
 	}
 	
 	public Timesheet getTimesheet(String timesheetId){
@@ -111,6 +114,7 @@ public class TimesheetService {
         String timesheetId = timesheet.getUserId() + "-" + timesheet.getJobNo() + "-" + dtFmt.format(timesheet.getWorkedDate());
         
         timesheet.setTimesheetId(timesheetId);
+        timesheet.setUserCrt(userService.getCurrentUserId());
 		timesheet.setDateCrt(new Date());
 		
 		Timesheet t = timesheetDao.save(timesheet);
@@ -130,6 +134,7 @@ public class TimesheetService {
 	public Timesheet updateTimesheet(Timesheet timesheet) {
 		logger.info("updateTimesheet({})", timesheet);
 		
+		timesheet.setUserMod(userService.getCurrentUserId());
 		timesheet.setDateMod(new Date());
 		
 		Timesheet t = timesheetDao.save(timesheet);

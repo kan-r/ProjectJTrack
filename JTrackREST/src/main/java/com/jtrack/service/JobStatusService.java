@@ -22,6 +22,9 @@ public class JobStatusService {
 	
 	@Autowired
 	private JobStatusDao jobStatusDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<JobStatus> getJobStatusList(){
 		logger.info("getJobStatusList()");
@@ -45,6 +48,8 @@ public class JobStatusService {
 	
 	public JobStatus addJobStatus(JobStatus jobStatus) {
 		logger.info("addJobStatus({})", jobStatus);
+		
+		jobStatus.setUserCrt(userService.getCurrentUserId());
 		jobStatus.setDateCrt(new Date());
 		 
 	    return jobStatusDao.save(jobStatus);
@@ -57,6 +62,8 @@ public class JobStatusService {
 	
 	public JobStatus updateJobStatus(JobStatus jobStatus) {
 		logger.info("updateJobStatus({})", jobStatus);
+		
+		jobStatus.setUserMod(userService.getCurrentUserId());
 		jobStatus.setDateMod(new Date());
 		
 		return jobStatusDao.save(jobStatus);

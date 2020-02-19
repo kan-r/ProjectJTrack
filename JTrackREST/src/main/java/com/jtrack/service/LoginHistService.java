@@ -22,6 +22,9 @@ public class LoginHistService {
 	
 	@Autowired
 	private LoginHistDao LoginHistDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<LoginHist> getLoginHistList(){
 		logger.info("getLoginHistList()");
@@ -31,6 +34,10 @@ public class LoginHistService {
 	
 	public LoginHist addLoginHist(LoginHist loginHist) {
 		logger.info("addLoginHist({})", loginHist);
+		
+		if(loginHist.getUserId() == null || loginHist.getUserId().trim().isEmpty()) {
+			loginHist.setUserId(userService.getCurrentUserId());
+		}
 		
 		loginHist.setDateCrt(new Date());
 		

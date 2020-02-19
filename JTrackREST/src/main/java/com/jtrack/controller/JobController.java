@@ -51,7 +51,7 @@ public class JobController {
 	@PostMapping("/job")
 	public ResponseEntity<Object> addJob(@RequestBody Job job) {
 		if(jobService.jobExists(job.getJobNo())) {
-			return ResponseEntity.badRequest().body("JobType already exists");
+			return ResponseEntity.badRequest().body("Job already exists");
 		}
 		
 		return ResponseEntity.ok(jobService.addJob(job));

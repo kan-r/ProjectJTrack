@@ -22,6 +22,9 @@ public class JobResolutionService {
 	
 	@Autowired
 	private JobResolutionDao jobResolutionDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<JobResolution> getJobResolutionList(){
 		logger.info("getJobResolutionList()");
@@ -45,6 +48,8 @@ public class JobResolutionService {
 	
 	public JobResolution addJobResolution(JobResolution jobResolution) {
 		logger.info("addJobResolution({})", jobResolution);
+		
+		jobResolution.setUserCrt(userService.getCurrentUserId());
 		jobResolution.setDateCrt(new Date());
 		 
 	    return jobResolutionDao.save(jobResolution);
@@ -57,6 +62,8 @@ public class JobResolutionService {
 	
 	public JobResolution updateJobResolution(JobResolution jobResolution) {
 		logger.info("updateJobResolution({})", jobResolution);
+		
+		jobResolution.setUserMod(userService.getCurrentUserId());
 		jobResolution.setDateMod(new Date());
 		
 		return jobResolutionDao.save(jobResolution);

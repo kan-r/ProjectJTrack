@@ -22,6 +22,9 @@ public class JobPriorityService {
 	
 	@Autowired
 	private JobPriorityDao jobPriorityDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<JobPriority> getJobPriorityList(){
 		logger.info("getJobPriorityList()");
@@ -45,6 +48,8 @@ public class JobPriorityService {
 	
 	public JobPriority addJobPriority(JobPriority jobPriority) {
 		logger.info("addJobPriority({})", jobPriority);
+		
+		jobPriority.setUserCrt(userService.getCurrentUserId());
 		jobPriority.setDateCrt(new Date());
 		 
 	    return jobPriorityDao.save(jobPriority);
@@ -57,6 +62,8 @@ public class JobPriorityService {
 	
 	public JobPriority updateJobPriority(JobPriority jobPriority) {
 		logger.info("updateJobPriority({})", jobPriority);
+		
+		jobPriority.setUserMod(userService.getCurrentUserId());
 		jobPriority.setDateMod(new Date());
 		
 		return jobPriorityDao.save(jobPriority);

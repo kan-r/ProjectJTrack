@@ -32,6 +32,9 @@ public class JobService {
 	@Autowired
 	private JobDao jobDao;
 	
+	@Autowired
+	private UserService userService;
+	
 	@PersistenceContext
 	EntityManager entityManager;
 
@@ -164,6 +167,7 @@ public class JobService {
 	public Job addJob(Job job) {
 		logger.info("addJob({})", job);
 		
+		job.setUserCrt(userService.getCurrentUserId());
 		job.setDateCrt(new Date());
 		 
 		Job j = jobDao.save(job);
@@ -183,6 +187,7 @@ public class JobService {
 	public Job updateJob(Job job) {
 		logger.info("updateJob({})", job);
 		
+		job.setUserMod(userService.getCurrentUserId());
 		job.setDateMod(new Date());
 		
 		Job j = jobDao.save(job);

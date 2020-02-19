@@ -22,6 +22,9 @@ public class JobTypeService {
 	
 	@Autowired
 	private JobTypeDao jobTypeDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<JobType> getJobTypeList(){
 		logger.info("getJobTypeList()");
@@ -45,6 +48,8 @@ public class JobTypeService {
 	
 	public JobType addJobType(JobType jobType) {
 		logger.info("addJobType({})", jobType);
+		
+		jobType.setUserCrt(userService.getCurrentUserId());
 		jobType.setDateCrt(new Date());
 		 
 	    return jobTypeDao.save(jobType);
@@ -57,6 +62,8 @@ public class JobTypeService {
 	
 	public JobType updateJobType(JobType jobType) {
 		logger.info("updateJobType({})", jobType);
+		
+		jobType.setUserMod(userService.getCurrentUserId());
 		jobType.setDateMod(new Date());
 		
 		return jobTypeDao.save(jobType);

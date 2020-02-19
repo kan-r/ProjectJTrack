@@ -22,6 +22,9 @@ public class TimesheetCodeService {
 	
 	@Autowired
 	private TimesheetCodeDao timesheetCodeDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<TimesheetCode> getTimesheetCodeList(){
 		logger.info("getTimesheetCodeList()");
@@ -45,6 +48,8 @@ public class TimesheetCodeService {
 	
 	public TimesheetCode addTimesheetCode(TimesheetCode timesheetCode) {
 		logger.info("addTimesheetCode({})", timesheetCode);
+		
+		timesheetCode.setUserCrt(userService.getCurrentUserId());
 		timesheetCode.setDateCrt(new Date());
 		 
 	    return timesheetCodeDao.save(timesheetCode);
@@ -57,6 +62,8 @@ public class TimesheetCodeService {
 	
 	public TimesheetCode updateTimesheetCode(TimesheetCode timesheetCode) {
 		logger.info("updateTimesheetCode({})", timesheetCode);
+		
+		timesheetCode.setUserMod(userService.getCurrentUserId());
 		timesheetCode.setDateMod(new Date());
 		
 		return timesheetCodeDao.save(timesheetCode);

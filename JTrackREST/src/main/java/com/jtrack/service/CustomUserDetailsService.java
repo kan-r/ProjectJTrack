@@ -39,15 +39,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         boolean accountNonLocked = true;
                 
         com.jtrack.model.User user = userService.getUser(userId.toUpperCase());
-
+        
+        String pword = "";
+        if(user != null) {
+        	pword = user.getPword();
+        }
+        
         return new org.springframework.security.core.userdetails.User(
         				userId, 
-        				passwordEncoder.encode(userId), 
+        				passwordEncoder.encode(pword), 
                         enabled, 
                         accountNonExpired, 
                         credentialsNonExpired, 
                         accountNonLocked,
-                        getAuthorities(user.getUserId()));
+                        getAuthorities(userId));
     }
     
     public Collection<? extends GrantedAuthority> getAuthorities(String userId) {

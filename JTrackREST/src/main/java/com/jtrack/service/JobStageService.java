@@ -22,6 +22,9 @@ public class JobStageService {
 	
 	@Autowired
 	private JobStageDao jobStageDao;
+	
+	@Autowired
+	private UserService userService;
 
 	public List<JobStage> getJobStageList(){
 		logger.info("getJobStageList()");
@@ -45,6 +48,8 @@ public class JobStageService {
 	
 	public JobStage addJobStage(JobStage jobStage) {
 		logger.info("addJobStage({})", jobStage);
+		
+		jobStage.setUserCrt(userService.getCurrentUserId());
 		jobStage.setDateCrt(new Date());
 		 
 	    return jobStageDao.save(jobStage);
@@ -57,6 +62,8 @@ public class JobStageService {
 	
 	public JobStage updateJobStage(JobStage jobStage) {
 		logger.info("updateJobStage({})", jobStage);
+		
+		jobStage.setUserMod(userService.getCurrentUserId());
 		jobStage.setDateMod(new Date());
 		
 		return jobStageDao.save(jobStage);
