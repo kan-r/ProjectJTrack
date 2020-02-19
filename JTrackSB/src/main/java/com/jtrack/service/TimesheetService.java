@@ -15,12 +15,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.TimesheetDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.Timesheet;
+import com.jtrack.model.TimesheetSO;
 
 @Service
 @Transactional
@@ -30,18 +33,34 @@ public class TimesheetService {
 	
 	@Autowired
 	private TimesheetDao timesheetDao;
+	
+	@Autowired
+	private UserService userService;
 
-	public List<Timesheet> getTimesheetAll(){
-		logger.info("getTimesheetAll()");
-		return timesheetDao.findAll();
+	public List<Timesheet> getTimesheetList(){
+		logger.info("getTimesheetList()");
+		return timesheetDao.findAll(Sort.by("userId", "jobNo", "workedDate"));
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Timesheet> getTimesheetAll(String userId, Date workedDateFrom, Date workedDateTo){
+	public List<Timesheet> getTimesheetList(TimesheetSO timesheetSO){
+		logger.info("getTimesheetList({})", timesheetSO);
+		return getTimesheetList(
+				timesheetSO.getUserId(), 
+				timesheetSO.getWorkedDateFrom(), 
+				timesheetSO.getWorkedDateTo()
+				);
+	}
+	
+	public List<Timesheet> getTimesheetList(String userId, Date workedDateFrom, Date workedDateTo){
 		
-		logger.info("getTimesheetAll({}, {}, {})", userId, workedDateFrom, workedDateTo);
+		logger.info("getTimesheetList({}, {}, {})", userId, workedDateFrom, workedDateTo);
 		
 		return timesheetDao.findAll(new Specification<Timesheet>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public Predicate toPredicate(Root<Timesheet> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -60,7 +79,7 @@ public class TimesheetService {
 				
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
-		});
+		}, Sort.by("userId", "jobNo", "workedDate"));
 	}
 	
 	public Timesheet getTimesheet(String timesheetId){
@@ -70,12 +89,12 @@ public class TimesheetService {
 			return timesheet.get();
 		}
 		
-		return new Timesheet();
+		return null;
 	}
 	
 	public Timesheet getTimesheet(String userId, long jobNo, Date workedDate) {
 		logger.info("getTimesheet({}, {}, {})", userId, jobNo, workedDate);
-		
+	
 		Timesheet filterBy = new Timesheet();
 		filterBy.setUserId(userId);
 		filterBy.setJobNo(jobNo);
@@ -86,38 +105,115 @@ public class TimesheetService {
 			return timesheet.get();
 		}
 		
-		return new Timesheet();
+		return null;
 	}
 	
-	public Timesheet addTimesheet(Timesheet timesheet) {
+	public boolean timesheetExists(String timesheetId) {
+		Timesheet timesheetExisting = getTimesheet(timesheetId);
+		return (timesheetExisting != null);
+	}
+	
+	public boolean timesheetExists(String userId, long jobNo, Date workedDate) {
+		Timesheet timesheetExisting = getTimesheet(userId, jobNo, workedDate);
+		return (timesheetExisting != null);
+	}
+	
+	public Timesheet addTimesheet(Timesheet timesheet) throws InvalidDataException {
 		logger.info("addTimesheet({})", timesheet);
+		
+		List<String> fieldMissing = new ArrayList<>();
+		
+		if(timesheet.getUserId() == null || timesheet.getUserId().isEmpty()) {
+			fieldMissing.add("User");
+		}
+		
+		if(timesheet.getJobNo() == null) {
+			fieldMissing.add("Job");
+		}
+		
+		if(timesheet.getWorkedDate() == null) {
+			fieldMissing.add("Workdate");
+		}
+		
+		String error = "";
+		int size = fieldMissing.size();
+		for (int i = 0; i < size; i++) {
+			
+			if(!error.isEmpty()) {
+				if(i == (size-1)) {
+					error += " and ";
+				}else {
+					error += ", ";
+				}
+			}
+			
+			error += fieldMissing.get(i);
+			
+			if(i == (size-1)) {
+				if(i == 0) {
+					error += " is";
+				}else {
+					error += " are";
+				}
+				
+				error += " required";
+			}
+		}
+		
+		if(!error.isEmpty()) {
+			throw new InvalidDataException(error);
+		}
+		
+		if(timesheetExists(timesheet.getUserId(), timesheet.getJobNo(), timesheet.getWorkedDate())) {
+			throw new InvalidDataException("Timesheet already exists");
+		}
 
 		SimpleDateFormat dtFmt = new SimpleDateFormat("yyyyMMdd");
         String timesheetId = timesheet.getUserId() + "-" + timesheet.getJobNo() + "-" + dtFmt.format(timesheet.getWorkedDate());
         
         timesheet.setTimesheetId(timesheetId);
 		timesheet.setDateCrt(new Date());
-		timesheet.setUserCrt(UserService.currentUser.getUserId());
-		 
-	    return timesheetDao.save(timesheet);
+		timesheet.setUserCrt(userService.getCurrentUserId());
+		
+		Timesheet t = timesheetDao.save(timesheet);
+		refreshJob(timesheet.getJobNo());
+		return t;
 	}
 	
 	public void deleteTimesheet(String timesheetId) {
 		logger.info("deleteTimesheet({})", timesheetId);
+		
+		long jobNo = getTimesheet(timesheetId).getJobNo();
+		
 		timesheetDao.deleteById(timesheetId);
-	}
-	
-	public void deleteTimesheet(Timesheet timesheet) {
-		logger.info("deleteUser({})", timesheet);
-		timesheetDao.delete(timesheet);
+		refreshJob(jobNo);
 	}
 	
 	public Timesheet updateTimesheet(Timesheet timesheet) {
 		logger.info("updateTimesheet({})", timesheet);
-		timesheet.setDateMod(new Date());
-		timesheet.setUserMod(UserService.currentUser.getUserId());
 		
-		return timesheetDao.save(timesheet);
+		Timesheet timesheeteOld = getTimesheet(timesheet.getTimesheetId());
+		
+		timesheet.setDateCrt(timesheeteOld.getDateCrt());
+		timesheet.setUserCrt(timesheeteOld.getUserCrt());
+		
+		timesheet.setDateMod(new Date());
+		timesheet.setUserMod(userService.getCurrentUserId());
+		
+		Timesheet t = timesheetDao.save(timesheet);
+		refreshJob(timesheet.getJobNo());
+		return t;
+	}
+	
+	private void refreshJob(long jobNo) {
+		try {
+			timesheetDao.refreshCompletedHrsInJob(jobNo);
+			timesheetDao.refreshCompletedHrsInParentJob(jobNo);
+			timesheetDao.refreshStatusInJob(jobNo);
+			timesheetDao.refreshStatusInParentJob(jobNo);
+		}catch(Exception e) {
+			
+		}
 	}
 
 }

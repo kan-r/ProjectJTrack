@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -42,14 +42,20 @@
             </ul>
         </div>
         
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
+        
         <form:form method="POST" action="timesheetEdit?id=${timesheetId}">
             <div class="button-region-2">
                 <a href="<c:url value="timesheet" />" class="button">Cancel</a>
                 <input type="submit" value="Save" class="button" />
             </div>
 
-            <div class="report-region">
-                <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
+            <div class="form-region">
+                <table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
                     <tr>
                         <th><div>Edit Timesheet</div></th>
                     </tr>
@@ -64,28 +70,18 @@
                                 </tr>
                                 <tr>
                                     <td nowrap="nowrap" align="right">
-                                        <label>User</label>
+                                        <label>User ID</label>
                                     </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:select path="userId" id="userId">
-                                            <form:option value=""></form:option>
-                                            <c:forEach items="${userList}" var="user">
-                                                <form:option value="${user.userId}">${user.firstName} ${user.lastName}</form:option>
-                                            </c:forEach>
-                                        </form:select>
+                                    <td>
+                                    	<form:input path="userId" readonly="true" class="read-only" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td nowrap="nowrap" align="right">
-                                        <label>Job</label>
+                                        <label>Job No</label>
                                     </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:select path="jobNo" id="jobNo">
-                                            <form:option value=""></form:option>
-                                            <c:forEach items="${jobList}" var="job">
-                                                <form:option value="${job.jobNo}">${job.jobName} - ${job.jobNo}</form:option>
-                                            </c:forEach>
-                                        </form:select>
+                                    <td>
+                                    	<form:input path="jobNo" readonly="true" class="read-only" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -93,7 +89,7 @@
                                         <label>Worked Date</label>
                                     </td>
                                     <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:input path="workedDate" class="date-field" />
+                                        <form:input path="workedDate" class="read-only" readonly="true" />
                                     </td>
                                 </tr>
                                 <tr>

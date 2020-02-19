@@ -7,10 +7,12 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobStatusDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStatus;
 
 @Service
@@ -21,10 +23,13 @@ public class JobStatusService {
 	
 	@Autowired
 	private JobStatusDao jobStatusDao;
+	
+	@Autowired
+	private UserService userService;
 
-	public List<JobStatus> getJobStatusAll(){
-		logger.info("getJobStatusAll()");
-		return jobStatusDao.findAll();
+	public List<JobStatus> getJobStatusList(){
+		logger.info("getJobStatusList()");
+		return jobStatusDao.findAll(Sort.by("jobStatus"));
 	}
 	
 	public JobStatus getJobStatus(String jobStatusId){
@@ -34,13 +39,22 @@ public class JobStatusService {
 			return jobStatus.get();
 		}
 		
-		return new JobStatus();
+		return null;
 	}
 	
-	public JobStatus addJobStatus(JobStatus jobStatus) {
+	public JobStatus addJobStatus(JobStatus jobStatus) throws InvalidDataException {
 		logger.info("addJobStatus({})", jobStatus);
+		
+		if(jobStatus.getJobStatus() == null || jobStatus.getJobStatus().isEmpty()) {
+			throw new InvalidDataException("Job Status is required");
+		}
+		
+		if(getJobStatus(jobStatus.getJobStatus()) != null) {
+			throw new InvalidDataException("Job Status already exists");
+		}
+		
 		jobStatus.setDateCrt(new Date());
-		jobStatus.setUserCrt(UserService.currentUser.getUserId());
+		jobStatus.setUserCrt(userService.getCurrentUserId());
 		 
 	    return jobStatusDao.save(jobStatus);
 	}
@@ -57,8 +71,14 @@ public class JobStatusService {
 	
 	public JobStatus updateJobStatus(JobStatus jobStatus) {
 		logger.info("updateJobStatus({})", jobStatus);
+		
+		JobStatus jobStatusOld = getJobStatus(jobStatus.getJobStatus());
+		
+		jobStatus.setDateCrt(jobStatusOld.getDateCrt());
+		jobStatus.setUserCrt(jobStatusOld.getUserCrt());
+		
 		jobStatus.setDateMod(new Date());
-		jobStatus.setUserMod(UserService.currentUser.getUserId());
+		jobStatus.setUserMod(userService.getCurrentUserId());
 		
 		return jobStatusDao.save(jobStatus);
 	}

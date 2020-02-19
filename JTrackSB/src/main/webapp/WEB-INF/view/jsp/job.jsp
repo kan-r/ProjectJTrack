@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -42,68 +42,126 @@
             </ul>
         </div>
         
-        <form:form method="POST" action="job">
-                <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
-                    <tr>
-                        <td>
-                            <table border="0" summary="">
-                                <tr>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>Job Name</label>
-                                    </td>
-                                    <td  colspan="3" rowspan="1" align="left" valign="middle">
-                                        <form:input path="jobName" size="52" />
-                                    </td>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>Job Type</label>
-                                    </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:select path="jobType" id="jobType">
-                                            <form:option value=""></form:option>
-                                            <c:forEach items="${jobTypeList}" var="jobType">
-                                                <form:option value="${jobType.jobType}">${jobType.jobType}</form:option>
-                                            </c:forEach>
-                                        </form:select>
-                                    </td>
-                                    <td>
-                                        <input type="submit" value="Go" class="button" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>Job Status</label>
-                                    </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:select path="jobStatus" id="jobStatus">
-                                            <form:option value=""></form:option>
-                                            <c:forEach items="${jobStatusList}" var="jobStatus">
-                                                <form:option value="${jobStatus.jobStatus}">${jobStatus.jobStatus}</form:option>
-                                            </c:forEach>
-                                        </form:select>
-                                    </td>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>Assigned To</label>
-                                    </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:select path="assignedTo" id="assignedTo">
-                                            <form:option value=""></form:option>
-                                            <c:forEach items="${assignedToList}" var="assignedTo">
-                                                <form:option value="${assignedTo.userId}">${assignedTo.firstName} ${assignedTo.lastName}</form:option>
-                                            </c:forEach>
-                                        </form:select>
-                                    </td>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>Include Child Jobs</label>
-                                    </td>
-                                    <td>
-                                        <form:checkbox path="includeChildJobs" />
-                                    </td>
-                                </tr>
-                            </table> 
-                        </td>
-                    </tr>
-                </table>
-        </form:form> 
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
+        
+        <div class="form-region">
+	        <form:form method="POST" action="job">
+	                <table cellpadding="0" border="1" cellspacing="0" summary="" class="form-standard">
+	                    <tr>
+	                        <td>
+	                            <table border="0" summary="">
+	                                <tr>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Job Name</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:input path="jobName" />
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Job Type</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="jobType" id="jobType">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${jobTypeList}" var="jobType">
+	                                                <form:option value="${jobType.jobType}">${jobType.jobType}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Include Child Jobs</label>
+	                                    </td>
+	                                    <td>
+	                                        <form:checkbox path="includeChildJobs" />
+	                                    </td>
+			                            <td nowrap="nowrap" align="right">
+			                                <label>==></label>
+			                            </td>
+	                                </tr>
+	                                <tr>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Job Status</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="jobStatus" id="jobStatus">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${jobStatusList}" var="jobStatus">
+	                                                <form:option value="${jobStatus.jobStatus}">${jobStatus.jobStatus}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Assigned To</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="assignedTo" id="assignedTo">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${assignedToList}" var="assignedTo">
+	                                                <form:option value="${assignedTo.userId}">${assignedTo.firstName} ${assignedTo.lastName}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                    <td>
+	                                        <input type="submit" value="Go" class="button" />
+	                                    </td>
+	                                </tr>
+	                            </table> 
+	                        </td>
+	                        <td>
+	                            <table border="0" summary="">
+	                                <tr>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Job Name</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:input path="jobNameChild" />
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Job Type</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="jobTypeChild" id="jobTypeChild">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${jobTypeList}" var="jobType">
+	                                                <form:option value="${jobType.jobType}">${jobType.jobType}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                </tr>
+	                                <tr>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Job Status</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="jobStatusChild" id="jobStatusChild">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${jobStatusList}" var="jobStatus">
+	                                                <form:option value="${jobStatus.jobStatus}">${jobStatus.jobStatus}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Assigned To</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="assignedToChild" id="assignedToChild">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${assignedToList}" var="assignedTo">
+	                                                <form:option value="${assignedTo.userId}">${assignedTo.firstName} ${assignedTo.lastName}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                </tr>
+	                            </table> 
+	                        </td>
+	                    </tr>
+	                </table>
+	        </form:form> 
+        </div>
         
         <div class="button-region">
             <a href="<c:url value="jobCreate" />" class="button">Create</a>
@@ -154,16 +212,23 @@
                         <td><fmt:formatDate type="date" value="${job.actualEndDate}"/></td>
                         <td><c:out value="${job.estimatedHrs}"/></td>
                         <td><c:out value="${job.completedHrs}"/></td>
-                        <td><c:out value="${job.active}"/></td>
+                        <c:if test="${job.active}">
+                        	<td align="center"><input type="checkbox" checked disabled /></td>
+                        </c:if>
+                        <c:if test="${!job.active}">
+                        	<td align="center"><input type="checkbox" disabled /></td>
+                        </c:if>
                     </tr>
                 </c:forEach>
             </table>
+            <!--  
             <c:if test="${pageNumber gt 1}">
                 <a href="jobPage?pageNumber=${pageNumber - 1}">Previous</a>
             </c:if>
             <c:if test="${pageNumber lt numberOfPages}">
                 <a href="jobPage?pageNumber=${pageNumber + 1}">Next</a>
             </c:if>
+            -->
         </div>
     </body>
 </html>

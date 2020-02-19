@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.TimesheetCode;
 import com.jtrack.model.User;
 import com.jtrack.service.TimesheetCodeService;
@@ -20,20 +21,31 @@ public class TimesheetCodeController {
 
 	@Resource
     private TimesheetCodeService timesheetCodeService;
+	
+	@Resource
+	private UserService userService;
     
     @GetMapping("/timesheetCode")
     public ModelAndView timesheetCode(){
-        return new ModelAndView("timesheetCode", "timesheetCodeList", timesheetCodeService.getTimesheetCodeAll());
+        return new ModelAndView("timesheetCode", "timesheetCodeList", timesheetCodeService.getTimesheetCodeList());
     }
     
     @GetMapping("/timesheetCodeCreate")
-    public ModelAndView timesheetCodeCreate(Model model){
-        return new ModelAndView("timesheetCodeCreate", "command", new TimesheetCode());
+    public ModelAndView timesheetCodeCreate(Model model, String error){
+    	ModelAndView modelAndView = new ModelAndView("timesheetCodeCreate", "command", new TimesheetCode());
+    	modelAndView.addObject("error", error);
+        return modelAndView;
     }
     
     @PostMapping("/timesheetCodeCreate")
     public String timesheetCodeAdd(@ModelAttribute("timesheetCodeCreate") TimesheetCode timesheetCode){
-        timesheetCodeService.addTimesheetCode(timesheetCode);
+    	
+        try {
+			timesheetCodeService.addTimesheetCode(timesheetCode);
+		} catch (InvalidDataException e) {
+			return "redirect:timesheetCodeCreate?error=" + e.getMessage();
+		}
+        
         return "redirect:timesheetCode";
     }
     
@@ -56,6 +68,6 @@ public class TimesheetCodeController {
     
     @ModelAttribute("currentUser")
     public User currentUser(){
-        return UserService.currentUser;
+        return userService.getCurrentUser();
     }
 }

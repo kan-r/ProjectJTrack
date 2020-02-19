@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStatus;
 import com.jtrack.model.User;
 import com.jtrack.service.JobStatusService;
@@ -20,20 +21,31 @@ public class JobStatusController {
 	
 	@Resource
     private JobStatusService jobStatusService;
+	
+	@Resource
+	private UserService userService;
     
     @GetMapping("/jobStatus")
     public ModelAndView jobStatus(){
-        return new ModelAndView("jobStatus", "jobStatusList", jobStatusService.getJobStatusAll());
+        return new ModelAndView("jobStatus", "jobStatusList", jobStatusService.getJobStatusList());
     }
     
     @GetMapping("/jobStatusCreate")
-    public ModelAndView jobStatusCreate(Model model){
-        return new ModelAndView("jobStatusCreate", "command", new JobStatus());
+    public ModelAndView jobStatusCreate(Model model, String error){
+    	ModelAndView modelAndView = new ModelAndView("jobStatusCreate", "command", new JobStatus());
+    	modelAndView.addObject("error", error);
+        return modelAndView;
     }
     
     @PostMapping("/jobStatusCreate")
     public String jobStatusAdd(@ModelAttribute("jobStatusCreate") JobStatus jobStatus){
-        jobStatusService.addJobStatus(jobStatus);
+    	
+        try {
+			jobStatusService.addJobStatus(jobStatus);
+		} catch (InvalidDataException e) {
+			return "redirect:jobStatusCreate?error=" + e.getMessage();
+		}
+        
         return "redirect:jobStatus";
     }
     
@@ -56,7 +68,7 @@ public class JobStatusController {
     
     @ModelAttribute("currentUser")
     public User currentUser(){
-        return UserService.currentUser;
+        return userService.getCurrentUser();
     }
 
 }

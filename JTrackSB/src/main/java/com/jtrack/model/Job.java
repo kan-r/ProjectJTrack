@@ -1,6 +1,7 @@
 package com.jtrack.model;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +14,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 
 @Entity
@@ -62,19 +62,19 @@ public class Job {
     @Column(name="COMPLETED_HRS")
     private Double completedHrs;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ESTIMATED_START_DATE")
     private Date estimatedStartDate;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ACTUAL_START_DATE")
     private Date actualStartDate;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ESTIMATED_END_DATE")
     private Date estimatedEndDate;
     
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="ACTUAL_END_DATE")
     private Date actualEndDate;
     
@@ -101,59 +101,21 @@ public class Job {
     @Column(name="JOB_REF")
     private String jobRef;
     
-    @Transient
     @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "PARENT_JOB_NO", referencedColumnName = "JOB_NO")
+    @JoinColumn(name = "PARENT_JOB_NO", insertable = false, updatable = false)
     private Job parentJobObj;
     
-    @Transient
     @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "ASSIGNED_TO", referencedColumnName = "USER_ID")
+    @JoinColumn(name = "ASSIGNED_TO", insertable = false, updatable = false)
     private User assignedToObj;
     
-    @Transient
     @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "USER_CRT", referencedColumnName = "USER_ID")
+	@JoinColumn(name = "USER_CRT", insertable = false, updatable = false)
     private User userCrtObj;
-    
-    @Transient
-    @ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "USER_MOD", referencedColumnName = "USER_ID")
-    private User userModObj;
-    
-    public Job() {
-    }
 	
-    public Job(Long jobNo) {
-        this.jobNo = jobNo;
-    }
-   
-    public Job(Long jobNo, String jobName, String jobDesc, String jobType, String jobPriority, String jobStatus, String jobResolution, String jobStage, Integer jobOrder, String assignedTo, String timesheetCode, Double estimatedHrs, Double completedHrs, Date estimatedStartDate, Date actualStartDate, Date estimatedEndDate, Date actualEndDate, Long parentJobNo, Boolean active, Date dateCrt, String userCrt, Date dateMod, String userMod, String jobRef) {
-       this.jobNo = jobNo;
-       this.jobName = jobName;
-       this.jobDesc = jobDesc;
-       this.jobType = jobType;
-       this.jobPriority = jobPriority;
-       this.jobStatus = jobStatus;
-       this.jobResolution = jobResolution;
-       this.jobStage = jobStage;
-       this.jobOrder = jobOrder;
-       this.assignedTo = assignedTo;
-       this.timesheetCode = timesheetCode;
-       this.estimatedHrs = estimatedHrs;
-       this.completedHrs = completedHrs;
-       this.estimatedStartDate = estimatedStartDate;
-       this.actualStartDate = actualStartDate;
-       this.estimatedEndDate = estimatedEndDate;
-       this.actualEndDate = actualEndDate;
-       this.parentJobNo = parentJobNo;
-       this.active = active;
-       this.dateCrt = dateCrt;
-       this.userCrt = userCrt;
-       this.dateMod = dateMod;
-       this.userMod = userMod;
-       this.jobRef = jobRef;
-    }
+	@ManyToOne(fetch=FetchType.EAGER, optional=true)
+	@JoinColumn(name = "USER_MOD", insertable = false, updatable = false)
+    private User userModObj;
     
 	public Long getJobNo() {
 		return jobNo;
@@ -335,6 +297,4 @@ public class Job {
 				+ parentJobNo + ", active=" + active + ", dateCrt=" + dateCrt + ", userCrt=" + userCrt + ", dateMod="
 				+ dateMod + ", userMod=" + userMod + ", jobRef=" + jobRef + "]";
 	}
-	
-	
 }

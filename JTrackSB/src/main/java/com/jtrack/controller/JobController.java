@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.Job;
 import com.jtrack.model.JobPriority;
 import com.jtrack.model.JobResolution;
-import com.jtrack.model.JobSearchObj;
+import com.jtrack.model.JobSO;
 import com.jtrack.model.JobStage;
 import com.jtrack.model.JobStatus;
 import com.jtrack.model.JobType;
@@ -37,8 +38,6 @@ import com.jtrack.service.UserService;
 
 @Controller
 public class JobController {
-
-	private static int numberOfPages;
     
     @Resource
     private JobService jobService;
@@ -65,45 +64,41 @@ public class JobController {
     private TimesheetCodeService timesheetCodeService;
     
     @GetMapping("/job")
-    public ModelAndView job(){
+    public ModelAndView job(String error){
         
-        ModelAndView modelAndView = new ModelAndView("job", "command", new JobSearchObj());
-        modelAndView.addObject("jobList", jobService.getJobPage(0));
-        numberOfPages = jobService.getNumberOfPages();
-        modelAndView.addObject("pageNumber", 1);
-        modelAndView.addObject("numberOfPages", numberOfPages);
-        return modelAndView;
-    }
-    
-    @GetMapping("/jobPage")
-    public ModelAndView jobPage(@ModelAttribute("job") JobSearchObj jobSO, @RequestParam(value="pageNumber", required=true) int pageNumber, Model model){
-        
+    	JobSO jobSO = new JobSO();
+    	
         ModelAndView modelAndView = new ModelAndView("job", "command", jobSO);
-        modelAndView.addObject("jobList", jobService.getJobPage(jobSO, pageNumber-1));
-        numberOfPages = jobService.getNumberOfPages();
-        modelAndView.addObject("pageNumber", pageNumber);
-        modelAndView.addObject("numberOfPages", numberOfPages);
+        
+        modelAndView.addObject("jobList", jobService.getJobList(jobSO));
+        modelAndView.addObject("error", error);
+        
         return modelAndView;
     }
     
     @PostMapping("/job")
-    public ModelAndView job(@ModelAttribute("job") JobSearchObj jobSO){
+    public ModelAndView job(@ModelAttribute("job") JobSO jobSO){
         ModelAndView modelAndView = new ModelAndView("job", "command", jobSO);
-        modelAndView.addObject("jobList", jobService.getJobPage(jobSO, 0));
-        numberOfPages = jobService.getNumberOfPages();
-        modelAndView.addObject("pageNumber", 1);
-        modelAndView.addObject("numberOfPages", numberOfPages);
+        modelAndView.addObject("jobList", jobService.getJobList(jobSO));
         return modelAndView;
     }
     
     @GetMapping("/jobCreate")
-    public ModelAndView jobCreate(Model model){
-        return new ModelAndView("jobCreate", "command", new Job());
+    public ModelAndView jobCreate(Model model, String error){
+    	ModelAndView modelAndView = new ModelAndView("jobCreate", "command", new Job());
+    	modelAndView.addObject("error", error);
+        return modelAndView;
     }
     
     @PostMapping("/jobCreate")
     public String jobAdd(@ModelAttribute("jobCreate") Job job){
-        jobService.addJob(job);
+    	
+        try {
+			jobService.addJob(job);
+		} catch (InvalidDataException e) {
+			return "redirect:jobCreate?error=" + e.getMessage();
+		}
+        
         return "redirect:job";
     }
     
@@ -120,53 +115,59 @@ public class JobController {
     
     @GetMapping("/jobDelete")
     public String jobDelete(@RequestParam(value="id", required=true) long jobNo, Model model){
-        jobService.deleteJob(jobNo);
+    	
+        try {
+			jobService.deleteJob(jobNo);
+		} catch (InvalidDataException e) {
+			return "redirect:job?error=" + e.getMessage();
+		}
+        
         return "redirect:job";
     }
     
     @ModelAttribute("jobTypeList")
     public List<JobType> jobTypeList(){
-        return jobTypeService.getJobTypeAll();
+        return jobTypeService.getJobTypeList();
     }
     
     @ModelAttribute("jobStageList")
     public List<JobStage> jobStageList(){
-        return jobStageService.getJobStageAll();
+        return jobStageService.getJobStageList();
     }
     
     @ModelAttribute("jobPriorityList")
     public List<JobPriority> jobPriorityList(){
-        return jobPriorityService.getJobPriorityAll();
+        return jobPriorityService.getJobPriorityList();
     }
     
     @ModelAttribute("jobStatusList")
     public List<JobStatus> jobStatusList(){
-        return jobStatusService.getJobStatusAll();
+        return jobStatusService.getJobStatusList();
     }
     
     @ModelAttribute("jobResolutionList")
     public List<JobResolution> jobResolutionList(){
-        return jobResolutionService.getJobResolutionAll();
+        return jobResolutionService.getJobResolutionList();
     }
     
     @ModelAttribute("assignedToList")
     public List<User> assignedToList(){
-        return userService.getUserAll();
+        return userService.getUserList();
     }
     
     @ModelAttribute("timesheetCodeList")
     public List<TimesheetCode> timesheetCodeList(){
-        return timesheetCodeService.getTimesheetCodeAll();
+        return timesheetCodeService.getTimesheetCodeList();
     }
     
     @ModelAttribute("projectList")
     public List<Job> projectList(){
-        return jobService.getJob("Project");
+        return jobService.getJobList("Project");
     }
     
     @ModelAttribute("currentUser")
     public User currentUser(){
-        return UserService.currentUser;
+        return userService.getCurrentUser();
     }
     
     @InitBinder

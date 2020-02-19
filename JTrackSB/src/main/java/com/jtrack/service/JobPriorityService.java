@@ -7,10 +7,12 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobPriorityDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobPriority;
 
 @Service
@@ -21,10 +23,13 @@ public class JobPriorityService {
 	
 	@Autowired
 	private JobPriorityDao jobPriorityDao;
+	
+	@Autowired
+	private UserService userService;
 
-	public List<JobPriority> getJobPriorityAll(){
-		logger.info("getJobPriorityAll()");
-		return jobPriorityDao.findAll();
+	public List<JobPriority> getJobPriorityList(){
+		logger.info("getJobPriorityList()");
+		return jobPriorityDao.findAll(Sort.by("jobPriority"));
 	}
 	
 	public JobPriority getJobPriority(String jobPriorityId){
@@ -34,13 +39,22 @@ public class JobPriorityService {
 			return jobPriority.get();
 		}
 		
-		return new JobPriority();
+		return null;
 	}
 	
-	public JobPriority addJobPriority(JobPriority jobPriority) {
+	public JobPriority addJobPriority(JobPriority jobPriority) throws InvalidDataException {
 		logger.info("addJobPriority({})", jobPriority);
+		
+		if(jobPriority.getJobPriority() == null || jobPriority.getJobPriority().isEmpty()) {
+			throw new InvalidDataException("Job Priority is required");
+		}
+		
+		if(getJobPriority(jobPriority.getJobPriority()) != null) {
+			throw new InvalidDataException("Job Priority already exists");
+		}
+		
 		jobPriority.setDateCrt(new Date());
-		jobPriority.setUserCrt(UserService.currentUser.getUserId());
+		jobPriority.setUserCrt(userService.getCurrentUserId());
 		 
 	    return jobPriorityDao.save(jobPriority);
 	}
@@ -57,8 +71,14 @@ public class JobPriorityService {
 	
 	public JobPriority updateJobPriority(JobPriority jobPriority) {
 		logger.info("updateJobPriority({})", jobPriority);
+		
+		JobPriority jobPriorityOld = getJobPriority(jobPriority.getJobPriority());
+		
+		jobPriority.setDateCrt(jobPriorityOld.getDateCrt());
+		jobPriority.setUserCrt(jobPriorityOld.getUserCrt());
+		
 		jobPriority.setDateMod(new Date());
-		jobPriority.setUserMod(UserService.currentUser.getUserId());
+		jobPriority.setUserMod(userService.getCurrentUserId());
 		
 		return jobPriorityDao.save(jobPriority);
 	}

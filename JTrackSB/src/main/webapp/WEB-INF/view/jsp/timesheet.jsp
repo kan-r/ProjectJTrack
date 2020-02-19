@@ -24,7 +24,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -47,45 +47,53 @@
                 <li class="last"><span></span></li>
             </ul>
         </div>
+        
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
                 
-        <form:form method="POST" action="timesheet">
-                <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
-                    <tr>
-                        <td>
-                            <table border="0" summary="" >
-                                <tr>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>User</label>
-                                    </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:select path="userId" id="userId">
-                                            <form:option value=""></form:option>
-                                            <c:forEach items="${userList}" var="user">
-                                                <form:option value="${user.userId}">${user.firstName} ${user.lastName}</form:option>
-                                            </c:forEach>
-                                        </form:select>
-                                    </td>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>Worked Date From</label>
-                                    </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:input path="workedDateFrom" class="date-field" />
-                                    </td>
-                                    <td nowrap="nowrap" align="right">
-                                        <label>To</label>
-                                    </td>
-                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
-                                        <form:input path="workedDateTo" class="date-field" />
-                                    </td>
-                                    <td>
-                                            <input type="submit" value="Go" class="button" />
-                                    </td>
-                                </tr>
-                            </table> 
-                        </td>
-                    </tr>
-                </table>
-        </form:form> 
+        <div class="form-region">
+	        <form:form method="POST" action="timesheet">
+	                <table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
+	                    <tr>
+	                        <td>
+	                            <table border="0" summary="" >
+	                                <tr>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>User</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:select path="userId" id="userId">
+	                                            <form:option value=""></form:option>
+	                                            <c:forEach items="${userList}" var="user">
+	                                                <form:option value="${user.userId}">${user.firstName} ${user.lastName}</form:option>
+	                                            </c:forEach>
+	                                        </form:select>
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>Worked Date From</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:input path="workedDateFrom" class="date-field" />
+	                                    </td>
+	                                    <td nowrap="nowrap" align="right">
+	                                        <label>To</label>
+	                                    </td>
+	                                    <td  colspan="1" rowspan="1" align="left" valign="middle">
+	                                        <form:input path="workedDateTo" class="date-field" />
+	                                    </td>
+	                                    <td>
+	                                            <input type="submit" value="Go" class="button" />
+	                                    </td>
+	                                </tr>
+	                            </table> 
+	                        </td>
+	                    </tr>
+	                </table>
+	        </form:form> 
+        </div>
         
         <div class="button-region">
             <a href="<c:url value="timesheetCreate" />" class="button">Create</a>
@@ -120,7 +128,12 @@
                         <td><fmt:formatDate pattern="E" value="${timesheet.workedDate}"/></td>
                         <td><c:out value="${timesheet.workedHrs}"/></td>
                         <td><c:out value="${timesheet.timesheetCode}"/></td>
-                        <td><c:out value="${timesheet.active}"/></td>
+                        <c:if test="${timesheet.active}">
+                        	<td align="center"><input type="checkbox" checked disabled /></td>
+                        </c:if>
+                        <c:if test="${!timesheet.active}">
+                        	<td align="center"><input type="checkbox" disabled /></td>
+                        </c:if>
                         <td><fmt:formatDate type="both" value="${timesheet.dateCrt}"/></td>
                         <td><c:out value="${timesheet.userCrtObj.firstName} ${timesheet.userCrtObj.lastName}"/></td>
                         <td><fmt:formatDate type="both" value="${timesheet.dateMod}"/></td>

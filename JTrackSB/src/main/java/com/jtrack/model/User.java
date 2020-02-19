@@ -43,14 +43,15 @@ public class User {
 	 @Column(name="USER_MOD")
      private String userMod;
 	 
-	 @Transient
+	 @Column(name="PWORD")
+     private String pword;
+	 
 	 @OneToOne(fetch=FetchType.EAGER, optional=true)
-	 @JoinColumn(name = "USER_CRT")
+	 @JoinColumn(name = "USER_CRT", insertable = false, updatable = false)
 	 private UserName userCrtObj;
 		
-	 @Transient
 	 @OneToOne(fetch=FetchType.EAGER, optional=true)
-	 @JoinColumn(name = "USER_MOD")
+	 @JoinColumn(name = "USER_MOD", insertable = false, updatable = false)
 	 private UserName userModObj;
 	
 	 @Transient
@@ -170,6 +171,14 @@ public class User {
 
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+
+	public String getPword() {
+		return pword;
+	}
+
+	public void setPword(String pword) {
+		this.pword = pword;
 	}
 
 	@Override

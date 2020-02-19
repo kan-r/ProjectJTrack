@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jtrack.dao.UserDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.Timesheet;
 import com.jtrack.model.User;
 import com.jtrack.service.JobService;
@@ -38,9 +40,6 @@ public class JTrackSbApplicationTests {
 	@Autowired
 	private TimesheetService timesheetService;
 	
-	@Autowired
-	private JobService jobService;
-	
 	@Test
 	public void getUsersTest() {
 		
@@ -49,8 +48,8 @@ public class JTrackSbApplicationTests {
 		usersList.add(new User("D2161", "Tharani", "Ranganathan", 1, null, "ADMIN", null, "D2161"));
 		usersList.add(new User("D2162", "Tharani", "Ranganathan", 1, null, "D2161", null, null));
 		
-		when(userDao.findAll()).thenReturn(usersList);
-		assertEquals(3, userService.getUserAll().size());
+		when(userDao.findAll(Sort.by("userId"))).thenReturn(usersList);
+		assertEquals(3, userService.getUserList().size());
 	}
 	
 	@Test
@@ -81,9 +80,10 @@ public class JTrackSbApplicationTests {
 	}
 	
 	@Test
-	public void addUserTest() {
+	public void addUserTest() throws InvalidDataException {
 		
 		User user = new User("KAN", "Kan", "Ranganathan", 1, null, "ADMIN", null, null);
+		user.setPword("kan");
 		
 		when(userDao.save(user)).thenReturn(user);
 		assertEquals(user, userService.addUser(user));
@@ -120,7 +120,7 @@ public class JTrackSbApplicationTests {
 	    Date dateFrom =new SimpleDateFormat("dd/MM/yyyy").parse("03/11/2019");  
 	    Date dateTo =new SimpleDateFormat("dd/MM/yyyy").parse("04/11/2019");  
 		
-		List<Timesheet> timesheetList = timesheetService.getTimesheetAll("ADMIN", dateFrom, dateTo);
+		List<Timesheet> timesheetList = timesheetService.getTimesheetList("ADMIN", dateFrom, dateTo);
 		assertEquals(1, timesheetList.size());
 	}
 }

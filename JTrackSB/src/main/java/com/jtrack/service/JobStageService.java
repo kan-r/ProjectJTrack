@@ -7,10 +7,12 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobStageDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStage;
 
 @Service
@@ -21,10 +23,13 @@ public class JobStageService {
 	
 	@Autowired
 	private JobStageDao jobStageDao;
+	
+	@Autowired
+	private UserService userService;
 
-	public List<JobStage> getJobStageAll(){
-		logger.info("getJobStageAll()");
-		return jobStageDao.findAll();
+	public List<JobStage> getJobStageList(){
+		logger.info("getJobStageList()");
+		return jobStageDao.findAll(Sort.by("jobStage"));
 	}
 	
 	public JobStage getJobStage(String jobStageId){
@@ -34,13 +39,22 @@ public class JobStageService {
 			return jobStage.get();
 		}
 		
-		return new JobStage();
+		return null;
 	}
 	
-	public JobStage addJobStage(JobStage jobStage) {
+	public JobStage addJobStage(JobStage jobStage) throws InvalidDataException {
 		logger.info("addJobStage({})", jobStage);
+		
+		if(jobStage.getJobStage() == null || jobStage.getJobStage().isEmpty()) {
+			throw new InvalidDataException("Job Stage is required");
+		}
+		
+		if(getJobStage(jobStage.getJobStage()) != null) {
+			throw new InvalidDataException("Job Stage already exists");
+		}
+		
 		jobStage.setDateCrt(new Date());
-		jobStage.setUserCrt(UserService.currentUser.getUserId());
+		jobStage.setUserCrt(userService.getCurrentUserId());
 		 
 	    return jobStageDao.save(jobStage);
 	}
@@ -57,8 +71,14 @@ public class JobStageService {
 	
 	public JobStage updateJobStage(JobStage jobStage) {
 		logger.info("updateJobStage({})", jobStage);
+		
+		JobStage jobStageOld = getJobStage(jobStage.getJobStage());
+		
+		jobStage.setDateCrt(jobStageOld.getDateCrt());
+		jobStage.setUserCrt(jobStageOld.getUserCrt());
+		
 		jobStage.setDateMod(new Date());
-		jobStage.setUserMod(UserService.currentUser.getUserId());
+		jobStage.setUserMod(userService.getCurrentUserId());
 		
 		return jobStageDao.save(jobStage);
 	}

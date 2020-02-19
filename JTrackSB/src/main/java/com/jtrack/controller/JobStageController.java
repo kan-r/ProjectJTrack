@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStage;
 import com.jtrack.model.User;
 import com.jtrack.service.JobStageService;
@@ -20,20 +21,31 @@ public class JobStageController {
 	
 	@Resource
     private JobStageService jobStageService;
+	
+	@Resource
+	private UserService userService;
     
     @GetMapping("/jobStage")
     public ModelAndView jobStage(){
-        return new ModelAndView("jobStage", "jobStageList", jobStageService.getJobStageAll());
+        return new ModelAndView("jobStage", "jobStageList", jobStageService.getJobStageList());
     }
     
     @GetMapping("/jobStageCreate")
-    public ModelAndView jobStageCreate(Model model){
-        return new ModelAndView("jobStageCreate", "command", new JobStage());
+    public ModelAndView jobStageCreate(Model model, String error){
+    	ModelAndView modelAndView = new ModelAndView("jobStageCreate", "command", new JobStage());
+    	modelAndView.addObject("error", error);
+        return modelAndView;
     }
     
     @PostMapping("/jobStageCreate")
     public String jobStageAdd(@ModelAttribute("jobStageCreate") JobStage jobStage){
-        jobStageService.addJobStage(jobStage);
+    	
+        try {
+			jobStageService.addJobStage(jobStage);
+		} catch (InvalidDataException e) {
+			return "redirect:jobStageCreate?error=" + e.getMessage();
+		}
+        
         return "redirect:jobStage";
     }
     
@@ -56,7 +68,7 @@ public class JobStageController {
     
     @ModelAttribute("currentUser")
     public User currentUser(){
-        return UserService.currentUser;
+        return userService.getCurrentUser();
     }
 
 }

@@ -17,7 +17,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -69,8 +69,19 @@
             </div>
         </div>
         
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
+        
         <div class="button-region">
-            <a href="<c:url value="usersCreate" />" class="button">Create</a>
+        	<c:if test="${currentUser.isAdmin}">
+            	<a href="<c:url value="usersCreate" />" class="button">Create</a>
+            </c:if>
+            <c:if test="${!currentUser.isAdmin}">
+            	<a href="<c:url value="usersCreate" />" class="button-disabled">Create</a>
+            </c:if>
         </div>
         
         <div class="report-region">
@@ -89,12 +100,27 @@
                 </tr>
                 <c:forEach items="${usersList}" var="users">
                     <tr>
-                        <td><a href="<c:url value="usersEdit?id=${users.userId}" />" >Edit</a></td>
-                        <td><a href="<c:url value="usersDelete?id=${users.userId}" />" >Delete</a></td>
+                    	<c:if test="${currentUser.isAdmin}">
+                    		<td><a href="<c:url value="usersEdit?id=${users.userId}" />" >Edit</a></td>
+                    	</c:if>
+                    	<c:if test="${!currentUser.isAdmin}">
+                    		<td><a href="<c:url value="usersEdit?id=${users.userId}" />" class="link-disabled">Edit</a></td>
+                    	</c:if>
+                        <c:if test="${currentUser.isAdmin}">
+                        	<td><a href="<c:url value="usersDelete?id=${users.userId}" />" >Delete</a></td>
+                        </c:if>
+                        <c:if test="${!currentUser.isAdmin}">
+                        	<td><a href="<c:url value="usersDelete?id=${users.userId}" />" class="link-disabled">Delete</a></td>
+                        </c:if>
                         <td><c:out value="${users.userId}"/></td>
                         <td><c:out value="${users.firstName}"/></td>
                         <td><c:out value="${users.lastName}"/></td>
-                        <td><c:out value="${users.active}"/></td>
+                        <c:if test="${users.active}">
+                        	<td align="center"><input type="checkbox" checked disabled /></td>
+                        </c:if>
+                        <c:if test="${!users.active}">
+                        	<td align="center"><input type="checkbox" disabled /></td>
+                        </c:if>
                         <td><fmt:formatDate type="both" value="${users.dateCrt}"/></td>
                         <td><c:out value="${users.userCrtObj.firstName} ${users.userCrtObj.lastName}"/></td>
                         <td><fmt:formatDate type="both" value="${users.dateMod}"/></td>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobResolution;
 import com.jtrack.model.User;
 import com.jtrack.service.JobResolutionService;
@@ -20,20 +21,31 @@ public class JobResolutionController {
 	
 	@Resource
     private JobResolutionService jobResolutionService;
+	
+	@Resource
+	private UserService userService;
     
     @GetMapping("/jobResolution")
     public ModelAndView jobResolution(){
-        return new ModelAndView("jobResolution", "jobResolutionList", jobResolutionService.getJobResolutionAll());
+        return new ModelAndView("jobResolution", "jobResolutionList", jobResolutionService.getJobResolutionList());
     }
     
     @GetMapping("/jobResolutionCreate")
-    public ModelAndView jobResolutionCreate(Model model){
-        return new ModelAndView("jobResolutionCreate", "command", new JobResolution());
+    public ModelAndView jobResolutionCreate(Model model, String error){
+    	ModelAndView modelAndView = new ModelAndView("jobResolutionCreate", "command", new JobResolution());
+    	modelAndView.addObject("error", error);
+        return modelAndView;
     }
     
     @PostMapping("/jobResolutionCreate")
     public String jobResolutionAdd(@ModelAttribute("jobResolutionCreate") JobResolution jobResolution){
-        jobResolutionService.addJobResolution(jobResolution);
+    	
+        try {
+			jobResolutionService.addJobResolution(jobResolution);
+		} catch (InvalidDataException e) {
+			return "redirect:jobResolutionCreate?error=" + e.getMessage();
+		}
+        
         return "redirect:jobResolution";
     }
     
@@ -56,7 +68,7 @@ public class JobResolutionController {
     
     @ModelAttribute("currentUser")
     public User currentUser(){
-        return UserService.currentUser;
+        return userService.getCurrentUser();
     }
 
 }

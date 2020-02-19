@@ -24,51 +24,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		 return new BCryptPasswordEncoder();
 	 }
 	
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-            	.antMatchers("/", "/login").permitAll()
-                .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .defaultSuccessUrl("/loginSuccess")
-                .failureUrl("/loginFailure")
-//                .failureUrl("/login?error=true")
-                .and()
-            .logout()
-                .permitAll();
-    }
-    
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
 //        http
 //            .authorizeRequests()
-//            	.antMatchers("/").permitAll()
+//            	.antMatchers("/", "/login").permitAll()
 //                .anyRequest().authenticated()
 //                .and()
 //            .formLogin()
-//                .loginPage("/login")
-//                .permitAll()
-//                .defaultSuccessUrl("/hello")
-//                .failureUrl("/login?error=true")
+//                .defaultSuccessUrl("/loginSuccess")
+//                .failureUrl("/loginFailure")
+////                .failureUrl("/login?error=true")
 //                .and()
 //            .logout()
 //                .permitAll();
 //    }
     
     @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+            	.antMatchers("/", "/login", "/loginHist", "/css/**", "/img/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+            .formLogin()
+                .loginPage("/login").permitAll()
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/loginSuccess", true)
+                .failureUrl("/login?error=true")
+                .and()
+            .logout()
+                .permitAll();
+    }
+    
+    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     	auth.userDetailsService(customUserDetailsService);
-        
-//    	auth
-//          .inMemoryAuthentication()
-//          .withUser("kan")
-//            .password("{noop}kan")
-//            .roles("USER")
-//            .and()
-//          .withUser("admin")
-//            .password("{noop}admin")
-//            .roles("USER", "ADMIN");
     }
 }

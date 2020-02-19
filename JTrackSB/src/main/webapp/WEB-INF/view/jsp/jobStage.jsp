@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -64,16 +64,17 @@
                         <a href="<c:url value="timesheetCode" />"><span>Timesheet Code</span></a>
                     </li>
                     <li>
-	                	<c:if test="${currentUser.isAdmin}">
-	                    	<a href="<c:url value="users" />"><span>Users</span></a>
-	                    </c:if>
-	                    <c:if test="${!currentUser.isAdmin}">
-	                    	<a><span>Users - No access</span></a>
-	                    </c:if>
-	                </li>
+                    	<a href="<c:url value="users" />"><span>Users</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
+        
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
         
         <div class="button-region">
             <a href="<c:url value="jobStageCreate" />" class="button">Create</a>
@@ -98,7 +99,12 @@
                         <td><a href="<c:url value="jobStageDelete?id=${jobStage.jobStage}" />" >Delete</a></td>
                         <td><c:out value="${jobStage.jobStage}"/></td>
                         <td><c:out value="${jobStage.jobStageDesc}"/></td>
-                        <td><c:out value="${jobStage.active}"/></td>
+                        <c:if test="${jobStage.active}">
+                        	<td align="center"><input type="checkbox" checked disabled /></td>
+                        </c:if>
+                        <c:if test="${!jobStage.active}">
+                        	<td align="center"><input type="checkbox" disabled /></td>
+                        </c:if>
                         <td><fmt:formatDate type="both" value="${jobStage.dateCrt}"/></td>
                         <td><c:out value="${jobStage.userCrtObj.firstName} ${jobStage.userCrtObj.lastName}"/></td>
                         <td><fmt:formatDate type="both" value="${jobStage.dateMod}"/></td>

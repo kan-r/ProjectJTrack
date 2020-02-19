@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -42,14 +42,20 @@
             </ul>
         </div>
         
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
+        
         <form:form method="POST" action="jobPriorityEdit?id=${jobPriority}">
-            <div class="button-region-2">
+            <div class="button-region">
                 <a href="<c:url value="jobPriority" />" class="button">Cancel</a>
                 <input type="submit" value="Save" class="button" />
             </div>
 
-            <div class="report-region">
-                <table cellpadding="0" border="0" cellspacing="0" summary="" class="report-standard">
+            <div class="form-region">
+                <table cellpadding="0" border="0" cellspacing="0" summary="" class="form-standard">
                     <tr>
                         <th><div>Edit Job Priority</div></th>
                     </tr>

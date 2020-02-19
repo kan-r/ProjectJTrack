@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -64,16 +64,17 @@
                         <a href="<c:url value="timesheetCode" />"><span>Timesheet Code</span></a>
                     </li>
                     <li>
-	                	<c:if test="${currentUser.isAdmin}">
-	                    	<a href="<c:url value="users" />"><span>Users</span></a>
-	                    </c:if>
-	                    <c:if test="${!currentUser.isAdmin}">
-	                    	<a><span>Users - No access</span></a>
-	                    </c:if>
-	                </li>
+                    	<a href="<c:url value="users" />"><span>Users</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
+        
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
         
         <div class="button-region">
             <a href="<c:url value="timesheetCodeCreate" />" class="button">Create</a>
@@ -98,7 +99,12 @@
                         <td><a href="<c:url value="timesheetCodeDelete?id=${timesheetCode.timesheetCode}" />" >Delete</a></td>
                         <td><c:out value="${timesheetCode.timesheetCode}"/></td>
                         <td><c:out value="${timesheetCode.timesheetCodeDesc}"/></td>
-                        <td><c:out value="${timesheetCode.active}"/></td>
+                        <c:if test="${timesheetCode.active}">
+                        	<td align="center"><input type="checkbox" checked disabled /></td>
+                        </c:if>
+                        <c:if test="${!timesheetCode.active}">
+                        	<td align="center"><input type="checkbox" disabled /></td>
+                        </c:if>
                         <td><fmt:formatDate type="both" value="${timesheetCode.dateCrt}"/></td>
                         <td><c:out value="${timesheetCode.userCrtObj.firstName} ${timesheetCode.userCrtObj.lastName}"/></td>
                         <td><fmt:formatDate type="both" value="${timesheetCode.dateMod}"/></td>

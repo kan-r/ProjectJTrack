@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobType;
 import com.jtrack.model.User;
 import com.jtrack.service.JobTypeService;
@@ -20,20 +21,31 @@ public class JobTypeController {
 
 	@Resource
     private JobTypeService jobTypeService;
+	
+	@Resource
+	private UserService userService;
     
     @GetMapping("/jobType")
     public ModelAndView jobType(){
-        return new ModelAndView("jobType", "jobTypeList", jobTypeService.getJobTypeAll());
+        return new ModelAndView("jobType", "jobTypeList", jobTypeService.getJobTypeList());
     }
     
     @GetMapping("/jobTypeCreate")
-    public ModelAndView jobTypeCreate(Model model){
-        return new ModelAndView("jobTypeCreate", "command", new JobType());
+    public ModelAndView jobTypeCreate(Model model, String error){
+    	ModelAndView modelAndView = new ModelAndView("jobTypeCreate", "command", new JobType());
+    	modelAndView.addObject("error", error);
+        return modelAndView;
     }
     
     @PostMapping("/jobTypeCreate")
     public String jobTypeAdd(@ModelAttribute("jobTypeCreate") JobType jobType){
-        jobTypeService.addJobType(jobType);
+    	
+        try {
+			jobTypeService.addJobType(jobType);
+		} catch (InvalidDataException e) {
+			return "redirect:jobTypeCreate?error=" + e.getMessage();
+		}
+        
         return "redirect:jobType";
     }
     
@@ -56,6 +68,6 @@ public class JobTypeController {
     
     @ModelAttribute("currentUser")
     public User currentUser(){
-        return UserService.currentUser;
+        return userService.getCurrentUser();
     }
 }

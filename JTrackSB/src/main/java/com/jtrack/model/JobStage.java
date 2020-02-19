@@ -1,6 +1,7 @@
 package com.jtrack.model;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name="JOB_STAGE")
@@ -40,14 +40,12 @@ public class JobStage {
 	@Column(name="USER_MOD")
     private String userMod;
     
-	@Transient
 	@ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "USER_CRT", referencedColumnName = "USER_ID")
+    @JoinColumn(name = "USER_CRT", insertable = false, updatable = false)
     private User userCrtObj;
 	
-	@Transient
 	@ManyToOne(fetch=FetchType.EAGER, optional=true)
-    @JoinColumn(name = "USER_MOD", referencedColumnName = "USER_ID")
+    @JoinColumn(name = "USER_MOD", insertable = false, updatable = false)
     private User userModObj;
     
     public JobStage() {

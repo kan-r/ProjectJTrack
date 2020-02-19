@@ -18,7 +18,7 @@
             <div class="navbar">
                 <div class="app-title">JTrack</div>
                 <div class="app-user">Welcome: ${currentUser.firstName}</div>
-                <div class="navbar-entry"><a href="logout">Logout</a></div>
+                <div class="navbar-entry"><a href="<c:url value="/login?logout=true" />" >Logout</a></div>
             </div>
         </div>
 
@@ -64,16 +64,17 @@
                         <a href="<c:url value="timesheetCode" />"><span>Timesheet Code</span></a>
                     </li>
                     <li>
-	                	<c:if test="${currentUser.isAdmin}">
-	                    	<a href="<c:url value="users" />"><span>Users</span></a>
-	                    </c:if>
-	                    <c:if test="${!currentUser.isAdmin}">
-	                    	<a><span>Users - No access</span></a>
-	                    </c:if>
-	                </li>
+                    	<a href="<c:url value="users" />"><span>Users</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
+        
+        <c:if test="${not empty error}">
+	        <div class="container">
+				<div class="alert alert-danger">${error}</div>
+	        </div>
+        </c:if>
         
         <div class="button-region">
             <a href="<c:url value="jobStatusCreate" />" class="button">Create</a>
@@ -98,7 +99,12 @@
                         <td><a href="<c:url value="jobStatusDelete?id=${jobStatus.jobStatus}" />" >Delete</a></td>
                         <td><c:out value="${jobStatus.jobStatus}"/></td>
                         <td><c:out value="${jobStatus.jobStatusDesc}"/></td>
-                        <td><c:out value="${jobStatus.active}"/></td>
+                        <c:if test="${jobStatus.active}">
+                        	<td align="center"><input type="checkbox" checked disabled /></td>
+                        </c:if>
+                        <c:if test="${!jobStatus.active}">
+                        	<td align="center"><input type="checkbox" disabled /></td>
+                        </c:if>
                         <td><fmt:formatDate type="both" value="${jobStatus.dateCrt}"/></td>
                         <td><c:out value="${jobStatus.userCrtObj.firstName} ${jobStatus.userCrtObj.lastName}"/></td>
                         <td><fmt:formatDate type="both" value="${jobStatus.dateMod}"/></td>
