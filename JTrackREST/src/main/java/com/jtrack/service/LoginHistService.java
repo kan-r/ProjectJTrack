@@ -41,7 +41,7 @@ public class LoginHistService {
 		
 		loginHist.setDateCrt(new Date());
 		
-		SimpleDateFormat dtFmt = new SimpleDateFormat("yyyyMMddHHmmss");
+		SimpleDateFormat dtFmt = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String histId = loginHist.getUserId() + "-" + loginHist.getIpAddr() + "-" + dtFmt.format(loginHist.getDateCrt());
   
         loginHist.setHistId(histId);
