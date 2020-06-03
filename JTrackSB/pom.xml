@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.jtrack</groupId>
-	<artifactId>JTrack</artifactId>
+	<artifactId>jtrackJSB</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>JTrackSB</name>
 	<description>JTrack using Spring Boot</description>

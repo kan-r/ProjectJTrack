@@ -21,14 +21,14 @@ public class LoginHistService {
 	Logger logger = LogManager.getLogger(LoginHistService.class);
 	
 	@Autowired
-	private LoginHistDao LoginHistDao;
+	private LoginHistDao loginHistDao;
 	
 	@Autowired
 	private UserService userService;
 
 	public List<LoginHist> getLoginHistList(){
 		logger.info("getLoginHistList()");
-		return LoginHistDao.findAll(Sort.by("dateCrt"));
+		return loginHistDao.findAll(Sort.by("dateCrt"));
 	}
 	
 	
@@ -47,6 +47,6 @@ public class LoginHistService {
         loginHist.setHistId(histId);
         
 		 
-	    return LoginHistDao.save(loginHist);
+	    return loginHistDao.save(loginHist);
 	}
 }

@@ -29,11 +29,6 @@ public class AuthServerConfig extends WebSecurityConfigurerAdapter implements Au
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 	
 	 /**
      * See: https://github.com/spring-projects/spring-boot/issues/11136
@@ -102,6 +97,15 @@ public class AuthServerConfig extends WebSecurityConfigurerAdapter implements Au
      */
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/loginHist");
+//        web.ignoring().antMatchers("/loginHist");
+		
+		web.ignoring().antMatchers(
+        		"/loginHist", 
+        		"/pageVisitHist", 
+        		"/pageVisitHist/**", 
+        		"/pageVisitCount",
+        		"/pageVisitCount/**");
+       
+//        web.ignoring().anyRequest();
     }
 }

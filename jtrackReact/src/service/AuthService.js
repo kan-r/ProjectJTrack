@@ -3,7 +3,8 @@ import axios from 'axios';
 const DEBUG = false;
 
 // const BASE_URL = 'http://localhost:8082';
-const BASE_URL = 'http://kan-r.com:8082';
+// const BASE_URL = 'http://kan-r.com:8082';
+const BASE_URL = 'https://kan-r.com/jtrackREST';
 
 const USER_SESSION_ATTRIBUTE = 'USER';
 const TOKEN_SESSION_ATTRIBUTE = 'TOKEN';

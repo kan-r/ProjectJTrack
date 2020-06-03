@@ -19,16 +19,16 @@ class Navmenu extends Component {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto" activeKey={window.location.pathname}>
-                    <Nav.Link href="/Job">Job</Nav.Link>
-                    <Nav.Link href="/Timesheet">Timesheet</Nav.Link>
+                    <Nav.Link href="Job">Job</Nav.Link>
+                    <Nav.Link href="Timesheet">Timesheet</Nav.Link>
                     <NavDropdown title="Admin" id="collasible-nav-dropdown">
-                        <NavDropdown.Item href="/JobType">Job Type</NavDropdown.Item>
-                        <NavDropdown.Item href="/JobStatus">Job Status</NavDropdown.Item>
-                        <NavDropdown.Item href="/JobPriority">Job Priority</NavDropdown.Item>
-                        <NavDropdown.Item href="/JobResolution">Job Resolution</NavDropdown.Item>
-                        <NavDropdown.Item href="/JobStage">Job Stage</NavDropdown.Item>
-                        <NavDropdown.Item href="/TimesheetCode">Timesheet Code</NavDropdown.Item>
-                        <NavDropdown.Item href="/User">User</NavDropdown.Item>
+                        <NavDropdown.Item href="JobType">Job Type</NavDropdown.Item>
+                        <NavDropdown.Item href="JobStatus">Job Status</NavDropdown.Item>
+                        <NavDropdown.Item href="JobPriority">Job Priority</NavDropdown.Item>
+                        <NavDropdown.Item href="JobResolution">Job Resolution</NavDropdown.Item>
+                        <NavDropdown.Item href="JobStage">Job Stage</NavDropdown.Item>
+                        <NavDropdown.Item href="TimesheetCode">Timesheet Code</NavDropdown.Item>
+                        <NavDropdown.Item href="User">User</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
                 <Nav onSelect={key =>this.handleSelect(key)} activeKey={window.location.pathname}>
