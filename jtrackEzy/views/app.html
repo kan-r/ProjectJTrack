@@ -1,0 +1,252 @@
+<div class="container">
+    <div id="nav" ezy-bind></div>
+    <div id="msg" ezy-bind></div>
+    <div id="out" ezy-bind></div>
+</div>
+
+<script type="module">
+    
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { authService } from './services/authService.js';
+
+    $ezy.router.routes = [
+        {
+            path: '',
+            redirectTo: '#login'
+        },
+        {
+            path: '#logout',
+            redirectTo: '#login/logout'
+        },
+        {
+            path: '#sessexp',
+            redirectTo: '#login/sessexp'
+        },
+        {
+            path: '#login',
+            url: './views/login.html'
+        },
+        {
+            path: '#login/:param',
+            url: './views/login.html'
+        },
+        {
+            path: '#job',
+            url: './views/job.html'
+        },
+        {
+            path: '#job/:jobNo',
+            url: './views/job.html'
+        },
+        {
+            path: '#jobForm',
+            url: './views/jobForm.html'
+        },
+        {
+            path: '#jobForm/:jobNo',
+            url: './views/jobForm.html'
+        },
+        {
+            path: '#timesheet',
+            url: './views/timesheet.html'
+        },
+        {
+            path: '#timesheet/:timesheetId',
+            url: './views/timesheet.html'
+        },
+        {
+            path: '#timesheetForm',
+            url: './views/timesheetForm.html'
+        },
+        {
+            path: '#timesheetForm/:timesheetId',
+            url: './views/timesheetForm.html'
+        },
+        {
+            path: '#jobType',
+            url: './views/jobType.html'
+        },
+        {
+            path: '#jobType/:jobType',
+            url: './views/jobType.html'
+        },
+        {
+            path: '#jobTypeForm',
+            url: './views/jobTypeForm.html'
+        },
+        {
+            path: '#jobTypeForm/:jobType',
+            url: './views/jobTypeForm.html'
+        },
+        {
+            path: '#jobStatus',
+            url: './views/jobStatus.html'
+        },
+        {
+            path: '#jobStatus/:jobStatus',
+            url: './views/jobStatus.html'
+        },
+        {
+            path: '#jobStatusForm',
+            url: './views/jobStatusForm.html'
+        },
+        {
+            path: '#jobStatusForm/:jobStatus',
+            url: './views/jobStatusForm.html'
+        },
+        {
+            path: '#jobPriority',
+            url: './views/jobPriority.html'
+        },
+        {
+            path: '#jobPriority/:jobPriority',
+            url: './views/jobPriority.html'
+        },
+        {
+            path: '#jobPriorityForm',
+            url: './views/jobPriorityForm.html'
+        },
+        {
+            path: '#jobPriorityForm/:jobPriority',
+            url: './views/jobPriorityForm.html'
+        },
+        {
+            path: '#jobResolution',
+            url: './views/jobResolution.html'
+        },
+        {
+            path: '#jobResolution/:jobResolution',
+            url: './views/jobResolution.html'
+        },
+        {
+            path: '#jobResolutionForm',
+            url: './views/jobResolutionForm.html'
+        },
+        {
+            path: '#jobResolutionForm/:jobResolution',
+            url: './views/jobResolutionForm.html'
+        },
+        {
+            path: '#jobStage',
+            url: './views/jobStage.html'
+        },
+        {
+            path: '#jobStage/:jobStage',
+            url: './views/jobStage.html'
+        },
+        {
+            path: '#jobStageForm',
+            url: './views/jobStageForm.html'
+        },
+        {
+            path: '#jobStageForm/:jobStage',
+            url: './views/jobStageForm.html'
+        },
+        {
+            path: '#timesheetCode',
+            url: './views/timesheetCode.html'
+        },
+        {
+            path: '#timesheetCode/:timesheetCode',
+            url: './views/timesheetCode.html'
+        },
+        {
+            path: '#timesheetCodeForm',
+            url: './views/timesheetCodeForm.html'
+        },
+        {
+            path: '#timesheetCodeForm/:timesheetCode',
+            url: './views/timesheetCodeForm.html'
+        },
+        {
+            path: '#user',
+            url: './views/user.html'
+        },
+        {
+            path: '#user/:userId',
+            url: './views/user.html'
+        },
+        {
+            path: '#userForm',
+            url: './views/userForm.html'
+        },
+        {
+            path: '#userForm/:userId',
+            url: './views/userForm.html'
+        }
+    ]
+
+    $ezy.router.authenticateRoute = (route) => {
+
+        if(authService.isSessionExpired()){
+            route.redirectTo = "#sessexp";
+            return false;
+        }
+    
+        if(authService.isUserLoggedIn()){
+            if(route.path === '#login'){
+                route.redirectTo = "#job";
+                return false;
+            }
+
+            
+            const paths = [
+                '#user/:userId',
+                '#userForm',
+                '#userForm/:userId'
+            ]
+
+            // requires ADMIN privilage
+            if(paths.includes(route.path)){
+                if(!authService.isUserAdmin()){
+                    route.redirectTo = "#user";
+                    return false;
+                }
+            }
+            
+            activateNavLink(route.path);
+            return true;
+        }else{
+            if(route.path === '#login' || route.path === '#login/:param'){
+                return true;
+            }
+
+            route.redirectTo = "#login";
+            return false;
+        }
+    }
+
+    function activateNavLink(path){
+        //navigation item links
+        let links = document.querySelectorAll(".link");
+        links.forEach(link => {
+            link.classList.remove("active");
+
+            if(link.getAttribute("href") === path){
+                link.classList.add("active");
+            }
+        })
+
+        //dropdown item links
+        links = document.querySelectorAll(".link2");
+        links.forEach(link => {
+            link.classList.remove("active2");
+
+            if(link.getAttribute("href") === path){
+                const dropbtn = document.querySelector(".dropbtn");
+                dropbtn.classList.add("active");
+                link.classList.add("active2");
+            }
+        })
+    }
+
+    $ezy.model.appUser = {
+        userId: '',
+        pword: '',
+        isAdmin: false
+    }
+
+    $ezy.load('#nav', './views/navBar.html');
+    $ezy.load('#msg', './views/message.html');
+
+</script>

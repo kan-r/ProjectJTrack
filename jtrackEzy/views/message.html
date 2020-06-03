@@ -1,0 +1,9 @@
+<div>
+    <div id="info" ezy-bind-show={message.info} class="message message-info">{message.info}</div>
+    <div id="error" ezy-bind-show={message.error} class="message message-error">{message.error}</div>
+</div>
+
+<script type="module">
+    //required for binding
+    import { $ezy } from './ezy_modules/ezy.js';
+</script>

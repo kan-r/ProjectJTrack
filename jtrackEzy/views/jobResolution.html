@@ -1,0 +1,66 @@
+<div class="title">Job Resolution</div>
+<div class="button-region">
+    <a href = "#jobResolutionForm" class="button">Create</a>
+ </div>
+<div class="report-region-2">
+    <table class="report-standard">
+        <tr >
+            <th></th>
+            <th></th>
+            <th>Job Resolution</th>
+            <th>Job Resolution Description</th>
+            <th>Active</th>
+            <th>Date Created</th>
+            <th>User Created</th>
+            <th>Date Modified</th>
+            <th>User Modified</th>
+        </tr>
+        <tr ezy-bind-list="jResolution in jobResolutionList">
+            <td><a href = "#jobResolutionForm/{jResolution.jobResolution}">Edit</a></td>
+            <td><a href = "#jobResolution/{jResolution.jobResolution}">Delete</a></td>
+            <td>{jResolution.jobResolution}</td>
+            <td>{jResolution.jobResolutionDesc}</td>
+            <td><input type="checkbox" id="active" value="true" ezy-bind-value={jResolution.active} disabled></td>
+            <td>{jResolution.dateCrt | datetime : short}</td>
+            <td>{jResolution.userCrtObj.firstName} {jResolution.userCrtObj.lastName}</td>
+            <td>{jResolution.dateMod | datetime : short}</td>
+            <td>{jResolution.userModObj.firstName} {jResolution.userModObj.lastName}</td>
+       </tr>
+    </table>
+</div> 
+
+<script type="module">
+   
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { jobResolutionService } from './services/jobResolutionService.js';
+
+    $ezy.model.message.reset();
+
+    $ezy.model.jobResolutionList = [];
+
+    const jobResolution = $ezy.router.route.params.jobResolution;
+    // delete
+    if(jobResolution !== undefined){
+        jobResolutionService.deleteJobResolution(jobResolution)
+            .then(res => {
+                loadJobResolutionList();
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }else{
+        loadJobResolutionList();
+    }
+
+    function loadJobResolutionList(){
+        jobResolutionService.getJobResolutionList()
+            .then(res => {
+                $ezy.model.message.reset();
+                $ezy.model.jobResolutionList = res;
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }
+
+</script>

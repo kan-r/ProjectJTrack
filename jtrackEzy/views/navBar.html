@@ -1,0 +1,61 @@
+<div class="topnav">
+    <ul>
+        <li><a class="link" href="#job">Job</a></li>
+        <li><a class="link" href="#timesheet">Timesheet</a></li>
+        <li class="dropdown">
+            <a class="dropbtn link" href="javascript:void(0)">Admin</a>
+            <div class="dropdown-content">
+              <a class="link2" href="#jobType">Job Type</a>
+              <a class="link2" href="#jobStatus">Job Status</a>
+              <a class="link2" href="#jobPriority">Job Priority</a>
+              <a class="link2" href="#jobResolution">Job Resolution</a>
+              <a class="link2" href="#jobStage">Job Stage</a>
+              <a class="link2" href="#timesheetCode">Timesheet Code</a>
+              <a class="link2" href="#user">User</a>
+            </div>
+        </li>
+        <li>
+            <a class="disabled"><i>JTrack</i> Welcome {appUser.userId | string : uppercase}</a>
+            <a href="#logout">Log out</a>
+        </li>
+    </ul>
+</div>
+
+<script>
+
+    const dropbtn = document.querySelector(".dropbtn");
+    const dropdownContent = document.querySelector(".dropdown-content");
+
+    // to show the dropdown content on focus
+    dropbtn.addEventListener("mouseenter", (evt) => {
+        dropdownContent.style.display = "block";
+    })
+
+     // to hide the dropdown content on out of focus
+    dropbtn.addEventListener("mouseleave", (evt) => {
+        dropdownContent.style.display = "none";
+    })
+
+    // to hide the dropdown content after the selection of an item
+    const elms = document.querySelectorAll(".dropdown-content a");
+    elms.forEach(elm => {
+        elm.addEventListener("mouseenter", (evt) => {
+            dropdownContent.style.display = "block";
+        })
+
+        elm.addEventListener("mouseleave", (evt) => {
+            dropdownContent.style.display = "none";
+        })
+
+        elm.addEventListener("click", (evt) => {
+            dropdownContent.style.display = "none";
+        })
+    })
+    
+</script>
+
+<script type="module">
+    //required for binding
+    import { $ezy } from './ezy_modules/ezy.js';
+</script>
+

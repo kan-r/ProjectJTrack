@@ -1,0 +1,103 @@
+<div class="title">Job Resolution</div>
+<form>
+	<div class="button-region">
+		<a href="#jobResolution" class="button">Cancel</a>
+		<a id="save" href="#jobResolution" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={jobResolution.create}>Create Job Resolution</th>
+				<th ezy-bind-hide={jobResolution.create}>Edit Job Resolution</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="jobResolution">Job Resolution</label>
+							</td>
+							<td >
+								<input ezy-bind-show={jobResolution.create} name="jobResolution" value = {jobResolution.jobResolution} />
+								<input ezy-bind-hide={jobResolution.create} name="jobResolution" value = {jobResolution.jobResolution} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="jobResolutionDesc">Job Resolution Description</label>
+							</td>
+							<td>
+                                <textarea name="jobResolutionDesc" rows="3">{jobResolution.jobResolutionDesc}</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {jobResolution.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { jobResolutionService } from './services/jobResolutionService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.jobResolution = {
+		jobResolution: '',
+		jobResolutionDesc: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const jobResolution = $ezy.router.route.params.jobResolution;
+	//edit 
+	if(jobResolution !== undefined){
+		jobResolutionService.getJobResolution(jobResolution)
+			.then(res => {
+				let jResolution = res;
+				jResolution.create = false;
+				$ezy.model.jobResolution = jResolution;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.jobResolution.create){
+			jobResolutionService.addJobResolution($ezy.model.jobResolution)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobResolution");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			jobResolutionService.updateJobResolution($ezy.model.jobResolution)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobResolution");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

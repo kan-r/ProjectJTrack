@@ -1,0 +1,103 @@
+<div class="title">Job Type</div>
+<form>
+	<div class="button-region">
+		<a href="#jobType" class="button">Cancel</a>
+		<a id="save" href="#jobType" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={jobType.create}>Create Job Type</th>
+				<th ezy-bind-hide={jobType.create}>Edit Job Type</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="jobType">Job Type</label>
+							</td>
+							<td >
+								<input ezy-bind-show={jobType.create} name="jobType" value = {jobType.jobType} />
+								<input ezy-bind-hide={jobType.create} name="jobType" value = {jobType.jobType} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="jobTypeDesc">Job Type Description</label>
+							</td>
+							<td>
+                                <textarea name="jobTypeDesc" rows="3">{jobType.jobTypeDesc}</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {jobType.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { jobTypeService } from './services/jobTypeService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.jobType = {
+		jobType: '',
+		jobTypeDesc: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const jobType = $ezy.router.route.params.jobType;
+	//edit 
+	if(jobType !== undefined){
+		jobTypeService.getJobType(jobType)
+			.then(res => {
+				let jType = res;
+				jType.create = false;
+				$ezy.model.jobType = jType;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.jobType.create){
+			jobTypeService.addJobType($ezy.model.jobType)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobType");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			jobTypeService.updateJobType($ezy.model.jobType)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobType");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

@@ -1,0 +1,66 @@
+<div class="title">Timesheet Code</div>
+<div class="button-region">
+    <a href = "#timesheetCodeForm" class="button">Create</a>
+ </div>
+<div class="report-region-2">
+    <table class="report-standard">
+        <tr >
+            <th></th>
+            <th></th>
+            <th>Timesheet Code</th>
+            <th>Timesheet Code Description</th>
+            <th>Active</th>
+            <th>Date Created</th>
+            <th>User Created</th>
+            <th>Date Modified</th>
+            <th>User Modified</th>
+        </tr>
+        <tr ezy-bind-list="tCode in timesheetCodeList">
+            <td><a href = "#timesheetCodeForm/{tCode.timesheetCode}">Edit</a></td>
+            <td><a href = "#timesheetCode/{tCode.timesheetCode}">Delete</a></td>
+            <td>{tCode.timesheetCode}</td>
+            <td>{tCode.timesheetCodeDesc}</td>
+            <td><input type="checkbox" id="active" value="true" ezy-bind-value={tCode.active} disabled></td>
+            <td>{tCode.dateCrt | datetime : short}</td>
+            <td>{tCode.userCrtObj.firstName} {tCode.userCrtObj.lastName}</td>
+            <td>{tCode.dateMod | datetime : short}</td>
+            <td>{tCode.userModObj.firstName} {tCode.userModObj.lastName}</td>
+       </tr>
+    </table>
+</div> 
+
+<script type="module">
+   
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { timesheetCodeService } from './services/timesheetCodeService.js';
+
+    $ezy.model.message.reset();
+
+    $ezy.model.timesheetCodeList = [];
+
+    const timesheetCode = $ezy.router.route.params.timesheetCode;
+    // delete
+    if(timesheetCode !== undefined){
+        timesheetCodeService.deleteTimesheetCode(timesheetCode)
+            .then(res => {
+                loadTimesheetCodeList();
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }else{
+        loadTimesheetCodeList();
+    }
+
+    function loadTimesheetCodeList(){
+        timesheetCodeService.getTimesheetCodeList()
+            .then(res => {
+                $ezy.model.message.reset();
+                $ezy.model.timesheetCodeList = res;
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }
+
+</script>

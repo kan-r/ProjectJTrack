@@ -1,0 +1,122 @@
+<div class="title">Timesheet</div>
+
+<div class="form-region">
+    <form>
+        <table class="form-standard">
+            <tr>
+                <td>
+                    <label>User</label>
+                </td>
+                <td>
+                    <select name="userId" value ={timesheetSO.userId}>
+                        <option value=""></option>
+                        <option ezy-bind-list="usr in userList" value = {usr.userId}>{usr.firstName} {usr.lastName}</option>
+                    </select>
+                </td>
+                <td>
+                    <label >Worked Date From</label>
+                </td>
+                <td>
+                    <input type="date" name="workedDateFrom" value = {timesheetSO.workedDateFrom} />
+                </td>
+                <td>
+                    <label>To</label>
+                </td>
+                <td>
+                    <input type="date" name="workedDateTo" value = {timesheetSO.workedDateTo} />
+                </td>
+                <td>
+                    <input id="go" type="submit" value="Go" class="button" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div class="button-region">
+    <a href = "#timesheetForm" class="button">Create</a>
+ </div>
+<div class="report-region-2">
+    <table class="report-standard">
+        <tr >
+            <th></th>
+            <th></th>
+            <th>User</th>
+            <th>Job No</th>
+            <th>Job Name</th>
+            <th>Worked Date</th>
+            <th>Worked Day</th>
+            <th>Worked Hrs</th>
+            <th>Timesheet Code</th>
+            <th>Active</th>
+            <th>Date Created</th>
+            <th>User Created</th>
+            <th>Date Modified</th>
+            <th>User Modified</th>
+        </tr>
+        <tr ezy-bind-list="tsheet in timesheetList">
+            <td><a href = "#timesheetForm/{tsheet.timesheetId}">Edit</a></td>
+            <td><a href = "#timesheet/{tsheet.timesheetId}">Delete</a></td>
+            <td>{tsheet.userObj.firstName} {tsheet.userObj.lastName}</td>
+            <td>{tsheet.jobNo}</td>
+            <td>{tsheet.jobObj.jobName}</td>
+            <td>{tsheet.workedDate | date : short}</td>
+            <td>{tsheet.workedDate | day : short}</td>
+            <td>{tsheet.workedHrs}</td>
+            <td>{tsheet.timesheetCode}</td>
+            <td><input type="checkbox" id="active" value="true" ezy-bind-value={tsheet.active} disabled></td>
+            <td>{tsheet.dateCrt | datetime : short}</td>
+            <td>{tsheet.userCrtObj.firstName} {tsheet.userCrtObj.lastName}</td>
+            <td>{tsheet.dateMod | datetime : short}</td>
+            <td>{tsheet.userModObj.firstName} {tsheet.userModObj.lastName}</td>
+       </tr>
+    </table>
+</div> 
+
+<script type="module">
+   
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { genService } from './services/genService.js';
+    import { timesheetService } from './services/timesheetService.js';
+
+    $ezy.model.message.reset();
+
+    //if it is already defined, don't overwrite
+    if(!$ezy.model.hasOwnProperty('timesheetSO')){
+        $ezy.model.timesheetSO = {
+            userId: '',
+            workedDateFrom: '',
+            workedDateTo: ''
+        }
+    }
+
+    $ezy.model.timesheetList = [];
+
+    $ezy.model.userList = [];
+    $ezy.model.jobList = [];
+    $ezy.model.timesheetCodeList = [];
+
+    genService.loadUserList();
+    genService.loadJobList();
+    genService.loadTimesheetCodeList();
+
+    const timesheetId = $ezy.router.route.params.timesheetId;
+    // delete
+    if(timesheetId !== undefined){
+        timesheetService.deleteTimesheet(timesheetId)
+            .then(res => {
+                genService.loadTimesheetList2();
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }else{
+        genService.loadTimesheetList2();
+    }
+
+    document.querySelector('#go').addEventListener('click', (evt) => {
+        evt.preventDefault();
+        genService.loadTimesheetList2();
+    })
+
+</script>

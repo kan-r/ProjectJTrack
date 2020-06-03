@@ -1,0 +1,121 @@
+<div class="title">User</div>
+<form>
+	<div class="button-region">
+		<a href="#user" class="button">Cancel</a>
+		<a id="save" href="#user" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={user.create}>Create User</th>
+				<th ezy-bind-hide={user.create}>Edit User</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="userId">User ID</label>
+							</td>
+							<td >
+								<input ezy-bind-show={user.create} name="userId" value = {user.userId} />
+								<input ezy-bind-hide={user.create} name="userId" value = {user.userId} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="pword">Password</label>
+							</td>
+							<td>
+								<input type="password" name="pword" value = {user.pword} />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="firstName">First Name</label>
+							</td>
+							<td>
+								<input name="firstName" value = {user.firstName} />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="lastName">Last Name</label>
+							</td>
+							<td >
+								<input name="lastName" value = {user.lastName} />
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {user.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { userService } from './services/userService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.user = {
+		userId: '',
+		pword: '',
+		firstName: '',
+		lastName: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const userId = $ezy.router.route.params.userId;
+	//edit 
+	if(userId !== undefined){
+		userService.getUser(userId)
+			.then(res => {
+				let u = res;
+				u.create = false;
+				$ezy.model.user = u;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.user.create){
+			userService.addUser($ezy.model.user)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#user");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			userService.updateUser($ezy.model.user)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#user");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

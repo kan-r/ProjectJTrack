@@ -4,3 +4,4 @@
 	#JtrackSB - developed using Java, Spring Boot, Spring MVC and Oracle
 	#jtrackAng - developed using Angular
 	#jtrackReact - developed using React
+	#jtrackEzy - developed using My Framework (JS/ES6)

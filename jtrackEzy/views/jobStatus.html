@@ -1,0 +1,66 @@
+<div class="title">Job Status</div>
+<div class="button-region">
+    <a href = "#jobStatusForm" class="button">Create</a>
+ </div>
+<div class="report-region-2">
+    <table class="report-standard">
+        <tr >
+            <th></th>
+            <th></th>
+            <th>Job Status</th>
+            <th>Job Status Description</th>
+            <th>Active</th>
+            <th>Date Created</th>
+            <th>User Created</th>
+            <th>Date Modified</th>
+            <th>User Modified</th>
+        </tr>
+        <tr ezy-bind-list="jStatus in jobStatusList">
+            <td><a href = "#jobStatusForm/{jStatus.jobStatus}">Edit</a></td>
+            <td><a href = "#jobStatus/{jStatus.jobStatus}">Delete</a></td>
+            <td>{jStatus.jobStatus}</td>
+            <td>{jStatus.jobStatusDesc}</td>
+            <td><input type="checkbox" id="active" value="true" ezy-bind-value={jStatus.active} disabled></td>
+            <td>{jStatus.dateCrt | datetime : short}</td>
+            <td>{jStatus.userCrtObj.firstName} {jStatus.userCrtObj.lastName}</td>
+            <td>{jStatus.dateMod | datetime : short}</td>
+            <td>{jStatus.userModObj.firstName} {jStatus.userModObj.lastName}</td>
+       </tr>
+    </table>
+</div> 
+
+<script type="module">
+   
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { jobStatusService } from './services/jobStatusService.js';
+
+    $ezy.model.message.reset();
+
+    $ezy.model.jobStatusList = [];
+
+    const jobStatus = $ezy.router.route.params.jobStatus;
+    // delete
+    if(jobStatus !== undefined){
+        jobStatusService.deleteJobStatus(jobStatus)
+            .then(res => {
+                loadJobStatusList();
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }else{
+        loadJobStatusList();
+    }
+
+    function loadJobStatusList(){
+        jobStatusService.getJobStatusList()
+            .then(res => {
+                $ezy.model.message.reset();
+                $ezy.model.jobStatusList = res;
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }
+
+</script>

@@ -1,0 +1,103 @@
+<div class="title">Job Status</div>
+<form>
+	<div class="button-region">
+		<a href="#jobStatus" class="button">Cancel</a>
+		<a id="save" href="#jobStatus" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={jobStatus.create}>Create Job Status</th>
+				<th ezy-bind-hide={jobStatus.create}>Edit Job Status</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="jobStatus">Job Status</label>
+							</td>
+							<td >
+								<input ezy-bind-show={jobStatus.create} name="jobStatus" value = {jobStatus.jobStatus} />
+								<input ezy-bind-hide={jobStatus.create} name="jobStatus" value = {jobStatus.jobStatus} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="jobStatusDesc">Job Status Description</label>
+							</td>
+							<td>
+                                <textarea name="jobStatusDesc" rows="3">{jobStatus.jobStatusDesc}</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {jobStatus.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { jobStatusService } from './services/jobStatusService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.jobStatus = {
+		jobStatus: '',
+		jobStatusDesc: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const jobStatus = $ezy.router.route.params.jobStatus;
+	//edit 
+	if(jobStatus !== undefined){
+		jobStatusService.getJobStatus(jobStatus)
+			.then(res => {
+				let jStatus = res;
+				jStatus.create = false;
+				$ezy.model.jobStatus = jStatus;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.jobStatus.create){
+			jobStatusService.addJobStatus($ezy.model.jobStatus)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobStatus");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			jobStatusService.updateJobStatus($ezy.model.jobStatus)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobStatus");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

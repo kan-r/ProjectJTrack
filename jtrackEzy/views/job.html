@@ -1,0 +1,222 @@
+<div class="title">Job</div>
+
+<div class="form-region">
+    <form>
+        <table class="form-standard">
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Job Name</label>
+                            </td>
+                            <td>
+                                <input name="jobName" value = {jobSO.jobName} />
+                            </td>
+                            <td>
+                                <label>Job Type</label>
+                            </td>
+                            <td>
+                                <select name="jobType" value = {jobSO.jobType}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jType in jobTypeList" value={jType.jobType}>{jType.jobType}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <label>Include Child Jobs</label>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="includeChildJobs" value = "true" ezy-bind-value = {jobSO.includeChildJobs}>
+                            </td>
+                            <td>
+                                <label>==></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Status</label>
+                            </td>
+                            <td>
+                                <select name="jobStatus" value = {jobSO.jobStatus}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jStatus in jobStatusList" value={jStatus.jobStatus}>{jStatus.jobStatus}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <label>Assigned To</label>
+                            </td>
+                            <td>
+                                <select name="assignedTo" value ={jobSO.assignedTo}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="usr in userList" value={usr.userId}>{usr.firstName} {usr.lastName}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input id="go" type="submit" value="Go" class="button" />
+                            </td>
+                        </tr>
+                    </table> 
+                </td>
+                <td class="vline"></td>
+                <td ezy-bind-show={jobSO.includeChildJobs}>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Job Name</label>
+                            </td>
+                            <td>
+                                <input name="jobNameChild" value = {jobSO.jobNameChild} />
+                            </td>
+                            <td>
+                                <label>Job Type</label>
+                            </td>
+                            <td>
+                                <select name="jobType" value = {jobSO.jobTypeChild}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jType in jobTypeList" value={jType.jobType}>{jType.jobType}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Status</label>
+                            </td>
+                            <td>
+                                <select name="jobStatus" value = {jobSO.jobStatusChild}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jStatus in jobStatusList" value={jStatus.jobStatus}>{jStatus.jobStatus}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <label>Assigned To</label>
+                            </td>
+                            <td>
+                                <select name="assignedToChild" value ={jobSO.assignedToChild}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="usr in userList" value={usr.userId}>{usr.firstName} {usr.lastName}</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table> 
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div class="button-region">
+    <a href = "#jobForm" class="button">Create</a>
+ </div>
+<div class="report-region-2">
+    <table class="report-standard">
+        <tr >
+            <th></th>
+            <th></th>
+            <th>Job No</th>
+            <th>Parent Job Name</th>
+            <th>Job Name</th>
+            <th>Job Type</th>
+            <th>Job Stage</th>
+            <th>Job Priority</th>
+            <th>Job Status</th>
+            <th>Job Resolution</th>
+            <th>Job Order</th>
+            <th>Assigned To</th>
+            <th>Timesheet Code</th>
+            <th>Estimated Start Date</th>
+            <th>Actual Start Date</th>
+            <th>Estimated End Date</th>
+            <th>Actual End Date</th>
+            <th>Estimated Hrs</th>
+            <th>Completed Hrs</th>
+            <!-- <th>Active</th> -->
+        </tr>
+        <tr ezy-bind-list="job in jobList2">
+            <td><a href = "#jobForm/{job.jobNo}">Edit</a></td>
+            <td><a href = "#job/{job.jobNo}">Delete</a></td>
+            <td>{job.jobNo}</td>
+            <td>{job.parentJobObj.jobName}</td>
+            <td>{job.jobName}</td>
+            <td>{job.jobType}</td>
+            <td>{job.jobStage}</td>
+            <td>{job.jobPriority}</td>
+            <td>{job.jobStatus}</td>
+            <td>{job.jobResolution}</td>
+            <td>{job.jobOrder}</td>
+            <td>{job.assignedToObj.firstName} {job.assignedToObj.lastName}</td>
+            <td>{job.timesheetCode}</td>
+            <td>{job.estimatedStartDate | date : short}</td>
+            <td>{job.actualStartDate | date : short}</td>
+            <td>{job.estimatedEndDate | date : short}</td>
+            <td>{job.actualEndDate | date : short}</td>
+            <td>{job.estimatedHrs}</td>
+            <td>{job.completedHrs}</td>
+            <!-- <td><input type="checkbox" id="active" value="true" ezy-bind-value={job.active} disabled></td> -->
+       </tr>
+    </table>
+</div> 
+
+<script type="module">
+   
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { genService } from './services/genService.js';
+    import { jobService } from './services/jobService.js';
+
+    $ezy.model.message.reset();
+
+    //if it is already defined, don't overwrite
+    if(!$ezy.model.hasOwnProperty('jobSO')){
+        $ezy.model.jobSO = {
+            jobName: '',
+            jobType: '',
+            jobStatus: '',
+            assignedTo: '',
+            includeChildJobs: true,
+            jobNameChild: '',
+            jobTypeChild: '',
+            jobStatusChild: '',
+            assignedToChild: ''
+        }
+    }
+
+    $ezy.model.jobList2 = [];
+    $ezy.model.jobTypeList = [];
+    $ezy.model.jobStatusList = [];
+    $ezy.model.timesheetCodeList = [];
+    $ezy.model.userList = [];
+
+    $ezy.model.jobStageList = [];
+    $ezy.model.jobPriorityList = [];
+    $ezy.model.jobResolutionList = [];
+    $ezy.model.parentJobList = [];
+
+    genService.loadJobTypeList();
+    genService.loadStatusList();
+    genService.loadTimesheetCodeList();
+    genService.loadUserList();
+
+    genService.loadJobStageList();
+    genService.loadJobPriorityList();
+    genService.loadJobResolutionList();
+    genService.loadParentJobList();
+
+    const jobNo = $ezy.router.route.params.jobNo;
+    // delete
+    if(jobNo !== undefined){
+        jobService.deleteJob(jobNo)
+            .then(res => {
+                genService.loadJobList2();
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }else{
+        genService.loadJobList2();
+    }
+
+    document.querySelector('#go').addEventListener('click', (evt) => {
+        evt.preventDefault();
+        genService.loadJobList2();
+    })
+
+</script>

@@ -1,0 +1,103 @@
+<div class="title">Job Stage</div>
+<form>
+	<div class="button-region">
+		<a href="#jobStage" class="button">Cancel</a>
+		<a id="save" href="#jobStage" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={jobStage.create}>Create Job Stage</th>
+				<th ezy-bind-hide={jobStage.create}>Edit Job Stage</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="jobStage">Job Stage</label>
+							</td>
+							<td >
+								<input ezy-bind-show={jobStage.create} name="jobStage" value = {jobStage.jobStage} />
+								<input ezy-bind-hide={jobStage.create} name="jobStage" value = {jobStage.jobStage} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="jobStageDesc">Job Stage Description</label>
+							</td>
+							<td>
+                                <textarea name="jobStageDesc" rows="3">{jobStage.jobStageDesc}</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {jobStage.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { jobStageService } from './services/jobStageService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.jobStage = {
+		jobStage: '',
+		jobStageDesc: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const jobStage = $ezy.router.route.params.jobStage;
+	//edit 
+	if(jobStage !== undefined){
+		jobStageService.getJobStage(jobStage)
+			.then(res => {
+				let jStage = res;
+				jStage.create = false;
+				$ezy.model.jobStage = jStage;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.jobStage.create){
+			jobStageService.addJobStage($ezy.model.jobStage)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobStage");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			jobStageService.updateJobStage($ezy.model.jobStage)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobStage");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

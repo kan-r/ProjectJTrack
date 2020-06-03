@@ -1,0 +1,103 @@
+<div class="title">Job Priority</div>
+<form>
+	<div class="button-region">
+		<a href="#jobPriority" class="button">Cancel</a>
+		<a id="save" href="#jobPriority" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={jobPriority.create}>Create Job Priority</th>
+				<th ezy-bind-hide={jobPriority.create}>Edit Job Priority</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="jobPriority">Job Priority</label>
+							</td>
+							<td >
+								<input ezy-bind-show={jobPriority.create} name="jobPriority" value = {jobPriority.jobPriority} />
+								<input ezy-bind-hide={jobPriority.create} name="jobPriority" value = {jobPriority.jobPriority} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="jobPriorityDesc">Job Priority Description</label>
+							</td>
+							<td>
+                                <textarea name="jobPriorityDesc" rows="3">{jobPriority.jobPriorityDesc}</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {jobPriority.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { jobPriorityService } from './services/jobPriorityService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.jobPriority = {
+		jobPriority: '',
+		jobPriorityDesc: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const jobPriority = $ezy.router.route.params.jobPriority;
+	//edit 
+	if(jobPriority !== undefined){
+		jobPriorityService.getJobPriority(jobPriority)
+			.then(res => {
+				let jPriority = res;
+				jPriority.create = false;
+				$ezy.model.jobPriority = jPriority;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.jobPriority.create){
+			jobPriorityService.addJobPriority($ezy.model.jobPriority)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobPriority");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			jobPriorityService.updateJobPriority($ezy.model.jobPriority)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#jobPriority");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

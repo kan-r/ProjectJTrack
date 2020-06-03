@@ -1,0 +1,64 @@
+<div class="form-region">
+    <table class="form-standard">
+        <tr>
+            <th><div>JTrack - Login</div></th>
+        </tr>
+        <tr>
+            <td>
+                <form>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>User:</td>
+                                <td><input type="text" name="user" value={appUser.userId} /></td>
+                            </tr>
+                            <tr>
+                                <td>Password:</td>
+                                <td><input type="password" name="password" value={appUser.pword} /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="submit" value="Login" class="button" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script type="module">
+    
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { authService } from './services/authService.js';
+
+    $ezy.model.message.reset();
+
+    $ezy.model.appUser = {
+        userId: '',
+        pword: '',
+        isAdmin: false
+    }
+
+    if($ezy.router.route.params.param === 'logout'){
+        $ezy.model.message.setInfo('Logged out.');
+        authService.logout();
+    }else if($ezy.router.route.params.param === 'sessexp'){
+        $ezy.model.message.setInfo('Session expired.');
+    }
+
+    document.querySelector('input[type=submit]').addEventListener('click', evt => {
+        evt.preventDefault();
+
+        authService.login($ezy.model.appUser.userId, $ezy.model.appUser.pword, (loggedIn, err) =>{
+            if(loggedIn){
+                $ezy.model.appUser.isAdmin = authService.isUserAdmin();
+                $ezy.router.redirectTo("#job");
+            }else{
+                $ezy.model.message.setError(err);
+            }
+        });
+    })
+
+</script>

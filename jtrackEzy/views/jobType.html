@@ -1,0 +1,66 @@
+<div class="title">Job Type</div>
+<div class="button-region">
+    <a href = "#jobTypeForm" class="button">Create</a>
+ </div>
+<div class="report-region-2">
+    <table class="report-standard">
+        <tr >
+            <th></th>
+            <th></th>
+            <th>Job Type</th>
+            <th>Job Type Description</th>
+            <th>Active</th>
+            <th>Date Created</th>
+            <th>User Created</th>
+            <th>Date Modified</th>
+            <th>User Modified</th>
+        </tr>
+        <tr ezy-bind-list="jType in jobTypeList">
+            <td><a href = "#jobTypeForm/{jType.jobType}">Edit</a></td>
+            <td><a href = "#jobType/{jType.jobType}">Delete</a></td>
+            <td>{jType.jobType}</td>
+            <td>{jType.jobTypeDesc}</td>
+            <td><input type="checkbox" id="active" value="true" ezy-bind-value={jType.active} disabled></td>
+            <td>{jType.dateCrt | datetime : short}</td>
+            <td>{jType.userCrtObj.firstName} {jType.userCrtObj.lastName}</td>
+            <td>{jType.dateMod | datetime : short}</td>
+            <td>{jType.userModObj.firstName} {jType.userModObj.lastName}</td>
+       </tr>
+    </table>
+</div> 
+
+<script type="module">
+   
+    import { $ezy } from './ezy_modules/ezy.js';
+    import { jobTypeService } from './services/jobTypeService.js';
+
+    $ezy.model.message.reset();
+
+    $ezy.model.jobTypeList = [];
+
+    const jobType = $ezy.router.route.params.jobType;
+    // delete
+    if(jobType !== undefined){
+        jobTypeService.deleteJobType(jobType)
+            .then(res => {
+                loadJobTypeList();
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }else{
+        loadJobTypeList();
+    }
+
+    function loadJobTypeList(){
+        jobTypeService.getJobTypeList()
+            .then(res => {
+                $ezy.model.message.reset();
+                $ezy.model.jobTypeList = res;
+            })
+            .catch(err => {
+                $ezy.model.message.setError(err);
+            });
+    }
+
+</script>

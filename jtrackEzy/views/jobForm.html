@@ -1,0 +1,245 @@
+<div class="title">Job</div>
+<form>
+	<div class="button-region">
+		<a href="#job" class="button">Cancel</a>
+		<a id="save" href="#job" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={job.create}>Create Job</th>
+				<th ezy-bind-hide={job.create}>Edit Job</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr ezy-bind-hide={job.create}>
+							<td>
+								<label>Job No</label>
+							</td>
+							<td>
+								<input type="number" name="jobNo" value = {job.jobNo} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Job Name</label>
+							</td>
+							<td>
+                                <input name="jobName" value={job.jobName} />
+							</td>
+                        </tr>
+                        <tr>
+							<td>
+								<label>Job  Description</label>
+							</td>
+							<td>
+                                <textarea name="jobDesc" rows="3">{job.jobDesc}</textarea>
+							</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Type</label>
+                            </td>
+                            <td>
+                                <select name="jobType" value = {job.jobType}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jType in jobTypeList" value={jType.jobType}>{jType.jobType}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Stage</label>
+                            </td>
+                            <td>
+                                <select name="jobStage" value = {job.jobStage}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jStage in jobStageList" value={jStage.jobStage}>{jStage.jobStage}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Priority</label>
+                            </td>
+                            <td>
+                                <select name="jobPriority" value = {job.jobPriority}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jPri in jobPriorityList" value={jPri.jobPriority}>{jPri.jobPriority}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Status</label>
+                            </td>
+                            <td>
+                                <select name="jobStatus" value = {job.jobStatus}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jStatus in jobStatusList" value={jStatus.jobStatus}>{jStatus.jobStatus}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job Resolution</label>
+                            </td>
+                            <td>
+                                <select name="jobResolution" value = {job.jobResolution}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="jRes in jobResolutionList" value={jRes.jobResolution}>{jRes.jobResolution}</option>
+                                </select>
+                            </td>
+                        </tr>
+						<tr>
+							<td>
+								<label>Job Order</label>
+							</td>
+							<td>
+                                <input type="number" name="jobOrder" value={job.jobOrder} />
+							</td>
+                        </tr>
+						<tr>
+							<td>
+								<label>Assigned To</label>
+							</td>
+                            <td>
+                                <select name="assignedTo" value ={job.assignedTo}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="usr in userList" value={usr.userId}>{usr.firstName} {usr.lastName}</option>
+                                </select>
+                            </td>
+                        </tr>
+						<tr>
+							<td>
+								<label>Estimated Hrs</label>
+							</td>
+							<td>
+                                <input type="number" name="estimatedHrs" value={job.estimatedHrs} />
+							</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Timesheet Code</label>
+                            </td>
+                            <td>
+                                <select name="timesheetCode" value ={job.timesheetCode}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="tCode in timesheetCodeList" value={tCode.timesheetCode}>{tCode.timesheetCode} - {tCode.timesheetCodeDesc}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Estimated Start Date</label>
+                            </td>
+                            <td>
+                                <input type="date" name="estimatedStartDate" value = {job.estimatedStartDate} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Estimated End Date</label>
+                            </td>
+                            <td>
+                                <input type="date" name="estimatedEndDate" value = {job.estimatedEndDate} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Parent Job ( Project )</label>
+                            </td>
+                            <td>
+                                <select name="parentJobNo" value ={job.parentJobNo}>
+                                    <option value=""></option>
+                                    <option ezy-bind-list="pJob in parentJobList" value={pJob.jobNo}>{pJob.jobName} - {pJob.jobNo}</option>
+                                </select>
+                            </td>
+                        </tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {job.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { jobService } from './services/jobService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.job = {
+        //empty string gives error
+        // jobNo: '',
+        jobNo: 0,
+        jobName: '',
+        jobDesc: '',
+        jobType: '',
+        jobPriority: '',
+        jobStatus: '',
+        jobResolution: '',
+        jobStage: '',
+        jobOrder: '',
+        assignedTo: null,
+        timesheetCode: '',
+        estimatedHrs: '',
+        estimatedStartDate: '',
+        estimatedEndDate: '',
+        parentJobNo: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+    }
+
+	const jobNo = $ezy.router.route.params.jobNo;
+	//edit 
+	if(jobNo !== undefined){
+		jobService.getJob(jobNo)
+			.then(res => {
+				let j = res;
+				j.create = false;
+                $ezy.model.job = j;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+        evt.preventDefault();
+        
+		if($ezy.model.job.create){
+			jobService.addJob($ezy.model.job)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#job");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			jobService.updateJob($ezy.model.job)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#job");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

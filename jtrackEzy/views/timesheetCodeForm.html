@@ -1,0 +1,103 @@
+<div class="title">Timesheet Code</div>
+<form>
+	<div class="button-region">
+		<a href="#timesheetCode" class="button">Cancel</a>
+		<a id="save" href="#timesheetCode" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={timesheetCode.create}>Create Timesheet Code</th>
+				<th ezy-bind-hide={timesheetCode.create}>Edit Timesheet Code</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label for="timesheetCode">Timesheet Code</label>
+							</td>
+							<td >
+								<input ezy-bind-show={timesheetCode.create} name="timesheetCode" value = {timesheetCode.timesheetCode} />
+								<input ezy-bind-hide={timesheetCode.create} name="timesheetCode" value = {timesheetCode.timesheetCode} disabled />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="timesheetCodeDesc">Timesheet Code Description</label>
+							</td>
+							<td>
+                                <textarea name="timesheetCodeDesc" rows="3">{timesheetCode.timesheetCodeDesc}</textarea>
+							</td>
+						</tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {timesheetCode.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { timesheetCodeService } from './services/timesheetCodeService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.timesheetCode = {
+		timesheetCode: '',
+		timesheetCodeDesc: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const timesheetCode = $ezy.router.route.params.timesheetCode;
+	//edit 
+	if(timesheetCode !== undefined){
+		timesheetCodeService.getTimesheetCode(timesheetCode)
+			.then(res => {
+				let tCode = res;
+				tCode.create = false;
+				$ezy.model.timesheetCode = tCode;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.timesheetCode.create){
+			timesheetCodeService.addTimesheetCode($ezy.model.timesheetCode)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#timesheetCode");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			timesheetCodeService.updateTimesheetCode($ezy.model.timesheetCode)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#timesheetCode");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>

@@ -1,0 +1,148 @@
+<div class="title">Timesheet</div>
+<form>
+	<div class="button-region">
+		<a href="#timesheet" class="button">Cancel</a>
+		<a id="save" href="#timesheet" class="button">Save</a>
+	</div>
+	
+	<div class="form-region-2">
+		<table class="form-standard">
+			<tr>
+				<th ezy-bind-show={timesheet.create}>Create Timesheet</th>
+				<th ezy-bind-hide={timesheet.create}>Edit Timesheet</th>
+			</tr>
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<label>User</label>
+							</td>
+                            <td>
+                                <select ezy-bind-show={timesheet.create} name="userId" value ={timesheet.userId}>
+									<option value=""></option>
+                                    <option ezy-bind-list="usr in userList" value={usr.userId}>{usr.firstName} {usr.lastName}</option>
+								</select>
+								<select ezy-bind-hide={timesheet.create} name="userId" value ={timesheet.userId} class="disabled" disabled>
+									<option value=""></option>
+                                    <option ezy-bind-list="usr in userList" value={usr.userId}>{usr.firstName} {usr.lastName}</option>
+								</select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Job</label>
+                            </td>
+                            <td>
+                                <select ezy-bind-show={timesheet.create} name="job" value ={timesheet.jobNo}>
+									<option value=""></option>
+                                    <option ezy-bind-list="jb in jobList" value={jb.jobNo}>{jb.jobName} - {jb.jobNo}</option>
+								</select>
+								<select ezy-bind-hide={timesheet.create} name="job" value ={timesheet.jobNo} class="disabled" disabled>
+									<option value=""></option>
+                                    <option ezy-bind-list="jb in jobList" value={jb.jobNo}>{jb.jobName} - {jb.jobNo}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Worked Date</label>
+                            </td>
+                            <td>
+								<input ezy-bind-show={timesheet.create} type="date" name="workedDate" value = {timesheet.workedDate} />
+								<input ezy-bind-hide={timesheet.create} type="date" name="workedDate" value = {timesheet.workedDate} disabled />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Worked Hours</label>
+                            </td>
+                            <td>
+                                <input type="number" name="workedHrs" value = {timesheet.workedHrs} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Timesheet Code</label>
+                            </td>
+                            <td>
+                                <select name="timesheetCode" value ={timesheet.timesheetCode}>
+									<option value=""></option>
+                                    <option ezy-bind-list="tCode in timesheetCodeList" value={tCode.timesheetCode}>{tCode.timesheetCode} - {tCode.timesheetCodeDesc}</option>
+                                </select>
+                            </td>
+                        </tr>
+						<tr>
+							<td >
+                                <label>Active</label>
+                            </td>
+							<td>
+								<input type="checkbox" name="active" value = "true" ezy-bind-value = {timesheet.active}>
+							</td>
+						</tr>
+					</table> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<script type="module">
+	
+	import { $ezy } from './ezy_modules/ezy.js';
+	import { timesheetService } from './services/timesheetService.js';
+
+    $ezy.model.message.reset();
+
+	$ezy.model.timesheet = {
+		timesheetId: '',
+        userId: '',
+        jobNo: '',
+        workedDate: '',
+        workedHrs: '',
+        timesheetCode: '',
+		active: true,
+		userCrt: null,
+		userMod: null,
+		create: true
+	}
+
+	const timesheetId = $ezy.router.route.params.timesheetId;
+	//edit 
+	if(timesheetId !== undefined){
+		timesheetService.getTimesheet(timesheetId)
+			.then(res => {
+				let t = res;
+				t.create = false;
+				$ezy.model.timesheet = t;
+			})
+			.catch(err => {
+				$ezy.model.message.setError(err);
+			});
+	}
+
+	document.querySelector('#save').addEventListener('click', (evt) => {
+		evt.preventDefault();
+
+		if($ezy.model.timesheet.create){
+			timesheetService.addTimesheet($ezy.model.timesheet)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#timesheet");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}else{
+			timesheetService.updateTimesheet($ezy.model.timesheet)
+				.then(res => {
+					$ezy.model.message.reset();
+					$ezy.router.redirectTo("#timesheet");
+				})
+				.catch(err => {
+					$ezy.model.message.setError(err);
+				})
+		}
+	});
+
+</script>
