@@ -3,66 +3,50 @@ package com.jtrack.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStatus;
 import com.jtrack.service.JobStatusService;
 
 @RestController
+@RequestMapping("/jobStatuses")
 public class JobStatusController {
 
 	@Autowired
 	JobStatusService jobStatusService;
 
-	@GetMapping(path="/jobStatus")
+	@GetMapping("")
 	public List<JobStatus> getJobStatusList(){
 		return jobStatusService.getJobStatusList();
 	}
 	
-	@GetMapping(path="/jobStatus/{id}")
-	public ResponseEntity<Object> getJobStatus(@PathVariable String id){
-		JobStatus jobStatus = jobStatusService.getJobStatus(id);
-		
-		if(jobStatus == null) {
-			return ResponseEntity.badRequest().body("JobStatus does not exist");
-		}
-		
-		return ResponseEntity.ok(jobStatus);
+	@GetMapping("/{id}")
+	public JobStatus getJobStatus(@PathVariable String id){
+		return jobStatusService.getJobStatus(id);
 	}
 
-	@PostMapping("/jobStatus")
-	public ResponseEntity<Object> addJobStatus(@RequestBody JobStatus jobStatus) {
-		if(jobStatusService.jobStatusExists(jobStatus.getJobStatus())) {
-			return ResponseEntity.badRequest().body("JobStatus already exists");
-		}
-		
-		return ResponseEntity.ok(jobStatusService.addJobStatus(jobStatus));
+	@PostMapping("")
+	public JobStatus addJobStatus(@RequestBody JobStatus jobStatus) throws InvalidDataException {
+		return jobStatusService.addJobStatus(jobStatus);
 	}
 	
-	@PutMapping("/jobStatus")
-	public ResponseEntity<Object> updateJobStatus(@RequestBody JobStatus jobStatus) {
-		if(!jobStatusService.jobStatusExists(jobStatus.getJobStatus())) {
-			return ResponseEntity.badRequest().body("JobStatus does not exist");
-		}
-		
-		return ResponseEntity.ok(jobStatusService.updateJobStatus(jobStatus));
+	@PutMapping("/{id}")
+	public JobStatus updateJobStatus(@PathVariable String id, @RequestBody JobStatus jobStatus) throws InvalidDataException {
+		jobStatus.setJobStatus(id);
+		return jobStatusService.updateJobStatus(jobStatus);
 	}
 	
-	@DeleteMapping("/jobStatus/{id}")
-	public ResponseEntity<Object> deleteJobStatus(@PathVariable String id) {
-		if(!jobStatusService.jobStatusExists(id)) {
-			return ResponseEntity.badRequest().body("JobStatus does not exist");
-		}
-		
+	@DeleteMapping("/{id}")
+	public String deleteJobStatus(@PathVariable String id) throws InvalidDataException {
 		jobStatusService.deleteJobStatus(id);
-		
-		return ResponseEntity.ok().build();
+		return "";
 	}
 }

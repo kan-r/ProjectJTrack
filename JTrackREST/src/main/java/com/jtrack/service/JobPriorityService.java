@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobPriorityDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobPriority;
 
 @Service
@@ -46,8 +47,12 @@ public class JobPriorityService {
 		return (jobPriorityExisting != null);
 	}
 	
-	public JobPriority addJobPriority(JobPriority jobPriority) {
+	public JobPriority addJobPriority(JobPriority jobPriority) throws InvalidDataException {
 		logger.info("addJobPriority({})", jobPriority);
+		
+		if(jobPriorityExists(jobPriority.getJobPriority())) {
+			throw new InvalidDataException("JobPriority already exists");
+		}
 		
 		jobPriority.setUserCrt(userService.getCurrentUserId());
 		jobPriority.setDateCrt(new Date());
@@ -55,14 +60,23 @@ public class JobPriorityService {
 	    return jobPriorityDao.save(jobPriority);
 	}
 	
-	public void deleteJobPriority(String jobPriorityId) {
+	public void deleteJobPriority(String jobPriorityId) throws InvalidDataException {
 		logger.info("deleteJobPriority({})", jobPriorityId);
+		
+		if(!jobPriorityExists(jobPriorityId)) {
+			throw new InvalidDataException("JobPriority does not exist");
+		}
+		
 		jobPriorityDao.deleteById(jobPriorityId);
 	}
 	
-	public JobPriority updateJobPriority(JobPriority jobPriority) {
+	public JobPriority updateJobPriority(JobPriority jobPriority) throws InvalidDataException {
 		logger.info("updateJobPriority({})", jobPriority);
 		
+		if(!jobPriorityExists(jobPriority.getJobPriority())) {
+			throw new InvalidDataException("JobPriority does not exist");
+		}
+
 		jobPriority.setUserMod(userService.getCurrentUserId());
 		jobPriority.setDateMod(new Date());
 		

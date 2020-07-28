@@ -5,30 +5,31 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jtrack.model.LoginHist;
 import com.jtrack.service.LoginHistService;
 
 @RestController
+@RequestMapping("/loginHist")
 public class LoginHistController {
 
 	@Autowired
 	LoginHistService loginHistService;
 
-	@GetMapping(path="/loginHist")
+	@GetMapping("")
 	public List<LoginHist> getLoginHistList(){
 		return loginHistService.getLoginHistList();
 	}
 
-	@PostMapping("/loginHist")
-	public ResponseEntity<Object> addLoginHist(@RequestBody LoginHist loginHist, HttpServletRequest req) {
+	@PostMapping("")
+	public LoginHist addLoginHist(@RequestBody LoginHist loginHist, HttpServletRequest req) {
 		loginHist.setIpAddr(getClientIpAddr(req));
-		return ResponseEntity.ok(loginHistService.addLoginHist(loginHist));
+		return loginHistService.addLoginHist(loginHist);
 	}
 	
 	private String getClientIpAddr(HttpServletRequest request) {

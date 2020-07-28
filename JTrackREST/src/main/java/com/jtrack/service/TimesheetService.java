@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.TimesheetDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.Timesheet;
 
 @Service
@@ -107,8 +108,12 @@ public class TimesheetService {
 		return (timesheetExisting != null);
 	}
 	
-	public Timesheet addTimesheet(Timesheet timesheet) {
+	public Timesheet addTimesheet(Timesheet timesheet) throws InvalidDataException {
 		logger.info("addTimesheet({})", timesheet);
+		
+		if(timesheetExists(timesheet.getUserId(), timesheet.getJobNo(), timesheet.getWorkedDate())) {
+			throw new InvalidDataException("Timesheet already exists");
+		}
 
 		SimpleDateFormat dtFmt = new SimpleDateFormat("yyyyMMdd");
         String timesheetId = timesheet.getUserId() + "-" + timesheet.getJobNo() + "-" + dtFmt.format(timesheet.getWorkedDate());
@@ -122,8 +127,12 @@ public class TimesheetService {
 		return t;
 	}
 	
-	public void deleteTimesheet(String timesheetId) {
+	public void deleteTimesheet(String timesheetId) throws InvalidDataException {
 		logger.info("deleteTimesheet({})", timesheetId);
+		
+		if(!timesheetExists(timesheetId)) {
+			throw new InvalidDataException("Timesheet does not exist");
+		}
 		
 		long jobNo = getTimesheet(timesheetId).getJobNo();
 		
@@ -131,8 +140,12 @@ public class TimesheetService {
 		refreshJob(jobNo);
 	}
 	
-	public Timesheet updateTimesheet(Timesheet timesheet) {
+	public Timesheet updateTimesheet(Timesheet timesheet) throws InvalidDataException {
 		logger.info("updateTimesheet({})", timesheet);
+		
+		if(!timesheetExists(timesheet.getTimesheetId())) {
+			throw new InvalidDataException("Timesheet does not exist");
+		}
 		
 		timesheet.setUserMod(userService.getCurrentUserId());
 		timesheet.setDateMod(new Date());

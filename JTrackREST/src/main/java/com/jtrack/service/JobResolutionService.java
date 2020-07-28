@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobResolutionDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobResolution;
 
 @Service
@@ -46,8 +47,12 @@ public class JobResolutionService {
 		return (jobResolutionExisting != null);
 	}
 	
-	public JobResolution addJobResolution(JobResolution jobResolution) {
+	public JobResolution addJobResolution(JobResolution jobResolution) throws InvalidDataException {
 		logger.info("addJobResolution({})", jobResolution);
+		
+		if(jobResolutionExists(jobResolution.getJobResolution())) {
+			throw new InvalidDataException("JobResolution already exists");
+		}
 		
 		jobResolution.setUserCrt(userService.getCurrentUserId());
 		jobResolution.setDateCrt(new Date());
@@ -55,13 +60,22 @@ public class JobResolutionService {
 	    return jobResolutionDao.save(jobResolution);
 	}
 	
-	public void deleteJobResolution(String jobResolutionId) {
+	public void deleteJobResolution(String jobResolutionId) throws InvalidDataException {
 		logger.info("deleteJobResolution({})", jobResolutionId);
+		
+		if(!jobResolutionExists(jobResolutionId)) {
+			throw new InvalidDataException("JobResolution does not exist");
+		}
+		
 		jobResolutionDao.deleteById(jobResolutionId);
 	}
 	
-	public JobResolution updateJobResolution(JobResolution jobResolution) {
+	public JobResolution updateJobResolution(JobResolution jobResolution) throws InvalidDataException {
 		logger.info("updateJobResolution({})", jobResolution);
+		
+		if(!jobResolutionExists(jobResolution.getJobResolution())) {
+			throw new InvalidDataException("JobResolution does not exist");
+		}
 		
 		jobResolution.setUserMod(userService.getCurrentUserId());
 		jobResolution.setDateMod(new Date());

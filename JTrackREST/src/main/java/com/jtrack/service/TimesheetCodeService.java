@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.TimesheetCodeDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.TimesheetCode;
 
 @Service
@@ -46,8 +47,12 @@ public class TimesheetCodeService {
 		return (timesheetCodeExisting != null);
 	}
 	
-	public TimesheetCode addTimesheetCode(TimesheetCode timesheetCode) {
+	public TimesheetCode addTimesheetCode(TimesheetCode timesheetCode) throws InvalidDataException {
 		logger.info("addTimesheetCode({})", timesheetCode);
+		
+		if(timesheetCodeExists(timesheetCode.getTimesheetCode())) {
+			throw new InvalidDataException("TimesheetCode already exists");
+		}
 		
 		timesheetCode.setUserCrt(userService.getCurrentUserId());
 		timesheetCode.setDateCrt(new Date());
@@ -55,13 +60,22 @@ public class TimesheetCodeService {
 	    return timesheetCodeDao.save(timesheetCode);
 	}
 	
-	public void deleteTimesheetCode(String timesheetCodeId) {
+	public void deleteTimesheetCode(String timesheetCodeId) throws InvalidDataException {
 		logger.info("deleteTimesheetCode({})", timesheetCodeId);
+		
+		if(!timesheetCodeExists(timesheetCodeId)) {
+			throw new InvalidDataException("TimesheetCode does not exist");
+		}
+		
 		timesheetCodeDao.deleteById(timesheetCodeId);
 	}
 	
-	public TimesheetCode updateTimesheetCode(TimesheetCode timesheetCode) {
+	public TimesheetCode updateTimesheetCode(TimesheetCode timesheetCode) throws InvalidDataException {
 		logger.info("updateTimesheetCode({})", timesheetCode);
+		
+		if(!timesheetCodeExists(timesheetCode.getTimesheetCode())) {
+			throw new InvalidDataException("TimesheetCode does not exist");
+		}
 		
 		timesheetCode.setUserMod(userService.getCurrentUserId());
 		timesheetCode.setDateMod(new Date());

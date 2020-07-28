@@ -93,7 +93,7 @@ public class AuthServerConfig extends WebSecurityConfigurerAdapter implements Au
 
 
     /**
-     * No security check for /loginHist
+     * No security check for /loginHist, /pageVisitHist
      */
     @Override
     public void configure(WebSecurity web) {
@@ -102,9 +102,7 @@ public class AuthServerConfig extends WebSecurityConfigurerAdapter implements Au
 		web.ignoring().antMatchers(
         		"/loginHist", 
         		"/pageVisitHist", 
-        		"/pageVisitHist/**", 
-        		"/pageVisitCount",
-        		"/pageVisitCount/**");
+        		"/pageVisitHist/**");
        
 //        web.ignoring().anyRequest();
     }

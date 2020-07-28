@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobStatusDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStatus;
 
 @Service
@@ -46,8 +47,12 @@ public class JobStatusService {
 		return (jobStatusExisting != null);
 	}
 	
-	public JobStatus addJobStatus(JobStatus jobStatus) {
+	public JobStatus addJobStatus(JobStatus jobStatus) throws InvalidDataException {
 		logger.info("addJobStatus({})", jobStatus);
+		
+		if(jobStatusExists(jobStatus.getJobStatus())) {
+			throw new InvalidDataException("JobStatus already exists");
+		}
 		
 		jobStatus.setUserCrt(userService.getCurrentUserId());
 		jobStatus.setDateCrt(new Date());
@@ -55,13 +60,22 @@ public class JobStatusService {
 	    return jobStatusDao.save(jobStatus);
 	}
 	
-	public void deleteJobStatus(String jobStatusId) {
+	public void deleteJobStatus(String jobStatusId) throws InvalidDataException {
 		logger.info("deleteJobStatus({})", jobStatusId);
+		
+		if(!jobStatusExists(jobStatusId)) {
+			throw new InvalidDataException("JobStatus does not exist");
+		}
+		
 		jobStatusDao.deleteById(jobStatusId);
 	}
 	
-	public JobStatus updateJobStatus(JobStatus jobStatus) {
+	public JobStatus updateJobStatus(JobStatus jobStatus) throws InvalidDataException {
 		logger.info("updateJobStatus({})", jobStatus);
+		
+		if(!jobStatusExists(jobStatus.getJobStatus())) {
+			throw new InvalidDataException("JobStatus does not exist");
+		}
 		
 		jobStatus.setUserMod(userService.getCurrentUserId());
 		jobStatus.setDateMod(new Date());

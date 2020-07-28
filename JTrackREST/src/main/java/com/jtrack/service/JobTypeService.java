@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobTypeDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobType;
 
 @Service
@@ -46,8 +47,12 @@ public class JobTypeService {
 		return (jobTypeExisting != null);
 	}
 	
-	public JobType addJobType(JobType jobType) {
+	public JobType addJobType(JobType jobType) throws InvalidDataException {
 		logger.info("addJobType({})", jobType);
+		
+		if(jobTypeExists(jobType.getJobType())) {
+			throw new InvalidDataException("JobType already exists");
+		}
 		
 		jobType.setUserCrt(userService.getCurrentUserId());
 		jobType.setDateCrt(new Date());
@@ -55,13 +60,22 @@ public class JobTypeService {
 	    return jobTypeDao.save(jobType);
 	}
 	
-	public void deleteJobType(String jobTypeId) {
+	public void deleteJobType(String jobTypeId) throws InvalidDataException {
 		logger.info("deleteJobType({})", jobTypeId);
+		
+		if(!jobTypeExists(jobTypeId)) {
+			throw new InvalidDataException("JobType does not exist");
+		}
+		
 		jobTypeDao.deleteById(jobTypeId);
 	}
 	
-	public JobType updateJobType(JobType jobType) {
+	public JobType updateJobType(JobType jobType) throws InvalidDataException {
 		logger.info("updateJobType({})", jobType);
+		
+		if(!jobTypeExists(jobType.getJobType())) {
+			throw new InvalidDataException("JobType does not exist");
+		}
 		
 		jobType.setUserMod(userService.getCurrentUserId());
 		jobType.setDateMod(new Date());

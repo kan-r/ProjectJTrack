@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobStageDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.JobStage;
 
 @Service
@@ -46,8 +47,12 @@ public class JobStageService {
 		return (jobStageExisting != null);
 	}
 	
-	public JobStage addJobStage(JobStage jobStage) {
+	public JobStage addJobStage(JobStage jobStage) throws InvalidDataException {
 		logger.info("addJobStage({})", jobStage);
+		
+		if(jobStageExists(jobStage.getJobStage())) {
+			throw new InvalidDataException("JobStage already exists");
+		}
 		
 		jobStage.setUserCrt(userService.getCurrentUserId());
 		jobStage.setDateCrt(new Date());
@@ -55,13 +60,22 @@ public class JobStageService {
 	    return jobStageDao.save(jobStage);
 	}
 	
-	public void deleteJobStage(String jobStageId) {
+	public void deleteJobStage(String jobStageId) throws InvalidDataException {
 		logger.info("deleteJobStage({})", jobStageId);
+		
+		if(!jobStageExists(jobStageId)) {
+			throw new InvalidDataException("JobStage does not exist");
+		}
+		
 		jobStageDao.deleteById(jobStageId);
 	}
 	
-	public JobStage updateJobStage(JobStage jobStage) {
+	public JobStage updateJobStage(JobStage jobStage) throws InvalidDataException {
 		logger.info("updateJobStage({})", jobStage);
+		
+		if(!jobStageExists(jobStage.getJobStage())) {
+			throw new InvalidDataException("JobStage does not exist");
+		}
 		
 		jobStage.setUserMod(userService.getCurrentUserId());
 		jobStage.setDateMod(new Date());

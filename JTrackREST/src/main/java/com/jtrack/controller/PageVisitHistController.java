@@ -5,46 +5,47 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jtrack.model.PageVisitHist;
 import com.jtrack.service.PageVisitHistService;
 
 @RestController
+@RequestMapping("/pageVisitHist")
 public class PageVisitHistController {
 
 	@Autowired
 	PageVisitHistService pageVisitHistService;
 
-	@GetMapping(path="/pageVisitHist")
+	@GetMapping("")
 	public List<PageVisitHist> getPageVisitHistList(){
 		return pageVisitHistService.getPageVisitHistList();
 	}
 	
-	@GetMapping(path="/pageVisitHist/{pageId}")
+	@GetMapping("/{pageId}")
 	public List<PageVisitHist> getPageVisitHistList(@PathVariable String pageId){
 		return pageVisitHistService.getPageVisitHistList(pageId);
 	}
 	
-	@GetMapping(path="/pageVisitCount")
+	@GetMapping("/count")
 	public long getPageVisitCount(){
 		return pageVisitHistService.getPageVisitCount();
 	}
 	
-	@GetMapping(path="/pageVisitCount/{pageId}")
+	@GetMapping("/{pageId}/count")
 	public long getPageVisitCount(@PathVariable String pageId){
 		return pageVisitHistService.getPageVisitCount(pageId);
 	}
 
-	@PostMapping("/pageVisitHist")
-	public ResponseEntity<Object> addPageVisitHist(@RequestBody PageVisitHist pageVisitHist, HttpServletRequest req) {
+	@PostMapping("")
+	public PageVisitHist addPageVisitHist(@RequestBody PageVisitHist pageVisitHist, HttpServletRequest req) {
 		pageVisitHist.setIpAddr(getClientIpAddr(req));
-		return ResponseEntity.ok(pageVisitHistService.addPageVisitHist(pageVisitHist));
+		return pageVisitHistService.addPageVisitHist(pageVisitHist);
 	}
 	
 	private String getClientIpAddr(HttpServletRequest request) {

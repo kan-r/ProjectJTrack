@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jtrack.dao.JobDao;
+import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.Job;
 import com.jtrack.model.JobSO;
 
@@ -164,8 +165,12 @@ public class JobService {
 		return (jobDao.getTimesheetCount(jobNo) > 0);
 	}
 	
-	public Job addJob(Job job) {
+	public Job addJob(Job job) throws InvalidDataException {
 		logger.info("addJob({})", job);
+		
+		if(jobExists(job.getJobNo())) {
+			throw new InvalidDataException("Job already exists");
+		}
 		
 		job.setUserCrt(userService.getCurrentUserId());
 		job.setDateCrt(new Date());
@@ -176,16 +181,32 @@ public class JobService {
 		return j;
 	}
 	
-	public void deleteJob(long jobNo) {
+	public void deleteJob(long jobNo) throws InvalidDataException {
 		logger.info("deleteJob({})", jobNo);
+		
+		if(!jobExists(jobNo)) {
+			throw new InvalidDataException("Job does not exist");
+		}
+		
+		if(childJobExists(jobNo)) {
+			throw new InvalidDataException("Child job exists");
+		}
+		
+		if(timesheetExists(jobNo)) {
+			throw new InvalidDataException("Timesheet entry exists");
+		}
 		
 		Job job = getJob(jobNo);
 		jobDao.delete(job);
 		refreshParentJob(job);
 	}
 	
-	public Job updateJob(Job job) {
+	public Job updateJob(Job job) throws InvalidDataException {
 		logger.info("updateJob({})", job);
+		
+		if(!jobExists(job.getJobNo())) {
+			throw new InvalidDataException("Job does not exist");
+		}
 		
 		job.setUserMod(userService.getCurrentUserId());
 		job.setDateMod(new Date());
