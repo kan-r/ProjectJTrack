@@ -1,17 +1,11 @@
 package com.jtrack;
 
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Sort;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,11 +14,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
+
 import com.jtrack.dao.UserDao;
 import com.jtrack.exception.InvalidDataException;
 import com.jtrack.model.Timesheet;
 import com.jtrack.model.User;
-import com.jtrack.service.JobService;
 import com.jtrack.service.TimesheetService;
 import com.jtrack.service.UserService;
 
