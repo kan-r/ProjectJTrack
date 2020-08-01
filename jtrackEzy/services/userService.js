@@ -6,11 +6,11 @@ const BASE_URL = authService.getBaseUrl();
 class UserService {
 
     getUserList(){
-        return axiosx.get(BASE_URL + '/user', authService.getHttpOptions());
+        return axiosx.get(BASE_URL + '/users', authService.getHttpOptions());
     }
 
     getUser(userId){
-        return axiosx.get(BASE_URL + `/user/${userId}`, authService.getHttpOptions());
+        return axiosx.get(BASE_URL + `/users/${userId}`, authService.getHttpOptions());
     }
 
     addUser(user){
@@ -25,7 +25,7 @@ class UserService {
         }
 
         user.userCrt = authService.getAppUser();
-        return axiosx.post(BASE_URL + '/user', user, authService.getHttpOptions());
+        return axiosx.post(BASE_URL + '/users', user, authService.getHttpOptions());
     }
 
     updateUser(user){
@@ -35,11 +35,11 @@ class UserService {
         }
 
         user.userMod = authService.getAppUser();
-        return axiosx.put(BASE_URL + '/user', user, authService.getHttpOptions());
+        return axiosx.put(BASE_URL + `/users/${user.userId}`, user, authService.getHttpOptions());
     }
 
     deleteUser(userId){
-        return axiosx.delete(BASE_URL + `/user/${userId}`, authService.getHttpOptions());
+        return axiosx.delete(BASE_URL + `/users/${userId}`, authService.getHttpOptions());
     }
 }
 

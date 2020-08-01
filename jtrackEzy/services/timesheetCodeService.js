@@ -6,11 +6,11 @@ const BASE_URL = authService.getBaseUrl();
 class TimesheetCodeService {
 
     getTimesheetCodeList(){
-        return axiosx.get(BASE_URL + '/timesheetCode', authService.getHttpOptions());
+        return axiosx.get(BASE_URL + '/timesheetCodes', authService.getHttpOptions());
     }
 
     getTimesheetCode(timesheetCode){
-        return axiosx.get(BASE_URL + `/timesheetCode/${timesheetCode}`, authService.getHttpOptions());
+        return axiosx.get(BASE_URL + `/timesheetCodes/${timesheetCode}`, authService.getHttpOptions());
     }
 
     addTimesheetCode(timesheetCode){
@@ -20,16 +20,16 @@ class TimesheetCodeService {
         }
 
         timesheetCode.userCrt = authService.getAppUser();
-        return axiosx.post(BASE_URL + '/timesheetCode', timesheetCode, authService.getHttpOptions());
+        return axiosx.post(BASE_URL + '/timesheetCodes', timesheetCode, authService.getHttpOptions());
     }
 
     updateTimesheetCode(timesheetCode){
         timesheetCode.userMod = authService.getAppUser();
-        return axiosx.put(BASE_URL + '/timesheetCode', timesheetCode, authService.getHttpOptions());
+        return axiosx.put(BASE_URL + `/timesheetCodes/${timesheetCode.timesheetCode}`, timesheetCode, authService.getHttpOptions());
     }
 
     deleteTimesheetCode(timesheetCode){
-        return axiosx.delete(BASE_URL + `/timesheetCode/${timesheetCode}`, authService.getHttpOptions());
+        return axiosx.delete(BASE_URL + `/timesheetCodes/${timesheetCode}`, authService.getHttpOptions());
     }
 }
 

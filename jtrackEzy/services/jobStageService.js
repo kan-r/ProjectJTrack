@@ -1,3 +1,4 @@
+
 import { authService } from './authService.js';
 import { axiosx } from './axiosx.js';
 
@@ -6,11 +7,11 @@ const BASE_URL = authService.getBaseUrl();
 class JobStageService {
 
     getJobStageList(){
-        return axiosx.get(BASE_URL + '/jobStage', authService.getHttpOptions());
+        return axiosx.get(BASE_URL + '/jobStages', authService.getHttpOptions());
     }
 
     getJobStage(jobStage){
-        return axiosx.get(BASE_URL + `/jobStage/${jobStage}`, authService.getHttpOptions());
+        return axiosx.get(BASE_URL + `/jobStages/${jobStage}`, authService.getHttpOptions());
     }
 
     addJobStage(jobStage){
@@ -20,16 +21,16 @@ class JobStageService {
         }
 
         jobStage.userCrt = authService.getAppUser();
-        return axiosx.post(BASE_URL + '/jobStage', jobStage, authService.getHttpOptions());
+        return axiosx.post(BASE_URL + '/jobStages', jobStage, authService.getHttpOptions());
     }
 
     updateJobStage(jobStage){
         jobStage.userMod = authService.getAppUser();
-        return axiosx.put(BASE_URL + '/jobStage', jobStage, authService.getHttpOptions());
+        return axiosx.put(BASE_URL + `/jobStages/${jobStage.jobStage}`, jobStage, authService.getHttpOptions());
     }
 
     deleteJobStage(jobStage){
-        return axiosx.delete(BASE_URL + `/jobStage/${jobStage}`, authService.getHttpOptions());
+        return axiosx.delete(BASE_URL + `/jobStages/${jobStage}`, authService.getHttpOptions());
     }
 }
 

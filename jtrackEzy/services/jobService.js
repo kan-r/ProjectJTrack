@@ -6,19 +6,20 @@ const BASE_URL = authService.getBaseUrl();
 class JobService {
 
     getJobList(){
-        return axiosx.get(BASE_URL + '/job', authService.getHttpOptions());
+        return axiosx.get(BASE_URL + '/jobs', authService.getHttpOptions());
     }
 
     getJobList2(jobSO){
-        return axiosx.post(BASE_URL + '/job/SO', jobSO, authService.getHttpOptions());
+        let url = `/jobs?name=${jobSO.jobName}&type=${jobSO.jobType}&status=${jobSO.jobStatus}&assignedTo=${jobSO.assignedTo}&includeChild=${jobSO.includeChildJobs}&nameC=${jobSO.jobNameChild}&typeC=${jobSO.jobTypeChild}&statusC=${jobSO.jobStatusChild}&assignedToC=${jobSO.assignedToChild}`;
+        return axiosx.get(BASE_URL + url, authService.getHttpOptions());
     }
 
     getParentJobList(){
-        return axiosx.get(BASE_URL + '/parentJob', authService.getHttpOptions());
+        return axiosx.get(BASE_URL + '/jobs?type=Project', authService.getHttpOptions());
     }
 
     getJob(jobNo){
-        return axiosx.get(BASE_URL + `/job/${jobNo}`, authService.getHttpOptions());
+        return axiosx.get(BASE_URL + `/jobs/${jobNo}`, authService.getHttpOptions());
     }
 
     addJob(job){
@@ -28,7 +29,7 @@ class JobService {
         }
     
         job.userCrt = authService.getAppUser();
-        return axiosx.post(BASE_URL + '/job', job, authService.getHttpOptions());
+        return axiosx.post(BASE_URL + '/jobs', job, authService.getHttpOptions());
     }
 
     updateJob(job){
@@ -38,11 +39,11 @@ class JobService {
         }
    
         job.userMod = authService.getAppUser();
-        return axiosx.put(BASE_URL + '/job', job, authService.getHttpOptions());
+        return axiosx.put(BASE_URL + `/jobs/${job.jobNo}`, job, authService.getHttpOptions());
     }
 
     deleteJob(jobNo){
-        return axiosx.delete(BASE_URL + `/job/${jobNo}`, authService.getHttpOptions());
+        return axiosx.delete(BASE_URL + `/jobs/${jobNo}`, authService.getHttpOptions());
     }
 }
 
