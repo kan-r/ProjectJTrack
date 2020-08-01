@@ -1,9 +1,9 @@
 # JtrackEzy
 
 ## Development
-if not installed:
+#### if not installed:
     npm install -g live-server
-Run:
+#### Run:
     live-server --port=3000
 
 ## Production
