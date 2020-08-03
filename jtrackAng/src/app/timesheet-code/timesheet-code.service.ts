@@ -18,7 +18,7 @@ export class TimesheetCodeService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-    private baseUrl: string = ConfigService.baseUrl + "/timesheetCode";
+    private baseUrl: string = ConfigService.baseUrl + "/timesheetCodes";
 
     getTimesheetCodeList(): Observable<TimesheetCode[]>{
       this.clearMessage();
@@ -57,7 +57,9 @@ export class TimesheetCodeService {
   
     updateTimesheetCode(timesheetCode: TimesheetCode): Observable<TimesheetCode> {
       this.clearMessage();
-      return this.httpClient.put<TimesheetCode>(this.baseUrl, timesheetCode, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}/${timesheetCode.timesheetCode}`;
+      
+      return this.httpClient.put<TimesheetCode>(url, timesheetCode, this.authService.getHttpOptions())
         .pipe(
           tap((newTimesheetCode: TimesheetCode) => this.log(`Updated Timesheet Code ${newTimesheetCode.timesheetCode}`)),
           catchError(this.handleError<TimesheetCode>(`Update Timesheet Code ${timesheetCode.timesheetCode})`))

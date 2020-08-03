@@ -18,7 +18,7 @@ export class UserService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-  private baseUrl: string = ConfigService.baseUrl + "/user";
+  private baseUrl: string = ConfigService.baseUrl + "/users";
 
   getUserList(): Observable<User[]>{
     this.clearMessage();
@@ -69,7 +69,9 @@ export class UserService {
     }
     
     this.clearMessage();
-    return this.httpClient.put<User>(this.baseUrl, user, this.authService.getHttpOptions())
+    const url = `${this.baseUrl}/${user.userId}`;
+
+    return this.httpClient.put<User>(url, user, this.authService.getHttpOptions())
       .pipe(
         tap((newUser: User) => this.log(`Updated User with User ID = ${newUser.userId}`)),
         catchError(this.handleError<User>(`Update User (with userId = ${user.userId})`))

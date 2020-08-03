@@ -18,7 +18,7 @@ export class JobService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-    private baseUrl: string = ConfigService.baseUrl + "/job";
+    private baseUrl: string = ConfigService.baseUrl + "/jobs";
 
     getJobList(): Observable<Job[]>{
       this.clearMessage();
@@ -31,8 +31,8 @@ export class JobService {
 
     getJobList2(jobSO: JobSO): Observable<Job[]>{
       this.clearMessage();
-      const url = `${this.baseUrl}/SO`;
-      return this.httpClient.post<Job[]>(url, jobSO, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}?name=${jobSO.jobName}&type=${jobSO.jobType}&status=${jobSO.jobStatus}&assignedTo=${jobSO.assignedTo}&includeChild=${jobSO.includeChildJobs}&nameC=${jobSO.jobNameChild}&typeC=${jobSO.jobTypeChild}&statusC=${jobSO.jobStatusChild}&assignedToC=${jobSO.assignedToChild}`;
+      return this.httpClient.get<Job[]>(url, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Job  list')),
           catchError(this.handleError<Job[]>('Get Job  list', []))
@@ -41,7 +41,7 @@ export class JobService {
 
     getParentJobList(): Observable<Job[]>{
       this.clearMessage();
-      const url: string = ConfigService.baseUrl + "/parentJob";
+      const url: string = this.baseUrl + "?type=Project";
       return this.httpClient.get<Job[]>(url, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Parent Job  list')),
@@ -77,7 +77,9 @@ export class JobService {
   
     updateJob(job: Job): Observable<Job> {
       this.clearMessage();
-      return this.httpClient.put<Job>(this.baseUrl, job, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}/${job.jobNo}`;
+
+      return this.httpClient.put<Job>(url, job, this.authService.getHttpOptions())
         .pipe(
           tap((newJob: Job) => this.log(`Updated Job  ${newJob.jobNo}`)),
           catchError(this.handleError<Job>(`Update Job  ${job.jobNo})`))

@@ -18,7 +18,7 @@ export class JobPriorityService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-    private baseUrl: string = ConfigService.baseUrl + "/jobPriority";
+    private baseUrl: string = ConfigService.baseUrl + "/jobPriorities";
 
     getJobPriorityList(): Observable<JobPriority[]>{
       this.clearMessage();
@@ -57,7 +57,9 @@ export class JobPriorityService {
   
     updateJobPriority(jobPriority: JobPriority): Observable<JobPriority> {
       this.clearMessage();
-      return this.httpClient.put<JobPriority>(this.baseUrl, jobPriority, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}/${jobPriority.jobPriority}`;
+
+      return this.httpClient.put<JobPriority>(url, jobPriority, this.authService.getHttpOptions())
         .pipe(
           tap((newJobPriority: JobPriority) => this.log(`Updated Job Priority ${newJobPriority.jobPriority}`)),
           catchError(this.handleError<JobPriority>(`Update Job Priority ${jobPriority.jobPriority})`))

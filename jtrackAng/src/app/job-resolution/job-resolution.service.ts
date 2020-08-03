@@ -18,7 +18,7 @@ export class JobResolutionService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-    private baseUrl: string = ConfigService.baseUrl + "/jobResolution";
+    private baseUrl: string = ConfigService.baseUrl + "/jobResolutions";
 
     getJobResolutionList(): Observable<JobResolution[]>{
       this.clearMessage();
@@ -57,7 +57,9 @@ export class JobResolutionService {
   
     updateJobResolution(jobResolution: JobResolution): Observable<JobResolution> {
       this.clearMessage();
-      return this.httpClient.put<JobResolution>(this.baseUrl, jobResolution, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}/${jobResolution.jobResolution}`;
+
+      return this.httpClient.put<JobResolution>(url, jobResolution, this.authService.getHttpOptions())
         .pipe(
           tap((newJobResolution: JobResolution) => this.log(`Updated Job Resolution ${newJobResolution.jobResolution}`)),
           catchError(this.handleError<JobResolution>(`Update Job Resolution ${jobResolution.jobResolution})`))

@@ -18,7 +18,7 @@ export class JobStatusService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-    private baseUrl: string = ConfigService.baseUrl + "/jobStatus";
+    private baseUrl: string = ConfigService.baseUrl + "/jobStatuses";
 
     getJobStatusList(): Observable<JobStatus[]>{
       this.clearMessage();
@@ -57,7 +57,9 @@ export class JobStatusService {
   
     updateJobStatus(jobStatus: JobStatus): Observable<JobStatus> {
       this.clearMessage();
-      return this.httpClient.put<JobStatus>(this.baseUrl, jobStatus, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}/${jobStatus.jobStatus}`;
+
+      return this.httpClient.put<JobStatus>(url, jobStatus, this.authService.getHttpOptions())
         .pipe(
           tap((newJobStatus: JobStatus) => this.log(`Updated Job Status ${newJobStatus.jobStatus}`)),
           catchError(this.handleError<JobStatus>(`Update Job Status ${jobStatus.jobStatus})`))

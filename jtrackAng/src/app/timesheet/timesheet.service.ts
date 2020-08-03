@@ -7,6 +7,7 @@ import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
 import { AuthService } from '../auth/auth.service';
 import { Timesheet, TimesheetSO } from './timesheet';
+import { isNullOrUndefined } from 'util';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class TimesheetService {
     private authService: AuthService, 
     private messageService: MessageService) { }
 
-    private baseUrl: string = ConfigService.baseUrl + "/timesheet";
+    private baseUrl: string = ConfigService.baseUrl + "/timesheets";
 
     getTimesheetList(): Observable<Timesheet[]>{
       this.clearMessage();
@@ -31,9 +32,20 @@ export class TimesheetService {
 
     getTimesheetList2(timesheetSO: TimesheetSO): Observable<Timesheet[]> {
       this.clearMessage();
-      const url = `${this.baseUrl}/SO`;
 
-      return this.httpClient.post<Timesheet[]>(url, timesheetSO, this.authService.getHttpOptions())
+      let workedDateFrom = '';
+      if (!isNullOrUndefined(timesheetSO.workedDateFrom)){
+        workedDateFrom = timesheetSO.workedDateFrom.toString();
+      }
+
+      let workedDateTo = '';
+      if (!isNullOrUndefined(timesheetSO.workedDateTo)){
+        workedDateFrom = timesheetSO.workedDateTo.toString();
+      }
+
+      let url = `${this.baseUrl}?userId=${timesheetSO.userId}&workedDateFrom=${workedDateFrom}&workedDateTo=${workedDateTo}`;
+
+      return this.httpClient.get<Timesheet[]>(url, this.authService.getHttpOptions())
         .pipe(
           tap(_ => this.log('Got Timesheet  list')),
           catchError(this.handleError<Timesheet[]>('Get Timesheet  list', []))
@@ -77,7 +89,9 @@ export class TimesheetService {
   
     updateTimesheet(timesheet: Timesheet): Observable<Timesheet> {
       this.clearMessage();
-      return this.httpClient.put<Timesheet>(this.baseUrl, timesheet, this.authService.getHttpOptions())
+      const url = `${this.baseUrl}/${timesheet.timesheetId}`;
+
+      return this.httpClient.put<Timesheet>(url, timesheet, this.authService.getHttpOptions())
         .pipe(
           tap((newTimesheet: Timesheet) => this.log(`Updated Timesheet  ${newTimesheet.timesheetId}`)),
           catchError(this.handleError<Timesheet>(`Update Timesheet  ${timesheet.timesheetId})`))
