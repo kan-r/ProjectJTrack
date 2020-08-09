@@ -6,25 +6,25 @@ const BASE_URL = AuthService.getBaseUrl();
 class UserService {
 
     getUserList(){
-        return axios.get(BASE_URL + '/user', AuthService.getHttpOptions());
+        return axios.get(BASE_URL + '/users', AuthService.getHttpOptions());
     }
 
     getUser(userId){
-        return axios.get(BASE_URL + `/user/${userId}`, AuthService.getHttpOptions());
+        return axios.get(BASE_URL + `/users/${userId}`, AuthService.getHttpOptions());
     }
 
     addUser(user){
         user.userCrt = AuthService.getAppUser();
-        return axios.post(BASE_URL + '/user', user, AuthService.getHttpOptions());
+        return axios.post(BASE_URL + '/users', user, AuthService.getHttpOptions());
     }
 
     updateUser(user){
         user.userMod = AuthService.getAppUser();
-        return axios.put(BASE_URL + '/user', user, AuthService.getHttpOptions());
+        return axios.put(BASE_URL + `/users/${user.userId}`, user, AuthService.getHttpOptions());
     }
 
     deleteUser(userId){
-        return axios.delete(BASE_URL + `/user/${userId}`, AuthService.getHttpOptions());
+        return axios.delete(BASE_URL + `/users/${userId}`, AuthService.getHttpOptions());
     }
 }
 
