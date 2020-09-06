@@ -4,5 +4,5 @@
 * **JTrackSB** - developed using Java, Spring Boot, Spring MVC and Oracle
 * **jtrackAng** - developed using Angular
 * **jtrackEzy** - developed using My Framework (JS/ES6)
-* **jtrackNodeREST** - developed using Node and Mongodb
+* **jtrackNodeREST** - developed using Node and MongoDB
 * **jtrackReact** - developed using React
