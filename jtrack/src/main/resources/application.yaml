@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: jtrack
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/jtrackdb
+    # url: jdbc:postgresql://kan-r.com:5432/jtrackdb
+    username: ""
+    password: ""
+  profiles:
+    active: prod
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.hibernate: INFO
+    com: INFO
+
+    # Uncomment to use ERROR logging instead:
+    # root: ERROR
+    # org.springframework: ERROR
+    # org.hibernate: ERROR
+    # com: ERROR
