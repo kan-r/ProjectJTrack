@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATH" value="./logs"/>
+    <property name="LOG_FILENAME" value="jtrack"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProfile name="dev">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <logger name="org.springframework" level="INFO" />
+        <logger name="org.hibernate" level="INFO" />
+        <logger name="com.kan" level="TRACE" />
+    </springProfile>
+
+    <springProfile name="test,prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_PATH}/${LOG_FILENAME}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/${LOG_FILENAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxHistory>7</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="FILE"/>
+        </root>
+
+        <logger name="org.springframework" level="INFO" />
+        <logger name="org.hibernate" level="INFO" />
+        <logger name="com.kan" level="INFO" />
+    </springProfile>
+
+</configuration>
