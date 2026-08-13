@@ -3,6 +3,7 @@ package com.kan.jtrack.controller;
 import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +23,14 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public List<UserResponse> getAllUsers() {
         log.info("getAllUsersFromKeycloak()");
         return userService.getAllUsersFromKeycloak();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public UserResponse getUserById(@PathVariable String id) {
         log.debug("getById({})", id);
         return userService.getUserByIdFromKeycloak(id);

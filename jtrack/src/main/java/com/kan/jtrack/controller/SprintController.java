@@ -5,6 +5,7 @@ import com.kan.jtrack.dto.response.SprintResponse;
 import com.kan.jtrack.service.SprintService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +35,14 @@ public class SprintController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public SprintResponse create(@RequestBody SprintRequest sprintRequest) {
         log.debug("create({})", sprintRequest);
         return sprintService.create(sprintRequest);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public SprintResponse update(@PathVariable Integer id, @RequestBody SprintRequest sprintRequest) {
         log.debug("update({}, {})", id, sprintRequest);
         return sprintService.update(id, sprintRequest);
@@ -47,6 +50,7 @@ public class SprintController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('admin')")
     public void delete(@PathVariable Integer id) {
         log.debug("delete({})", id);
         sprintService.delete(id);

@@ -5,6 +5,7 @@ import com.kan.jtrack.dto.response.TimesheetResponse;
 import com.kan.jtrack.service.TimesheetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +35,14 @@ public class TimesheetController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     public TimesheetResponse create(@RequestBody TimesheetRequest timesheetRequest) {
         log.debug("create({})", timesheetRequest);
         return timesheetService.create(timesheetRequest);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('admin') or hasRole('user')")
     public TimesheetResponse update(@PathVariable Integer id, @RequestBody TimesheetRequest timesheetRequest) {
         log.debug("update({}, {})", id, timesheetRequest);
         return timesheetService.update(id, timesheetRequest);
@@ -47,6 +50,7 @@ public class TimesheetController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('admin')")
     public void delete(@PathVariable Integer id) {
         log.debug("delete({})", id);
         timesheetService.delete(id);

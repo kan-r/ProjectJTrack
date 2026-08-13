@@ -5,6 +5,7 @@ import com.kan.jtrack.dto.response.JobResponse;
 import com.kan.jtrack.service.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +35,14 @@ public class JobController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public JobResponse create(@RequestBody JobRequest jobRequest) {
         log.debug("create({})", jobRequest);
         return jobService.create(jobRequest);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public JobResponse update(@PathVariable Integer id, @RequestBody JobRequest jobRequest) {
         log.debug("update({}, {})", id, jobRequest);
         return jobService.update(id, jobRequest);
@@ -47,6 +50,7 @@ public class JobController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('admin')")
     public void delete(@PathVariable Integer id) {
         log.debug("delete({})", id);
         jobService.delete(id);
