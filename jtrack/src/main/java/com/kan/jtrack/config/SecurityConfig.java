@@ -26,7 +26,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             // Enforce strictly stateless sessions for REST APIs
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth.anyRequest()
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/token")
+                                               .permitAll()
+                                               .anyRequest()
                                                .authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(clientRoleConverter)));
 

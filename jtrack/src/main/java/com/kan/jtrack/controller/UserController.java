@@ -26,14 +26,14 @@ public class UserController {
     @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public List<UserResponse> getAllUsers() {
         log.info("getAllUsersFromKeycloak()");
-        return userService.getAllUsersFromKeycloak();
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public UserResponse getUserById(@PathVariable String id) {
         log.debug("getById({})", id);
-        return userService.getUserByIdFromKeycloak(id);
+        return userService.getUserById(id);
     }
 
     @GetMapping("/current")

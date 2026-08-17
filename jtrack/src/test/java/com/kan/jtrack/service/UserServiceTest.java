@@ -1,6 +1,5 @@
 package com.kan.jtrack.service;
 
-import com.kan.jtrack.config.properties.KeycloakProperties;
 import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.exception.ValidationException;
 import com.kan.jtrack.mapper.UserMapper;
@@ -10,10 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,8 +27,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    private static final String REALM = "test-realm";
-
     private static final String USER_ID_1 = "user-1";
     private static final String FIRST_NAME_1 = "Kan";
     private static final String LAST_NAME_1 = "Ranganathan";
@@ -48,22 +41,10 @@ class UserServiceTest {
     private static final Instant TOKEN_EXPIRES_TIME = TOKEN_ISSUED_TIME.plusSeconds(300);
 
     @Mock
-    private Keycloak keycloak;
-
-    @Mock
-    private KeycloakProperties properties;
+    private KeycloakService keycloakService;
 
     @Mock
     private UserMapper userMapper;
-
-    @Mock
-    RealmResource realmResource;
-
-    @Mock
-    private UsersResource usersResource;
-
-    @Mock
-    private UserResource userResource;
 
     @Mock
     private Authentication authentication;
@@ -80,24 +61,21 @@ class UserServiceTest {
         SecurityContextHolder.clearContext();
     }
 
-    // ============ getAllUsersFromKeycloak Tests ============
+    // ============ getAllUsers Tests ============
 
     @Test
-    void getAllUsersFromKeycloak_whenUsersExist_shouldReturnUserResponseList() {
+    void getAllUsers_whenUsersExist_shouldReturnUserResponseList() {
         UserRepresentation userRepresentation1 = generateUserRepresentation1();
         UserRepresentation userRepresentation2 = generateUserRepresentation2();
 
         UserResponse userResponse1 = generateUserResponse1();
         UserResponse userResponse2 = generateUserResponse2();
 
-        when(properties.getRealm()).thenReturn(REALM);
-        when(keycloak.realm(REALM)).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.list()).thenReturn(List.of(userRepresentation1, userRepresentation2));
+        when(keycloakService.getAllUsers()).thenReturn(List.of(userRepresentation1, userRepresentation2));
         when(userMapper.toUserResponse(userRepresentation1)).thenReturn(userResponse1);
         when(userMapper.toUserResponse(userRepresentation2)).thenReturn(userResponse2);
 
-        List<UserResponse> result = userService.getAllUsersFromKeycloak();
+        List<UserResponse> result = userService.getAllUsers();
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -106,59 +84,41 @@ class UserServiceTest {
     }
 
     @Test
-    void getAllUsersFromKeycloak_whenNoUsersExist_shouldReturnEmptyList() {
-        when(properties.getRealm()).thenReturn(REALM);
-        when(keycloak.realm(REALM)).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.list()).thenReturn(List.of());
+    void getAllUsers_whenNoUsersExist_shouldReturnEmptyList() {
+        when(keycloakService.getAllUsers()).thenReturn(List.of());
 
-        List<UserResponse> result = userService.getAllUsersFromKeycloak();
+        List<UserResponse> result = userService.getAllUsers();
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
 
-    // ============ getUserByIdFromKeycloak Tests ============
+    // ============ getUserById Tests ============
 
     @ParameterizedTest
     @NullSource
-    void getUserByIdFromKeycloak_whenIdIsNull_shouldThrowValidationException(String id) {
-        assertThrows(ValidationException.class, () -> userService.getUserByIdFromKeycloak(id));
+    void getUserById_whenIdIsNull_shouldThrowValidationException(String id) {
+        assertThrows(ValidationException.class, () -> userService.getUserById(id));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "  "})
-    void getUserByIdFromKeycloak_whenIdIsBlank_shouldThrowValidationException(String id) {
-        assertThrows(ValidationException.class, () -> userService.getUserByIdFromKeycloak(id));
+    void getUserById_whenIdIsBlank_shouldThrowValidationException(String id) {
+        assertThrows(ValidationException.class, () -> userService.getUserById(id));
     }
 
     @Test
-    void getUserByIdFromKeycloak_whenUserExists_shouldReturnUserResponse() {
+    void getUserById_whenUserExists_shouldReturnUserResponse() {
         UserRepresentation userRepresentation = generateUserRepresentation1();
         UserResponse userResponse = generateUserResponse1();
 
-        when(properties.getRealm()).thenReturn(REALM);
-        when(keycloak.realm(REALM)).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.get(USER_ID_1)).thenReturn(userResource);
-        when(userResource.toRepresentation()).thenReturn(userRepresentation);
+        when(keycloakService.getUserById(USER_ID_1)).thenReturn(userRepresentation);
         when(userMapper.toUserResponse(userRepresentation)).thenReturn(userResponse);
 
-        UserResponse result = userService.getUserByIdFromKeycloak(USER_ID_1);
+        UserResponse result = userService.getUserById(USER_ID_1);
 
         assertNotNull(result);
         assertEquals(userResponse, result);
-    }
-
-    @Test
-    void getUserByIdFromKeycloak_whenUserRepresentationIsNull_shouldThrowValidationException() {
-        when(properties.getRealm()).thenReturn(REALM);
-        when(keycloak.realm(REALM)).thenReturn(realmResource);
-        when(realmResource.users()).thenReturn(usersResource);
-        when(usersResource.get(USER_ID_1)).thenReturn(userResource);
-        when(userResource.toRepresentation()).thenReturn(null);
-
-        assertThrows(ValidationException.class, () -> userService.getUserByIdFromKeycloak(USER_ID_1));
     }
 
     // ============ getCurrentUser Tests ============
@@ -167,8 +127,8 @@ class UserServiceTest {
     void getCurrentUser_whenPrincipalIsJwt_shouldReturnPopulatedUserResponse() {
         Jwt jwt = generateJwt();
         UserResponse userResponse = generateUserResponse1();
-
         SecurityContextHolder.setContext(securityContext);
+
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(jwt);
 
@@ -191,9 +151,10 @@ class UserServiceTest {
 
     @Test
     void getCurrentUser_whenPrincipalIsNotJwt_shouldReturnEmptyUserResponse() {
+        SecurityContextHolder.setContext(securityContext);
+
         when(authentication.getPrincipal()).thenReturn(new Object());
         when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
 
         UserResponse result = userService.getCurrentUser();
 
