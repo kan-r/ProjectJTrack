@@ -50,7 +50,7 @@ public class SprintController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('admin') or hasRole('manager')")
     public void delete(@PathVariable Integer id) {
         log.debug("delete({})", id);
         sprintService.delete(id);

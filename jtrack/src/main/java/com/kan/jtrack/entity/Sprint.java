@@ -1,7 +1,10 @@
 package com.kan.jtrack.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -23,6 +26,10 @@ public class Sprint extends AuditEntity {
 
     @Column(name = "status_code")
     private String statusCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_code", referencedColumnName = "code", insertable = false, updatable = false)
+    private SprintStatus status;
 
     @Column(name = "start_date")
     private LocalDate startDate;

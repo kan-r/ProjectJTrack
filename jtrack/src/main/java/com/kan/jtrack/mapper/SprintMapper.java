@@ -12,6 +12,7 @@ import static org.mapstruct.ReportingPolicy.IGNORE;
 @Mapper(componentModel = SPRING, unmappedTargetPolicy = IGNORE)
 public interface SprintMapper {
 
+    @Mapping(target = "statusDescription", source = "status.description")
     SprintResponse toSprintResponse(Sprint sprint);
 
     @Mapping(target = "createdAt", source = "auditEntityRequest.createdAt")
