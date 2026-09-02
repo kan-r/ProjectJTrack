@@ -1,0 +1,194 @@
+:root {
+  --jt-toolbar-color: rgb(140, 140, 140);
+  --jt-toolbar-text-color: white;
+
+  --jt-screen-color: rgb(250, 250, 250);
+  --jt-border-color: rgb(153, 153, 153);
+  --jt-hover-brightness: 1.15;
+
+  --jt-button-width: 95px;
+  --jt-button-height: 34px;
+  --jt-button-color: rgb(190, 0, 0);
+  --jt-button-text-color: white;
+  --jt-button-disabled-color: rgba(190, 0, 0, 0.4);
+
+  --jt-table-hover-color: rgb(245, 245, 245);
+}
+
+/* -------------------- Main Containers -------------------- */
+
+.jt-app-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.jt-page-container {
+  position: relative; /* Crucial: bounds the absolute overlay */
+  min-height: 200px; /* Ensures container has height to show spinner */
+  width: 90%;
+}
+
+.jt-page-container-2 {
+  position: relative;
+  min-height: 200px;
+  width: 50%;
+}
+
+.jt-page-title-container {
+  display: flex;
+  height: 50px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.jt-overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  /* Flexbox centers the mat-spinner exactly in the middle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Keeps the loader on top of everything else inside the container */
+  z-index: 10;
+
+  /* Semi-transparent background masking the content underneath */
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* -------------------- Button -------------------- */
+
+.jt-button {
+  width: var(--jt-button-width);
+  height: var(--jt-button-height);
+  background-color: var(--jt-button-color);
+  color: var(--jt-button-text-color);
+  transition: all 0.2s ease-in-out;
+}
+
+.jt-button:hover {
+  filter: brightness(var(--jt-hover-brightness));
+}
+
+.jt-button:disabled {
+  background-color: var(--jt-button-disabled-color);
+  cursor: not-allowed;
+}
+
+/* -------------------- Table -------------------- */
+
+.jt-table {
+  empty-cells: show;
+  border: 1px solid var(--jt-border-color);
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  padding: 6px 0;
+}
+
+.jt-table th {
+  background-color: var(--jt-screen-color);
+  border-bottom: 1px solid var(--jt-border-color);
+}
+
+.jt-table td {
+  border-bottom: 1px solid var(--jt-border-color);
+  text-align: left;
+}
+
+.jt-table tr:last-child td {
+  border-bottom: none;
+}
+
+.jt-table tr:nth-child(even) {
+  background-color: var(--jt-screen-color);
+}
+
+.jt-table tr:hover {
+  filter: brightness(var(--jt-hover-brightness));
+}
+
+/* Angular Material internal column for "edit" */
+.mat-column-edit {
+  width: 20px;
+  margin: 0;
+  padding: 0 2px 0 2px;
+}
+
+/* Angular Material internal column for "delete" */
+.mat-column-delete {
+  width: 20px;
+  margin: 0;
+  padding: 0 2px 0 2px;
+}
+
+/* -------------------- Form -------------------- */
+
+.jt-form-container {
+  display: flex;
+  min-width: 200px;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--jt-screen-color);
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  padding: 0;
+}
+
+.jt-form-container mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 0 15px 0;
+}
+
+/* Layout form rows vertically */
+.jt-form-container form {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  margin: 0;
+  padding: 0;
+}
+
+.jt-form-container form > div {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.jt-form-container form > div > mat-label {
+  width: 100px;
+  text-align: right;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.jt-form-container form > div > mat-form-field {
+  flex-grow: 1;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:host {
+  /* Adjust the inner wrapper height */
+  --mat-form-field-container-height: 40px;
+
+  /* Reduce vertical padding so the text stays vertically centered */
+  --mat-form-field-container-vertical-padding: 10px;
+}

@@ -1,0 +1,21 @@
+<mat-toolbar class="jt-toolbar">
+  <img src="/jtrack.png" class="jt-logo" />
+  <span>JTrack</span>
+
+  <span class="jt-toolbar-spacer"></span>
+
+  <span>{{userName}}</span>
+  <span class="jt-spacer"></span>
+
+  @if (isAuthenticated) {
+    <button class="jt-toolbar-button" matButton="outlined" (click)="logout()">
+      Logout
+      <mat-icon>power_settings_new</mat-icon>
+    </button>
+  } @else {
+    <button class="jt-toolbar-button" matButton="outlined" (click)="login()">
+      Login
+      <mat-icon>person</mat-icon>
+    </button>
+  }
+</mat-toolbar>

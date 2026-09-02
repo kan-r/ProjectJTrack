@@ -1,0 +1,35 @@
+.jt-toast-container {
+  position: fixed;
+  top: 16px;
+  right: 120px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jt-toast-box {
+  min-width: 280px;
+  max-width: 400px;
+  padding: 14px 20px;
+  border-radius: 6px;
+  color: #fff;
+  font-family: sans-serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error { background-color: #e74c3c; }
+.success { background-color: #2ecc71; }
+.info { background-color: #3498db; }
+
+.jt-toast-container button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}

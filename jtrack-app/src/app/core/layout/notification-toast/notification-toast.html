@@ -1,0 +1,14 @@
+<div class="jt-toast-container">
+  @for (notification of notificationService.notifications(); track notification.id) {
+
+  <div [ngClass]="['jt-toast-box', notification.type]">
+    <span>{{ notification.message }}</span>
+
+    @if (notification.type == 'error') {
+    <button (click)="notificationService.clear(notification.id)">
+      <mat-icon>close</mat-icon>
+    </button>
+    }
+  </div>
+  }
+</div>

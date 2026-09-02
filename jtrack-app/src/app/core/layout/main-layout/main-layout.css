@@ -1,0 +1,25 @@
+.jt-sidenav-container {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevents the container from scrolling */
+}
+
+.jt-sidenav {
+  width: 200px;
+  height: 100%;
+  overflow-y: auto; /* Adds scrolling inside the sidebar ONLY if links overflow */
+  border-right: 1px solid gray;
+  background-color: var(--jt-screen-color);
+  --mat-sidenav-container-shape: 0px; 
+}
+
+.jt-sidenav-content {
+  height: 100%;
+  overflow-y: auto; /* Normal page scrolling happens exclusively here */
+  padding: 24px;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+

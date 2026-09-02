@@ -1,0 +1,31 @@
+.jt-logo {
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.jt-toolbar {
+  position: relative;
+  z-index: 5;
+  --mat-toolbar-container-background-color: var(--jt-toolbar-color);
+  --mat-toolbar-container-text-color: var(--jt-toolbar-text-color);
+}
+
+.jt-toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.jt-spacer {
+  width: 15px;
+}
+
+.jt-toolbar-button {
+  --mat-sys-outline: white; 
+  background-color: var(--jt-button-color);
+  width: var(--jt-button-width);
+  height: var(--jt-button-height);
+}
+
+.jt-toolbar-button:hover {
+  filter: brightness(var(--jt-hover-brightness)); 
+}

@@ -1,0 +1,7 @@
+@import url("../../../../styles.css");
+
+.jt-unauthorized-card { 
+  max-width: 400px; 
+  padding: 20px; 
+  text-align: left; 
+}
