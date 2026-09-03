@@ -2,7 +2,7 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../core/auth/auth-service/auth-service';
 
 @Component({
   imports: [MatToolbarModule, MatButtonModule, MatIconModule],

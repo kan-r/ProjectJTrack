@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
-import { Toolbar } from './core/layout/toolbar/toolbar';
-import { MainLayout } from './core/layout/main-layout/main-layout';
-import { NotificationToast } from "./core/layout/notification-toast/notification-toast";
+import { Toolbar } from './layout/toolbar/toolbar';
+import { MainLayout } from './layout/main-layout/main-layout';
+import { NotificationToast } from "./shared/notification/notification-toast/notification-toast";
 
 @Component({
   selector: 'app-root',

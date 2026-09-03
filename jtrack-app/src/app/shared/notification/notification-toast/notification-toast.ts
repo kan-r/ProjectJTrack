@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { NotificationService } from '../../services/notification-service';
+import { NotificationService } from '../notification-service/notification-service';
 import { NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 

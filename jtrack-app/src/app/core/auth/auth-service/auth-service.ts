@@ -1,7 +1,7 @@
 import { Service, signal, computed, inject, effect } from '@angular/core';
 import Keycloak, { KeycloakTokenParsed } from 'keycloak-js';
-import { environment as env } from '../../../environments/environment';
-import type { User } from '../../features/sprint/models/user';
+import { environment as env } from '../../../../environments/environment';
+import type { User } from '../../../features/user/models/user';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, ReadyArgs, typeEventArgs } from 'keycloak-angular';
 
 @Service()

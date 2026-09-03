@@ -3,9 +3,9 @@ import { provideRouter } from '@angular/router';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 
 import { routes } from './app.routes';
-import { GlobalErrorHandler } from './core/error-handers/global-error-handler';
+import { GlobalErrorHandler } from './core/error-handers/global-error-handler/global-error-handler';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { httpErrorInterceptor } from './core/error-handers/http-error-interceptor';
+import { httpErrorInterceptor } from './core/error-handers/http-error-interceptor/http-error-interceptor';
 import { environment as env } from '../environments/environment';
 
 import { 

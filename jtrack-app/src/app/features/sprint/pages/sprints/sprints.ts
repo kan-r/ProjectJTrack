@@ -1,15 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
-import { SprintService } from '../../services/sprint-service';
+import { SprintService } from '../../sprint-service/sprint-service';
 import { Sprint } from '../../models/sprint';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import { formatIsoToLocaleDate } from '../../../../core/utils/date-utils';
-import { NotificationService } from '../../../../core/services/notification-service';
-import { ConfirmationService } from '../../../../core/services/confirmation-service';
-import { AuthService } from '../../../../core/services/auth-service';
+import { formatIsoToLocaleDate } from '../../../../shared/utils/date-utils';
+import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
+import { ConfirmationService } from '../../../../shared/confirmation/confirmation-service/confirmation-service';
+import { AuthService } from '../../../../core/auth/auth-service/auth-service';
 
 @Component({
   imports: [MatTableModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule, RouterLink],

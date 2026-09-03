@@ -1,10 +1,25 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
+import { AuthService } from './core/auth/auth-service/auth-service';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            isAuthenticated: signal(false),
+            currentUser: signal(null),
+            login: vi.fn(),
+            logout: vi.fn(),
+          },
+        },
+      ],
     }).compileComponents();
   });
 
@@ -14,10 +29,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render the application layout', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, jtrack-app');
+    expect(compiled.querySelector('app-toolbar')).toBeTruthy();
+    expect(compiled.querySelector('app-main-layout')).toBeTruthy();
+    expect(compiled.querySelector('app-notification-toast')).toBeTruthy();
   });
 });

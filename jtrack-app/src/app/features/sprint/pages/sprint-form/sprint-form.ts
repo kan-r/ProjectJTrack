@@ -11,11 +11,11 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCardModule } from '@angular/material/card';
-import { SprintService } from '../../services/sprint-service';
+import { SprintService } from '../../sprint-service/sprint-service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SprintStatus } from '../../models/sprint-status';
-import { formatLocaleToIsoDate } from '../../../../core/utils/date-utils';
-import { NotificationService } from '../../../../core/services/notification-service';
+import { formatLocaleToIsoDate } from '../../../../shared/utils/date-utils';
+import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
 
 @Component({
   imports: [

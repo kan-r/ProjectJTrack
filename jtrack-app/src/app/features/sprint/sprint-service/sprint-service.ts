@@ -1,7 +1,7 @@
 import { inject, Service, type Signal } from '@angular/core';
 import { Sprint } from '../models/sprint';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { environment as env } from '../../../../../src/environments/environment';
+import { environment as env } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { SprintStatus } from '../models/sprint-status';
 
