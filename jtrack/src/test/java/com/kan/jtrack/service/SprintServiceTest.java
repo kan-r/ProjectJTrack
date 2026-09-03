@@ -188,8 +188,9 @@ class SprintServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenNameIsBlank_shouldThrowValidationException(String name) {
+    void update_whenNameIsNullOrBlank_shouldThrowValidationException(String name) {
         SprintRequest sprintRequest = generateSprintRequest1();
         sprintRequest.setName(name);
 
@@ -197,8 +198,9 @@ class SprintServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenStatusCodeIsBlank_shouldThrowValidationException(String statusCode) {
+    void update_whenStatusCodeIsNullOrBlank_shouldThrowValidationException(String statusCode) {
         SprintRequest sprintRequest = generateSprintRequest1();
         sprintRequest.setStatusCode(statusCode);
 

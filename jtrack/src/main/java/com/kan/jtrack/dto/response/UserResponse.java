@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "username", "firstName", "lastName", "email"})
+@JsonPropertyOrder({"id", "username", "firstName", "lastName", "fullName", "email"})
 public class UserResponse {
     private String id;
     private String username;
     private String firstName;
     private String lastName;
+    private String fullName;
     private String email;
 }

@@ -3,6 +3,7 @@ package com.kan.jtrack.mapper;
 import com.kan.jtrack.dto.request.AuditEntityRequest;
 import com.kan.jtrack.dto.request.TimesheetRequest;
 import com.kan.jtrack.dto.response.TimesheetResponse;
+import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.entity.Timesheet;
 import org.mapstruct.*;
 
@@ -12,7 +13,10 @@ import static org.mapstruct.ReportingPolicy.IGNORE;
 @Mapper(componentModel = SPRING, unmappedTargetPolicy = IGNORE)
 public interface TimesheetMapper {
 
-    TimesheetResponse toTimesheetResponse(Timesheet timesheet);
+    @Mapping(target = "id", source = "timesheet.id")
+    @Mapping(target = "userName", source = "user.fullName")
+    @Mapping(target = "jobName", source = "timesheet.job.name")
+    TimesheetResponse toTimesheetResponse(Timesheet timesheet, UserResponse user);
 
     @Mapping(target = "createdAt", source = "auditEntityRequest.createdAt")
     @Mapping(target = "createdBy", source = "auditEntityRequest.createdBy")
@@ -24,6 +28,5 @@ public interface TimesheetMapper {
     @Mapping(target = "updatedBy", source = "auditEntityRequest.updatedBy")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void mapToTimesheet(@MappingTarget Timesheet timesheet, TimesheetRequest timesheetRequest, AuditEntityRequest auditEntityRequest);
 }

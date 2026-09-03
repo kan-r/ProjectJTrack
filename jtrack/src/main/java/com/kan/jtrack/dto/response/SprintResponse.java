@@ -14,7 +14,14 @@ import java.time.LocalDate;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "statusCode", "statusDescription", "startDate", "endDate"})
+@JsonPropertyOrder({
+        "id",
+        "name",
+        "statusCode",
+        "statusDescription",
+        "startDate",
+        "endDate"
+})
 public class SprintResponse extends AuditEntityResponse {
     private Integer id;
     private String name;

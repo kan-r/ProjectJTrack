@@ -20,12 +20,17 @@ public class JobService {
 
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
+    private final UserService userService;
     private final AuditEntityService auditEntityService;
 
 
-    public JobService(JobRepository jobRepository, JobMapper jobMapper, AuditEntityService auditEntityService) {
+    public JobService(JobRepository jobRepository,
+                      JobMapper jobMapper,
+                      UserService userService,
+                      AuditEntityService auditEntityService) {
         this.jobRepository = jobRepository;
         this.jobMapper = jobMapper;
+        this.userService = userService;
         this.auditEntityService = auditEntityService;
     }
 
@@ -35,41 +40,42 @@ public class JobService {
 
         return jobRepository.findAll()
                             .stream()
-                            .map(jobMapper::toJobResponse)
+                            .map(job -> jobMapper.toJobResponse(job, userService.getUserByIdIgnoreBlank(job.getAssignedTo())))
                             .toList();
     }
 
     @Transactional(readOnly = true)
     public JobResponse getById(Integer id) {
         log.debug("getById({})", id);
-        return jobMapper.toJobResponse(getByIdOrThrow(id));
+        Job job = getByIdOrThrow(id);
+        return jobMapper.toJobResponse(job, userService.getUserByIdIgnoreBlank(job.getAssignedTo()));
     }
 
     @Transactional
     public JobResponse create(JobRequest jobRequest) {
         log.debug("create({})", jobRequest);
 
-        validateCreateJobRequest(jobRequest);
+        validateJobRequest(jobRequest);
 
         Job job = jobMapper.toJob(jobRequest, auditEntityService.generateAuditEntityRequest());
         Job savedJob = jobRepository.save(job);
         refreshParentJobHours(savedJob.getParentId());
 
-        return jobMapper.toJobResponse(savedJob);
+        return jobMapper.toJobResponse(savedJob, userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo()));
     }
 
     @Transactional
     public JobResponse update(Integer id, JobRequest jobRequest) {
         log.debug("update({}, {})", id, jobRequest);
 
-        validateUpdateJobRequest(jobRequest);
+        validateJobRequest(jobRequest);
 
         Job job = getByIdOrThrow(id);
         jobMapper.mapToJob(job, jobRequest, auditEntityService.generateAuditEntityRequest());
         Job savedJob = jobRepository.save(job);
         refreshParentJobHours(savedJob.getParentId());
 
-        return jobMapper.toJobResponse(savedJob);
+        return jobMapper.toJobResponse(savedJob, userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo()));
     }
 
     @Transactional
@@ -111,19 +117,11 @@ public class JobService {
                             .orElseThrow(() -> new ResourceNotFoundException("Job not found for id: " + id));
     }
 
-    private void validateCreateJobRequest(JobRequest jobRequest) {
+    private void validateJobRequest(JobRequest jobRequest) {
         validateObjectNotNull(jobRequest, "Job Request");
         validateStringNotNullOrBlank(jobRequest.getName(), "Job name");
         validateStringNotNullOrBlank(jobRequest.getTypeCode(), "Job typeCode");
         validateStringNotNullOrBlank(jobRequest.getPriorityCode(), "Job priorityCode");
         validateStringNotNullOrBlank(jobRequest.getStatusCode(), "Job statusCode");
-    }
-
-    private void validateUpdateJobRequest(JobRequest jobRequest) {
-        validateObjectNotNull(jobRequest, "Job Request");
-        validateStringNotBlank(jobRequest.getName(), "Job name");
-        validateStringNotBlank(jobRequest.getTypeCode(), "Job typeCode");
-        validateStringNotBlank(jobRequest.getPriorityCode(), "Job priorityCode");
-        validateStringNotBlank(jobRequest.getStatusCode(), "Job statusCode");
     }
 }

@@ -3,6 +3,7 @@ package com.kan.jtrack.service;
 import com.kan.jtrack.dto.request.AuditEntityRequest;
 import com.kan.jtrack.dto.request.TimesheetRequest;
 import com.kan.jtrack.dto.response.TimesheetResponse;
+import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.entity.Timesheet;
 import com.kan.jtrack.exception.ResourceNotFoundException;
 import com.kan.jtrack.exception.ValidationException;
@@ -56,6 +57,9 @@ class TimesheetServiceTest {
     private TimesheetMapper timesheetMapper;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private AuditEntityService auditEntityService;
 
     @Mock
@@ -74,9 +78,14 @@ class TimesheetServiceTest {
         TimesheetResponse timesheetResponse1 = generateTimesheetResponse1();
         TimesheetResponse timesheetResponse2 = generateTimesheetResponse2();
 
+        UserResponse user1 = generateUserResponse1();
+        UserResponse user2 = generateUserResponse2();
+
         when(timesheetRepository.findAll()).thenReturn(List.of(timesheet1, timesheet2));
-        when(timesheetMapper.toTimesheetResponse(timesheet1)).thenReturn(timesheetResponse1);
-        when(timesheetMapper.toTimesheetResponse(timesheet2)).thenReturn(timesheetResponse2);
+        when(userService.getUserByIdIgnoreBlank(USER_ID_1)).thenReturn(user1);
+        when(userService.getUserByIdIgnoreBlank(USER_ID_2)).thenReturn(user2);
+        when(timesheetMapper.toTimesheetResponse(timesheet1, user1)).thenReturn(timesheetResponse1);
+        when(timesheetMapper.toTimesheetResponse(timesheet2, user2)).thenReturn(timesheetResponse2);
 
         List<TimesheetResponse> result = timesheetService.getAll();
 
@@ -108,9 +117,11 @@ class TimesheetServiceTest {
     void getById_whenTimesheetExists_shouldReturnTimesheetResponse() {
         Timesheet timesheet = generateTimesheet1();
         TimesheetResponse timesheetResponse = generateTimesheetResponse1();
+        UserResponse user = generateUserResponse1();
 
         when(timesheetRepository.findById(ID_1)).thenReturn(of(timesheet));
-        when(timesheetMapper.toTimesheetResponse(timesheet)).thenReturn(timesheetResponse);
+        when(userService.getUserByIdIgnoreBlank(USER_ID_1)).thenReturn(user);
+        when(timesheetMapper.toTimesheetResponse(timesheet, user)).thenReturn(timesheetResponse);
 
         TimesheetResponse result = timesheetService.getById(ID_1);
 
@@ -160,11 +171,13 @@ class TimesheetServiceTest {
         timesheet.setId(null);
 
         TimesheetResponse timesheetResponse = generateTimesheetResponse1();
+        UserResponse user = generateUserResponse1();
 
+        when(userService.getUserByIdIgnoreBlank(USER_ID_1)).thenReturn(user);
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         when(timesheetMapper.toTimesheet(timesheetRequest, auditEntityRequest)).thenReturn(timesheet);
         when(timesheetRepository.save(timesheet)).thenReturn(timesheet);
-        when(timesheetMapper.toTimesheetResponse(timesheet)).thenReturn(timesheetResponse);
+        when(timesheetMapper.toTimesheetResponse(timesheet, user)).thenReturn(timesheetResponse);
 
         TimesheetResponse result = timesheetService.create(timesheetRequest);
 
@@ -191,10 +204,20 @@ class TimesheetServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenUserIdIsBlank_shouldThrowValidationException(String userId) {
+    void update_whenUserIdIsNullOrBlank_shouldThrowValidationException(String userId) {
         TimesheetRequest timesheetRequest = generateTimesheetRequest1();
         timesheetRequest.setUserId(userId);
+
+        assertThrows(ValidationException.class, () -> timesheetService.update(ID_1, timesheetRequest));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void update_whenJobIdIsNull_shouldThrowValidationException(Integer jobId) {
+        TimesheetRequest timesheetRequest = generateTimesheetRequest1();
+        timesheetRequest.setJobId(jobId);
 
         assertThrows(ValidationException.class, () -> timesheetService.update(ID_1, timesheetRequest));
     }
@@ -216,13 +239,15 @@ class TimesheetServiceTest {
         Timesheet savedTimesheet = generateTimesheet2();
 
         TimesheetResponse timesheetResponse = generateTimesheetResponse2();
+        UserResponse user = generateUserResponse2();
 
         when(timesheetRepository.findById(ID_2)).thenReturn(of(existingTimesheet));
+        when(userService.getUserByIdIgnoreBlank(USER_ID_2)).thenReturn(user);
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         doNothing().when(timesheetMapper)
                    .mapToTimesheet(existingTimesheet, timesheetRequest, auditEntityRequest);
         when(timesheetRepository.save(existingTimesheet)).thenReturn(savedTimesheet);
-        when(timesheetMapper.toTimesheetResponse(savedTimesheet)).thenReturn(timesheetResponse);
+        when(timesheetMapper.toTimesheetResponse(savedTimesheet, user)).thenReturn(timesheetResponse);
 
         TimesheetResponse result = timesheetService.update(ID_2, timesheetRequest);
 
@@ -332,5 +357,17 @@ class TimesheetServiceTest {
                                 .createdAt(CREATED_AT_2)
                                 .createdBy(CREATED_BY_2)
                                 .build();
+    }
+
+    private UserResponse generateUserResponse1() {
+        return UserResponse.builder()
+                           .id(USER_ID_1)
+                           .build();
+    }
+
+    private UserResponse generateUserResponse2() {
+        return UserResponse.builder()
+                           .id(USER_ID_2)
+                           .build();
     }
 }

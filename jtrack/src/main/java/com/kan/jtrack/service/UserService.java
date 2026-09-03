@@ -3,6 +3,7 @@ package com.kan.jtrack.service;
 import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +45,17 @@ public class UserService {
         return userMapper.toUserResponse(representation);
     }
 
+    public UserResponse getUserByIdIgnoreBlank(String id) {
+        log.debug("getUserByIdIgnoreBlank({})", id);
+
+        if(StringUtils.isBlank(id)) {
+            return new UserResponse();
+        }
+
+        UserRepresentation representation = keycloakService.getUserById(id);
+        return userMapper.toUserResponse(representation);
+    }
+
     public UserResponse getCurrentUser() {
         log.debug("getCurrentUser()");
 
@@ -55,6 +67,7 @@ public class UserService {
                     .id(jwt.getClaimAsString("sub"))
                     .firstName(jwt.getClaimAsString("given_name"))
                     .lastName(jwt.getClaimAsString("family_name"))
+                    .fullName(jwt.getClaimAsString("name"))
                     .email(jwt.getClaimAsString("email"))
                     .build();
         }

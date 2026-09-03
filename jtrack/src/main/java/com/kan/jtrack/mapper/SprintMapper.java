@@ -25,6 +25,5 @@ public interface SprintMapper {
     @Mapping(target = "updatedBy", source = "auditEntityRequest.updatedBy")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void mapToSprint(@MappingTarget Sprint sprint, SprintRequest sprintRequest, AuditEntityRequest auditEntityRequest);
 }

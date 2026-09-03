@@ -51,7 +51,7 @@ public class SprintService {
     public SprintResponse create(SprintRequest sprintRequest) {
         log.debug("create({})", sprintRequest);
 
-        validateCreateSprintRequest(sprintRequest);
+        validateSprintRequest(sprintRequest);
 
         Sprint sprint = sprintMapper.toSprint(sprintRequest, auditEntityService.generateAuditEntityRequest());
         return sprintMapper.toSprintResponse(sprintRepository.save(sprint));
@@ -61,7 +61,7 @@ public class SprintService {
     public SprintResponse update(Integer id, SprintRequest sprintRequest) {
         log.debug("update({}, {})", id, sprintRequest);
 
-        validateUpdateSprintRequest(sprintRequest);
+        validateSprintRequest(sprintRequest);
 
         Sprint existingSprint = getByIdOrThrow(id);
         sprintMapper.mapToSprint(existingSprint, sprintRequest, auditEntityService.generateAuditEntityRequest());
@@ -81,15 +81,9 @@ public class SprintService {
                                .orElseThrow(() -> new ResourceNotFoundException("Sprint not found for id: " + id));
     }
 
-    public void validateCreateSprintRequest(SprintRequest sprintRequest) {
+    public void validateSprintRequest(SprintRequest sprintRequest) {
         validateObjectNotNull(sprintRequest, "Sprint Request");
         validateStringNotNullOrBlank(sprintRequest.getName(), "Sprint name");
         validateStringNotNullOrBlank(sprintRequest.getStatusCode(), "Sprint statusCode");
-    }
-
-    public void validateUpdateSprintRequest(SprintRequest sprintRequest) {
-        validateObjectNotNull(sprintRequest, "Sprint Request");
-        validateStringNotBlank(sprintRequest.getName(), "Sprint name");
-        validateStringNotBlank(sprintRequest.getStatusCode(), "Sprint statusCode");
     }
 }

@@ -28,6 +28,10 @@ public class Timesheet extends AuditEntity {
     @Column(name = "job_id")
     private Integer jobId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id", insertable = false, updatable = false)
+    private Job job;
+
     @Column(name = "worked_date")
     private LocalDate workedDate;
 

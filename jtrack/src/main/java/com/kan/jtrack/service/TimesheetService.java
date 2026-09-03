@@ -20,16 +20,19 @@ public class TimesheetService {
 
     private final TimesheetRepository timesheetRepository;
     private final TimesheetMapper timesheetMapper;
+    private final UserService userService;
     private final AuditEntityService auditEntityService;
     private final JobService jobService;
 
 
     public TimesheetService(TimesheetRepository timesheetRepository,
                             TimesheetMapper timesheetMapper,
+                            UserService userService,
                             AuditEntityService auditEntityService,
                             JobService jobService) {
         this.timesheetRepository = timesheetRepository;
         this.timesheetMapper = timesheetMapper;
+        this.userService = userService;
         this.auditEntityService = auditEntityService;
         this.jobService = jobService;
     }
@@ -40,34 +43,36 @@ public class TimesheetService {
 
         return timesheetRepository.findAll()
                                   .stream()
-                                  .map(timesheetMapper::toTimesheetResponse)
+                                  .map(timesheet -> timesheetMapper.toTimesheetResponse(timesheet, userService.getUserByIdIgnoreBlank(timesheet.getUserId())))
                                   .toList();
     }
 
     @Transactional(readOnly = true)
     public TimesheetResponse getById(Integer id) {
         log.debug("getById({})", id);
-        return timesheetMapper.toTimesheetResponse(getByIdOrThrow(id));
+        Timesheet timesheet = getByIdOrThrow(id);
+        return timesheetMapper.toTimesheetResponse(timesheet, userService.getUserByIdIgnoreBlank(timesheet.getUserId()));
     }
 
     @Transactional
     public TimesheetResponse create(TimesheetRequest timesheetRequest) {
         log.debug("create({})", timesheetRequest);
 
-        validateCreateTimesheetRequest(timesheetRequest);
+        validateTimesheetRequest(timesheetRequest);
 
-        Timesheet timesheet = timesheetMapper.toTimesheet(timesheetRequest, auditEntityService.generateAuditEntityRequest());
+        Timesheet timesheet
+                = timesheetMapper.toTimesheet(timesheetRequest, auditEntityService.generateAuditEntityRequest());
         Timesheet savedTimesheet = timesheetRepository.save(timesheet);
         jobService.refreshJobActualHours(savedTimesheet.getJobId());
 
-        return timesheetMapper.toTimesheetResponse(savedTimesheet);
+        return timesheetMapper.toTimesheetResponse(savedTimesheet, userService.getUserByIdIgnoreBlank(savedTimesheet.getUserId()));
     }
 
     @Transactional
     public TimesheetResponse update(Integer id, TimesheetRequest timesheetRequest) {
         log.debug("update({}, {})", id, timesheetRequest);
 
-        validateUpdateTimesheetRequest(timesheetRequest);
+        validateTimesheetRequest(timesheetRequest);
 
         Timesheet timesheet = getByIdOrThrow(id);
         timesheetMapper.mapToTimesheet(timesheet, timesheetRequest, auditEntityService.generateAuditEntityRequest());
@@ -75,7 +80,7 @@ public class TimesheetService {
 
         jobService.refreshJobActualHours(savedTimesheet.getJobId());
 
-        return timesheetMapper.toTimesheetResponse(savedTimesheet);
+        return timesheetMapper.toTimesheetResponse(savedTimesheet, userService.getUserByIdIgnoreBlank(savedTimesheet.getUserId()));
     }
 
     @Transactional
@@ -93,14 +98,9 @@ public class TimesheetService {
                                   .orElseThrow(() -> new ResourceNotFoundException("Timesheet not found for id: " + id));
     }
 
-    public void validateCreateTimesheetRequest(TimesheetRequest timesheetRequest) {
+    public void validateTimesheetRequest(TimesheetRequest timesheetRequest) {
         validateObjectNotNull(timesheetRequest, "Timesheet Request");
         validateStringNotNullOrBlank(timesheetRequest.getUserId(), "Timesheet userId");
         validateObjectNotNull(timesheetRequest.getJobId(), "Timesheet jobId");
-    }
-
-    public void validateUpdateTimesheetRequest(TimesheetRequest timesheetRequest) {
-        validateObjectNotNull(timesheetRequest, "Timesheet Request");
-        validateStringNotBlank(timesheetRequest.getUserId(), "Timesheet userId");
     }
 }

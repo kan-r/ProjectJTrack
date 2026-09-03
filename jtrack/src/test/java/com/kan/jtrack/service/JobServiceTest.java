@@ -3,6 +3,7 @@ package com.kan.jtrack.service;
 import com.kan.jtrack.dto.request.AuditEntityRequest;
 import com.kan.jtrack.dto.request.JobRequest;
 import com.kan.jtrack.dto.response.JobResponse;
+import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.entity.Job;
 import com.kan.jtrack.exception.ResourceNotFoundException;
 import com.kan.jtrack.exception.ValidationException;
@@ -68,6 +69,9 @@ class JobServiceTest {
     private JobMapper jobMapper;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private AuditEntityService auditEntityService;
 
     @InjectMocks
@@ -83,9 +87,14 @@ class JobServiceTest {
         JobResponse jobResponse1 = generateJobResponse1();
         JobResponse jobResponse2 = generateJobResponse2();
 
+        UserResponse user1 = generateUserResponse1();
+        UserResponse user2 = generateUserResponse2();
+
         when(jobRepository.findAll()).thenReturn(List.of(job1, job2));
-        when(jobMapper.toJobResponse(job1)).thenReturn(jobResponse1);
-        when(jobMapper.toJobResponse(job2)).thenReturn(jobResponse2);
+        when(userService.getUserByIdIgnoreBlank(job1.getAssignedTo())).thenReturn(user1);
+        when(userService.getUserByIdIgnoreBlank(job2.getAssignedTo())).thenReturn(user2);
+        when(jobMapper.toJobResponse(job1, user1)).thenReturn(jobResponse1);
+        when(jobMapper.toJobResponse(job2, user2)).thenReturn(jobResponse2);
 
         List<JobResponse> result = jobService.getAll();
 
@@ -117,9 +126,11 @@ class JobServiceTest {
     void getById_whenJobExists_shouldReturnJobResponse() {
         Job job = generateJob1();
         JobResponse jobResponse = generateJobResponse1();
+        UserResponse userResponse = generateUserResponse1();
 
         when(jobRepository.findById(ID_1)).thenReturn(of(job));
-        when(jobMapper.toJobResponse(job)).thenReturn(jobResponse);
+        when(userService.getUserByIdIgnoreBlank(job.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(job, userResponse)).thenReturn(jobResponse);
 
         JobResponse result = jobService.getById(ID_1);
 
@@ -191,11 +202,13 @@ class JobServiceTest {
         Job savedJob = generateJob1();
 
         JobResponse jobResponse = generateJobResponse1();
+        UserResponse userResponse = generateUserResponse1();
 
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         when(jobMapper.toJob(jobRequest, auditEntityRequest)).thenReturn(job);
         when(jobRepository.save(job)).thenReturn(savedJob);
-        when(jobMapper.toJobResponse(savedJob)).thenReturn(jobResponse);
+        when(userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(savedJob, userResponse)).thenReturn(jobResponse);
 
         JobResponse result = jobService.create(jobRequest);
 
@@ -217,11 +230,12 @@ class JobServiceTest {
         Job savedJob = generateJob2();
 
         JobResponse jobResponse = generateJobResponse2();
-
+        UserResponse userResponse = generateUserResponse2();
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         when(jobMapper.toJob(jobRequest, auditEntityRequest)).thenReturn(job);
         when(jobRepository.save(job)).thenReturn(savedJob);
-        when(jobMapper.toJobResponse(savedJob)).thenReturn(jobResponse);
+        when(userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(savedJob, userResponse)).thenReturn(jobResponse);
 
         JobResponse result = jobService.create(jobRequest);
 
@@ -249,8 +263,9 @@ class JobServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenNameIsBlank_shouldThrowValidationException(String name) {
+    void update_whenNameIsNullOrBlank_shouldThrowValidationException(String name) {
         JobRequest jobRequest = generateJobRequest1();
         jobRequest.setName(name);
 
@@ -258,8 +273,9 @@ class JobServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenTypeCodeIsBlank_shouldThrowValidationException(String typeCode) {
+    void update_whenTypeCodeIsNullOrBlank_shouldThrowValidationException(String typeCode) {
         JobRequest jobRequest = generateJobRequest1();
         jobRequest.setTypeCode(typeCode);
 
@@ -267,8 +283,9 @@ class JobServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenPriorityCodeIsBlank_shouldThrowValidationException(String priorityCode) {
+    void update_whenPriorityCodeIsNullOrBlank_shouldThrowValidationException(String priorityCode) {
         JobRequest jobRequest = generateJobRequest1();
         jobRequest.setPriorityCode(priorityCode);
 
@@ -276,8 +293,9 @@ class JobServiceTest {
     }
 
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", " ", "   "})
-    void update_whenStatusCodeIsBlank_shouldThrowValidationException(String statusCode) {
+    void update_whenStatusCodeIsNullOrBlank_shouldThrowValidationException(String statusCode) {
         JobRequest jobRequest = generateJobRequest1();
         jobRequest.setStatusCode(statusCode);
 
@@ -301,11 +319,13 @@ class JobServiceTest {
         Job savedJob = generateJob1();
 
         JobResponse jobResponse = generateJobResponse1();
+        UserResponse userResponse = generateUserResponse1();
 
         when(jobRepository.findById(ID_1)).thenReturn(of(existingJob));
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         when(jobRepository.save(existingJob)).thenReturn(savedJob);
-        when(jobMapper.toJobResponse(savedJob)).thenReturn(jobResponse);
+        when(userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(savedJob, userResponse)).thenReturn(jobResponse);
 
         JobResponse result = jobService.update(ID_1, jobRequest);
 
@@ -324,11 +344,13 @@ class JobServiceTest {
         Job savedJob = generateJob2();
 
         JobResponse jobResponse = generateJobResponse2();
+        UserResponse userResponse = generateUserResponse2();
 
         when(jobRepository.findById(ID_2)).thenReturn(of(existingJob));
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         when(jobRepository.save(existingJob)).thenReturn(savedJob);
-        when(jobMapper.toJobResponse(savedJob)).thenReturn(jobResponse);
+        when(userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(savedJob, userResponse)).thenReturn(jobResponse);
 
         JobResponse result = jobService.update(ID_2, jobRequest);
 
@@ -347,13 +369,15 @@ class JobServiceTest {
         Job savedJob = generateJob1();
 
         JobResponse jobResponse = generateJobResponse1();
+        UserResponse userResponse = generateUserResponse1();
 
         when(jobRepository.findById(ID_1)).thenReturn(of(existingJob));
         when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
         doNothing().when(jobMapper)
                    .mapToJob(existingJob, jobRequest, auditEntityRequest);
         when(jobRepository.save(existingJob)).thenReturn(savedJob);
-        when(jobMapper.toJobResponse(savedJob)).thenReturn(jobResponse);
+        when(userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(savedJob, userResponse)).thenReturn(jobResponse);
 
         JobResponse result = jobService.update(ID_1, jobRequest);
 
@@ -524,5 +548,17 @@ class JobServiceTest {
                           .createdAt(CREATED_AT_2)
                           .createdBy(CREATED_BY_2)
                           .build();
+    }
+
+    private UserResponse generateUserResponse1() {
+        return UserResponse.builder()
+                           .id(ASSIGNED_TO_1)
+                           .build();
+    }
+
+    private UserResponse generateUserResponse2() {
+        return UserResponse.builder()
+                           .id(ASSIGNED_TO_2)
+                           .build();
     }
 }

@@ -14,11 +14,21 @@ import java.time.LocalDate;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "userId", "jobId", "workedDate", "workedHours"})
+@JsonPropertyOrder({
+        "id",
+        "userId",
+        "userName",
+        "jobId",
+        "jobName",
+        "workedDate",
+        "workedHours"
+})
 public class TimesheetResponse extends AuditEntityResponse {
     private Integer id;
     private String userId;
+    private String userName;
     private Integer jobId;
+    private String jobName;
     private LocalDate workedDate;
     private Double workedHours;
 }
