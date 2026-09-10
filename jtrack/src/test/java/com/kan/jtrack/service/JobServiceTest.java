@@ -2,6 +2,7 @@ package com.kan.jtrack.service;
 
 import com.kan.jtrack.dto.request.AuditEntityRequest;
 import com.kan.jtrack.dto.request.JobRequest;
+import com.kan.jtrack.dto.request.JobStatusUpdateRequest;
 import com.kan.jtrack.dto.response.JobResponse;
 import com.kan.jtrack.dto.response.UserResponse;
 import com.kan.jtrack.entity.Job;
@@ -387,6 +388,62 @@ class JobServiceTest {
         verify(jobRepository, never()).refreshParentJobActualHours(PARENT_ID_1_NULL);
     }
 
+    // ============ updateStatus() Tests ============
+
+    @ParameterizedTest
+    @NullSource
+    void updateStatus_whenIdIsNull_shouldThrowValidationException(Integer id) {
+        JobStatusUpdateRequest jobStatusUpdateRequest = generateJobStatusUpdateRequest(STATUS_CODE_1);
+        assertThrows(ValidationException.class, () -> jobService.updateStatus(id, jobStatusUpdateRequest));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void updateStatus_whenJobStatusUpdateRequestIsNull_shouldThrowValidationException(JobStatusUpdateRequest jobStatusUpdateRequest) {
+        assertThrows(ValidationException.class, () -> jobService.updateStatus(ID_1, jobStatusUpdateRequest));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", " ", "   "})
+    void updateStatus_whenStatusCodeIsNullOrBlank_shouldThrowValidationException(String statusCode) {
+        JobStatusUpdateRequest jobStatusUpdateRequest = generateJobStatusUpdateRequest(statusCode);
+        assertThrows(ValidationException.class, () -> jobService.updateStatus(ID_1, jobStatusUpdateRequest));
+    }
+
+    @Test
+    void updateStatus_whenNoJobExists_shouldThrowResourceNotFoundException() {
+        JobStatusUpdateRequest jobStatusUpdateRequest = generateJobStatusUpdateRequest(STATUS_CODE_1);
+        when(jobRepository.findById(ID_UNKNOWN)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> jobService.updateStatus(ID_UNKNOWN, jobStatusUpdateRequest));
+    }
+
+    @Test
+    void updateStatus_whenJobExists_shouldUpdateStatus() {
+        JobStatusUpdateRequest jobStatusUpdateRequest = generateJobStatusUpdateRequest(STATUS_CODE_1);
+        AuditEntityRequest auditEntityRequest = generateAuditEntityRequest();
+
+        Job existingJob = generateJob1();
+        Job savedJob = generateJob1();
+
+        JobResponse jobResponse = generateJobResponse1();
+        UserResponse userResponse = generateUserResponse1();
+
+        when(jobRepository.findById(ID_1)).thenReturn(of(existingJob));
+        when(auditEntityService.generateAuditEntityRequest()).thenReturn(auditEntityRequest);
+        when(jobRepository.save(existingJob)).thenReturn(savedJob);
+        when(userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo())).thenReturn(userResponse);
+        when(jobMapper.toJobResponse(savedJob, userResponse)).thenReturn(jobResponse);
+
+        JobResponse result = jobService.updateStatus(ID_1, jobStatusUpdateRequest);
+
+        assertNotNull(result);
+        assertEquals(jobResponse, result);
+        verify(jobMapper).updateJobStatus(existingJob, jobStatusUpdateRequest.getStatusCode(), auditEntityRequest);
+        verify(jobRepository).save(existingJob);
+    }
+
     // ============ delete() Tests ============
 
     @ParameterizedTest
@@ -501,6 +558,12 @@ class JobServiceTest {
                          .actualHours(ACTUAL_HOURS_2)
                          .parentId(PARENT_ID_2)
                          .build();
+    }
+
+    private JobStatusUpdateRequest generateJobStatusUpdateRequest(String statusCode) {
+        JobStatusUpdateRequest request = new JobStatusUpdateRequest();
+        request.setStatusCode(statusCode);
+        return request;
     }
 
     private AuditEntityRequest generateAuditEntityRequest() {

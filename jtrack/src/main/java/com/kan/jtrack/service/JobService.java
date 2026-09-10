@@ -1,6 +1,7 @@
 package com.kan.jtrack.service;
 
 import com.kan.jtrack.dto.request.JobRequest;
+import com.kan.jtrack.dto.request.JobStatusUpdateRequest;
 import com.kan.jtrack.dto.response.JobResponse;
 import com.kan.jtrack.entity.Job;
 import com.kan.jtrack.exception.ResourceNotFoundException;
@@ -74,6 +75,20 @@ public class JobService {
         jobMapper.mapToJob(job, jobRequest, auditEntityService.generateAuditEntityRequest());
         Job savedJob = jobRepository.save(job);
         refreshParentJobHours(savedJob.getParentId());
+
+        return jobMapper.toJobResponse(savedJob, userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo()));
+    }
+
+    @Transactional
+    public JobResponse updateStatus(Integer id, JobStatusUpdateRequest jobStatusUpdateRequest) {
+        log.debug("updateStatus({}, {})", id, jobStatusUpdateRequest);
+
+        validateObjectNotNull(jobStatusUpdateRequest, "Job Status Update Request");
+        validateStringNotNullOrBlank(jobStatusUpdateRequest.getStatusCode(), "Job statusCode");
+
+        Job job = getByIdOrThrow(id);
+        jobMapper.updateJobStatus(job, jobStatusUpdateRequest.getStatusCode(), auditEntityService.generateAuditEntityRequest());
+        Job savedJob = jobRepository.save(job);
 
         return jobMapper.toJobResponse(savedJob, userService.getUserByIdIgnoreBlank(savedJob.getAssignedTo()));
     }

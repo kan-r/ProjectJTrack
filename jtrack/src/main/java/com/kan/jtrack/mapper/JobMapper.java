@@ -33,4 +33,10 @@ public interface JobMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     void mapToJob(@MappingTarget Job job, JobRequest jobRequest, AuditEntityRequest auditEntityRequest);
+
+    @Mapping(target = "updatedAt", source = "auditEntityRequest.updatedAt")
+    @Mapping(target = "updatedBy", source = "auditEntityRequest.updatedBy")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    void updateJobStatus(@MappingTarget Job job, String statusCode, AuditEntityRequest auditEntityRequest);
 }

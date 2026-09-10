@@ -1,6 +1,7 @@
 package com.kan.jtrack.controller;
 
 import com.kan.jtrack.dto.request.JobRequest;
+import com.kan.jtrack.dto.request.JobStatusUpdateRequest;
 import com.kan.jtrack.dto.response.JobResponse;
 import com.kan.jtrack.service.JobService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,13 @@ public class JobController {
     public JobResponse update(@PathVariable Integer id, @RequestBody JobRequest jobRequest) {
         log.debug("update({}, {})", id, jobRequest);
         return jobService.update(id, jobRequest);
+    }
+
+    @PatchMapping("/{id}/status")
+    public JobResponse updateStatus(@PathVariable Integer id,
+                                    @RequestBody JobStatusUpdateRequest jobStatusUpdateRequest) {
+        log.debug("updateStatus({}, {})", id, jobStatusUpdateRequest);
+        return jobService.updateStatus(id, jobStatusUpdateRequest);
     }
 
     @DeleteMapping("/{id}")
