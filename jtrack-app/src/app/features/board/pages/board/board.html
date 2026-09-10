@@ -1,1 +1,49 @@
-<p>board works!</p>
+<div class="jt-page-container">
+  <!-- Filter Panel -->
+  <div class="jt-filter-panel">
+    <mat-form-field appearance="outline">
+      <mat-label>Filter by Sprint</mat-label>
+      <mat-select [value]="selectedSprint()" (selectionChange)="onSprintChange($event)">
+        <mat-option value="all">All Sprints</mat-option>
+        @for (sprint of sprints.value(); track sprint) {
+          <mat-option [value]="sprint.id">{{ sprint.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Kanban Board -->
+  <div class="kanban-board">
+    @for (column of filteredColumns(); track column.id) {
+      <div class="kanban-column">
+        <div class="column-header">
+          <h3>{{ column.name }}</h3>
+          <span class="job-count">{{ column.jobs.length }}</span>
+        </div>
+
+        <div
+          cdkDropList
+          [id]="column.id"
+          [cdkDropListData]="column.jobs"
+          [cdkDropListConnectedTo]="connectedTo"
+          (cdkDropListDropped)="onJobDrop($event)"
+          class="job-list"
+        >
+          @for (job of column.jobs; track job.id) {
+            <mat-card cdkDrag class="job-card">
+              <mat-card-header>
+                <mat-card-title (click)="onJobClick(job)">{{ job.name }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ job.description }}</p>
+                <span class="sprint-badge">{{ job.sprintName }}</span>
+              </mat-card-content>
+            </mat-card>
+          } @empty {
+            <div class="empty-placeholder">No jobs here</div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

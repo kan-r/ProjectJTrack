@@ -4,7 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Sprint } from '../../models/sprint';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
@@ -13,7 +13,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCardModule } from '@angular/material/card';
 import { SprintService } from '../../sprint-service/sprint-service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SprintStatus } from '../../models/sprint-status';
 import { formatLocaleToIsoDate } from '../../../../shared/utils/date-utils';
 import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
 
@@ -50,25 +49,20 @@ export class SprintForm {
   saving = signal(false);
   private sprintId = signal<number | null>(null);
 
-  sprintStatusesResource = this.sprintService.getSprintStatuses();
-  sprintStatuses: SprintStatus[] = [];
+  sprintStatuses = this.sprintService.getSprintStatuses();
 
   sprintResource = this.sprintService.getSprintById(this.sprintId);
 
   sprintForm: FormGroup = this.fb.group({
-    id: [null],
+    id: new FormControl<number | null>(null),
     name: ['', [Validators.required]],
-    statusCode: [null],
-    startDate: [null],
-    endDate: [null],
+    statusCode: [''],
+    startDate: [''],
+    endDate: [''],
   });
 
   constructor() {
     effect(() => {
-      if (this.sprintStatusesResource.hasValue()) {
-        this.sprintStatuses = this.sprintStatusesResource.value();
-      }
-
       if (!this.sprintResource.hasValue()) {
         return;
       }

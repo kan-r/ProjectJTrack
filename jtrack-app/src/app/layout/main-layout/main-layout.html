@@ -1,20 +1,24 @@
 <mat-sidenav-container class="jt-sidenav-container">
-  
   <!-- Left Side Navigation: "side" mode anchors it in place -->
   <mat-sidenav #drawer mode="side" opened class="jt-sidenav">
     <mat-nav-list>
       @for (item of sidebarItems; track item.label) {
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="active-nav-item">
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive
+          #activeNavItem="routerLinkActive"
+          [activated]="activeNavItem.isActive"
+        >
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
           <span matListItemTitle>{{ item.label }}</span>
         </a>
       }
     </mat-nav-list>
   </mat-sidenav>
-  
+
   <!-- Scrollable Right Content Panel -->
   <mat-sidenav-content class="jt-sidenav-content">
     <router-outlet></router-outlet>
   </mat-sidenav-content>
-
 </mat-sidenav-container>

@@ -2,7 +2,8 @@
   --jt-toolbar-color: rgb(140, 140, 140);
   --jt-toolbar-text-color: white;
 
-  --jt-screen-color: rgb(250, 250, 250);
+  --jt-background-color: rgb(250, 250, 250);
+  --jt-header-background-color: rgb(230, 230, 230);
   --jt-border-color: rgb(153, 153, 153);
   --jt-hover-brightness: 1.15;
 
@@ -19,6 +20,7 @@
 
 .jt-app-container {
   flex: 1;
+  flex-direction: column;
   width: 100%;
   height: 100%;
 }
@@ -26,7 +28,7 @@
 .jt-page-container {
   position: relative; /* Crucial: bounds the absolute overlay */
   min-height: 200px; /* Ensures container has height to show spinner */
-  width: 90%;
+  width: 99%;
 }
 
 .jt-page-container-2 {
@@ -63,6 +65,28 @@
   background: rgba(255, 255, 255, 0.9);
 }
 
+/* -------------------- Filter Panel -------------------- */
+
+.jt-filter-panel {
+  display: flex;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+  margin-bottom: 12px;
+  background-color: var(--mat-sys-surface-container-low);
+  border-radius: 8px;
+}
+
+/* .jt-filter-panel mat-label {
+  font-weight: bold;
+} */
+
+.jt-filter-panel mat-form-field {
+  width: 250px;
+  background-color: white;
+}
+
 /* -------------------- Button -------------------- */
 
 .jt-button {
@@ -86,16 +110,17 @@
 
 .jt-table {
   empty-cells: show;
-  border: 1px solid var(--jt-border-color);
+  /* border: 1px solid var(--jt-border-color); */
   border-radius: 6px;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
-  padding: 6px 0;
+  padding: 0;
 }
 
 .jt-table th {
-  background-color: var(--jt-screen-color);
+  background-color: var(--jt-header-background-color);
   border-bottom: 1px solid var(--jt-border-color);
+  font-weight: bold;
 }
 
 .jt-table td {
@@ -108,7 +133,7 @@
 }
 
 .jt-table tr:nth-child(even) {
-  background-color: var(--jt-screen-color);
+  background-color: var(--jt-background-color);
 }
 
 .jt-table tr:hover {
@@ -136,7 +161,7 @@
   min-width: 200px;
   justify-content: center;
   align-items: center;
-  background-color: var(--jt-screen-color);
+  background-color: var(--jt-background-color);
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin: 0;
@@ -174,11 +199,23 @@
   padding: 0;
 }
 
-.jt-form-container form > div > mat-form-field {
+.jt-form-container form > div > mat-form-field:not(.jt-resizable-form-field) {
   flex-grow: 1;
   height: 40px;
   margin: 0;
   padding: 0;
+}
+
+.jt-resizable-form-field {
+  flex-grow: 1;
+  height: auto;
+  min-height: fit-content;
+  margin: 0;
+  padding: 0;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
 }
 
 [hidden] {

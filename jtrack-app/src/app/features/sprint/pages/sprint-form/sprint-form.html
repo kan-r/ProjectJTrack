@@ -33,7 +33,7 @@
         <mat-label>Status :</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="statusCode">
-            @for (status of sprintStatuses; track status.code) {
+            @for (status of sprintStatuses.value(); track status.code) {
               <mat-option [value]="status.code">{{ status.description }}</mat-option>
             }
           </mat-select>

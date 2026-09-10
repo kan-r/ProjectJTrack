@@ -6,11 +6,13 @@ import { Timesheets } from './features/timesheet/pages/timesheets/timesheets';
 import { SprintForm } from './features/sprint/pages/sprint-form/sprint-form';
 import { authGuard } from './core/auth/auth-guard/auth-guard';
 import { UnauthorizedPage } from './core/auth/unauthorized-page/unauthorized-page';
+import { JobForm } from './features/job/pages/job-form/job-form';
+import { TimesheetForm } from './features/timesheet/pages/timesheet-form/timesheet-form';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'sprints',
+    redirectTo: 'board',
     pathMatch: 'full',
   },
   {
@@ -41,7 +43,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['admin', 'manager'] },
   },
-
   {
     path: 'jobs',
     component: Jobs,
@@ -49,8 +50,32 @@ export const routes: Routes = [
     data: { roles: ['admin', 'manager', 'user'] },
   },
   {
+    path: 'jobs/add',
+    component: JobForm,
+    canActivate: [authGuard],
+    data: { roles: ['admin', 'manager'] },
+  },
+  {
+    path: 'jobs/edit/:id',
+    component: JobForm,
+    canActivate: [authGuard],
+    data: { roles: ['admin', 'manager'] },
+  },
+  {
     path: 'timesheets',
     component: Timesheets,
+    canActivate: [authGuard],
+    data: { roles: ['admin', 'manager', 'user'] },
+  },
+  {
+    path: 'timesheets/add',
+    component: TimesheetForm,
+    canActivate: [authGuard],
+    data: { roles: ['admin', 'manager', 'user'] },
+  },
+  {
+    path: 'timesheets/edit/:id',
+    component: TimesheetForm,
     canActivate: [authGuard],
     data: { roles: ['admin', 'manager', 'user'] },
   },

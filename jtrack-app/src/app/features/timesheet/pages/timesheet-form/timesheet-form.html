@@ -1,0 +1,78 @@
+<div class="jt-page-container-2">
+  @if (timesheetResource.isLoading() || saving()) {
+    <div class="jt-overlay-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  <h1>{{ pageTitle }}</h1>
+
+  <mat-card class="jt-form-container">
+    <form [formGroup]="timesheetForm" (ngSubmit)="onSubmit()">
+      <div [hidden]="!isEditMode">
+        <mat-label>ID :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="id" [readonly]="isEditMode" />
+          @if (timesheetForm.get('id')?.hasError('required')) {
+            <mat-error>ID is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>User :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="userId">
+            @for (user of users.value(); track user.id) {
+              <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Job :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="jobId">
+            @for (job of jobs.value(); track job.id) {
+              <mat-option [value]="job.id">{{ job.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Worked Date :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput [matDatepicker]="workedDatePicker" formControlName="workedDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="workedDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #workedDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Worked Hours :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="workedHours" />
+        </mat-form-field>
+      </div>
+
+      <mat-card-actions>
+        <button mat-button type="button" class="jt-button" [routerLink]="['/timesheets']">
+          Cancel
+          <mat-icon>cancel</mat-icon>
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="jt-button"
+          [disabled]="timesheetForm.invalid"
+        >
+          Save
+          <mat-icon>save</mat-icon>
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

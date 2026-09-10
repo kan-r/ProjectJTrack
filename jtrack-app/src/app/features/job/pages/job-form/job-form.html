@@ -1,0 +1,140 @@
+<div class="jt-page-container-2">
+  @if (jobResource.isLoading() || saving()) {
+    <div class="jt-overlay-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  <h1>{{ pageTitle }}</h1>
+
+  <mat-card class="jt-form-container">
+    <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
+      <div [hidden]="!isEditMode">
+        <mat-label>ID :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="id" [readonly]="isEditMode" />
+          @if (jobForm.get('id')?.hasError('required')) {
+            <mat-error>ID is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Name :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="name" />
+          @if (jobForm.get('name')?.hasError('required')) {
+            <mat-error>Name is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Description :</mat-label>
+        <mat-form-field class="jt-resizable-form-field" appearance="outline">
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Type :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="typeCode">
+            @for (type of jobTypes.value(); track type.code) {
+              <mat-option [value]="type.code">{{ type.description }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Status :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="statusCode">
+            @for (status of jobStatuses.value(); track status.code) {
+              <mat-option [value]="status.code">{{ status.description }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Priority :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="priorityCode">
+            @for (priority of jobPriorities.value(); track priority.code) {
+              <mat-option [value]="priority.code">{{ priority.description }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Estimated Hours :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="estimatedHours" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Actual Hours :</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="actualHours" [readonly]="true" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Assigned To :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="assignedTo">
+            <mat-option value=''></mat-option>
+            @for (user of users.value(); track user.id) {
+              <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Parent Job :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="parentId">
+            <mat-option value=null></mat-option>
+            @for (job of parentJobs(); track job.id) {
+              <mat-option [value]="job.id">{{ job.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Sprint :</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="sprintId">
+            <mat-option value=null></mat-option>
+            @for (sprint of sprints.value(); track sprint.id) {
+              <mat-option [value]="sprint.id">{{ sprint.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-card-actions>
+        <button mat-button type="button" class="jt-button" (click)="goBack()">
+          Cancel
+          <mat-icon>cancel</mat-icon>
+        </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="jt-button"
+          [disabled]="jobForm.invalid"
+        >
+          Save
+          <mat-icon>save</mat-icon>
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

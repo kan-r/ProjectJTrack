@@ -1,1 +1,47 @@
-<p>jobs works!</p>
+<div class="jt-page-container">
+  @if (jobResource.isLoading() || deleting()) {
+    <div class="jt-overlay-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  <div class="jt-page-title-container">
+    <h1>Jobs</h1>
+    <button
+      matButton="outlined"
+      class="jt-button"
+      [disabled]="!canCreate"
+      [routerLink]="['/jobs/add']"
+    >
+      Create
+      <mat-icon>add_circle</mat-icon>
+    </button>
+  </div>
+
+  @if (jobResource.hasValue()) {
+    <table mat-table [dataSource]="jobResource.value()" class="mat-shadow-2 jt-table">
+      @for (column of columns; track column) {
+        <ng-container [matColumnDef]="column.name">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ column.header }}
+          </th>
+
+          @if (['edit', 'delete'].includes(column.name)) {
+            <td mat-cell *matCellDef="let row">
+              <button matButton [disabled]="!canEdit" (click)="onActionClick(column.name, row.id)">
+                <mat-icon>{{ column.cell(row) }}</mat-icon>
+              </button>
+            </td>
+          } @else {
+            <td mat-cell *matCellDef="let row">
+              {{ column.cell(row) }}
+            </td>
+          }
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  }
+</div>
