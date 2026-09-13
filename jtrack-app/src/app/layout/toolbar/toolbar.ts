@@ -13,8 +13,8 @@ import { AuthService } from '../../core/auth/auth-service/auth-service';
 export class Toolbar {
   private authService = inject(AuthService);
 
-  protected isAuthenticated: boolean = false;
-  protected userName: string | undefined = '';
+  isAuthenticated: boolean = false;
+  userName: string | undefined = '';
 
   constructor() {
     effect(() => {
@@ -23,11 +23,11 @@ export class Toolbar {
     });
   }
 
-  protected login() {
+  login() {
     this.authService.login();
   }
 
-  protected logout() {
+  logout() {
     this.authService.logout();
   }
 }

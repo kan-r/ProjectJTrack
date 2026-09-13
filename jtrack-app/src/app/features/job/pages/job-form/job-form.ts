@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../job-service/job-service';
 import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
 import { Job } from '../../models/job';
@@ -30,7 +30,6 @@ import { UserService } from '../../../user/user-service/user-service';
     MatOptionModule,
     MatDatepickerModule,
     ReactiveFormsModule,
-    RouterLink,
   ],
   selector: 'app-job-form',
   styleUrl: './job-form.css',
@@ -43,7 +42,6 @@ export class JobForm {
   private notificationService = inject(NotificationService);
 
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private location = inject(Location);
   private fb = inject(FormBuilder);
 
@@ -51,9 +49,9 @@ export class JobForm {
   pageTitle: string = 'Create Job';
 
   saving = signal(false);
-  private jobId = signal<number | null>(null);
+  jobId = signal<number | null>(null);
 
-  jobs = this.jobService.getJobs();
+  private jobs = this.jobService.getJobs();
   parentJobs = computed(() => {
     const jobs: Job[] = this.jobs.value() ?? [];
     return jobs

@@ -61,10 +61,10 @@ export class TimesheetForm {
   saving = signal(false);
   private timesheetId = signal<number | null>(null);
 
+  private currentUser = this.authService.currentUser();
+
   users = this.userService.getUsers();
   jobs = this.jobService.getJobs();
-
-  currentUser = this.authService.currentUser();
 
   timesheetResource = this.timesheetService.getTimesheetById(this.timesheetId);
 
@@ -103,7 +103,7 @@ export class TimesheetForm {
 
     if (timesheetId) {
       this.isEditMode = true;
-      this.pageTitle = 'Edit Sprint';
+      this.pageTitle = 'Edit Timesheet';
       this.timesheetId.set(parseInt(timesheetId));
     } else {
       this.timesheetForm.patchValue({

@@ -15,7 +15,7 @@ import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 import { SprintService } from '../../../sprint/sprint-service/sprint-service';
 import { JobService } from '../../../job/job-service/job-service';
 import { Job } from '../../../job/models/job';
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 
 export interface KanbanColumn {
   id: string;
@@ -33,7 +33,6 @@ export interface KanbanColumn {
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    RouterLink
 ],
   selector: 'app-board',
   styleUrl: './board.css',
@@ -48,10 +47,10 @@ export class Board {
   sprints = this.sprintService.getSprints();
   selectedSprint = signal<number | 'all'>('all');
 
-  jobStatuses = this.jobService.getJobStatuses();
-  jobs = this.jobService.getJobs();
+  private jobStatuses = this.jobService.getJobStatuses();
+  private jobs = this.jobService.getJobs();
 
-  jobStatusToJobsMap = computed<Map<string, Job[]>>(() => {
+  private jobStatusToJobsMap = computed<Map<string, Job[]>>(() => {
     const map = new Map<string, Job[]>();
     const jobs = this.jobs.value() ?? [];
 
@@ -61,8 +60,6 @@ export class Board {
       }
       map.get(job.statusCode)!.push(job);
     });
-
-    console.log('jobStatusToJobsMap:', map);
 
     return map;
   });
@@ -96,11 +93,6 @@ export class Board {
     });
 
     return columns;
-
-    // return originalColumns.map((column) => ({
-    //   ...column,
-    //   jbos: column.jobs.filter((job) => job.sprintId && job.sprintId === currentSprint),
-    // }));
   });
 
   // Track all unique column IDs for cross-list drag configurations
@@ -135,9 +127,6 @@ export class Board {
 
       this.updateJobStatus(movedJob.id, event.container.id);
     }
-
-    // Explicitly notify the master signal that state has updated
-    // this.columns.update(cols => [...cols]);
   }
 
   private updateJobStatus(jobId: number, statusCode: string) {
@@ -146,10 +135,7 @@ export class Board {
     this.jobService.updateJobStatus(jobId, statusCode).subscribe({
       next: (response) => {
         console.log('Job status updated successfully:', response);
-      },
-      error: (error) => {
-        console.error('Error updating job status');
-      },
+      }
     });
   }
 }
