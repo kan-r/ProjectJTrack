@@ -19,10 +19,12 @@ public class AuditEntityService {
 
     public AuditEntityRequest generateAuditEntityRequest() {
         UserResponse user = userService.getCurrentUser();
+        LocalDateTime now = LocalDateTime.now();
+
         return AuditEntityRequest.builder()
-                                 .createdAt(LocalDateTime.now())
+                                 .createdAt(now)
                                  .createdBy(user.getId())
-                                 .updatedAt(LocalDateTime.now())
+                                 .updatedAt(now)
                                  .updatedBy(user.getId())
                                  .build();
     }

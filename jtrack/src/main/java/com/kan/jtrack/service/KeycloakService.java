@@ -49,7 +49,7 @@ public class KeycloakService {
                        .list();
     }
 
-    public  UserRepresentation getUserById(String id) {
+    public UserRepresentation getUserById(String id) {
         log.debug("getUserById({})", id);
 
         return keycloak.realm(properties.getRealm())

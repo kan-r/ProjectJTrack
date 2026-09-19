@@ -18,8 +18,11 @@ import java.util.stream.Collectors;
 @Component
 public class KeycloakClientRoleConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    @Value("${keycloak.client-id}")
-    private String clientId;
+   private final String clientId;
+
+    public KeycloakClientRoleConverter(@Value("${keycloak.client-id}") String clientId) {
+        this.clientId = clientId;
+    }
 
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
