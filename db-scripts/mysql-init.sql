@@ -1,9 +1,3 @@
--- create user 'jtrack' identified by 'provide pwd here';
--- create database jtrackdb;
--- grant all on jtrackdb.* to 'jtrack';
-
-
-
 create table job_types(
   code				varchar(20) not null primary key,
   description		varchar(255)
