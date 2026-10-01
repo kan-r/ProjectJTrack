@@ -49,6 +49,8 @@ const mockJobs = [
     sprintName: 'Sprint 1',
     parentId: 0,
     parentName: '',
+    childJobs: [],
+    isExpanded: false,
   },
   {
     id: 2,
@@ -68,6 +70,8 @@ const mockJobs = [
     sprintName: 'Sprint 2',
     parentId: 0,
     parentName: '',
+    childJobs: [],
+    isExpanded: false,
   },
   {
     id: 3,
@@ -87,6 +91,8 @@ const mockJobs = [
     sprintName: 'Sprint 1',
     parentId: 0,
     parentName: '',
+    childJobs: [],
+    isExpanded: false,
   },
 ];
 

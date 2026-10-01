@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../job-service/job-service';
 import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
@@ -48,6 +48,8 @@ export class JobForm {
   isEditMode: boolean = false;
   pageTitle: string = 'Create Job';
 
+  isParentRequired = signal(false);
+
   saving = signal(false);
   jobId = signal<number | null>(null);
 
@@ -55,7 +57,7 @@ export class JobForm {
   parentJobs = computed(() => {
     const jobs: Job[] = this.jobs.value() ?? [];
     return jobs
-      .filter((job) => job.parentId === null && job.id !== this.jobId())
+      .filter((job) => job.parentId === null && job.typeCode === 'TASK')
       .sort((a, b) => a.name.localeCompare(b.name));
   });
 
@@ -103,6 +105,8 @@ export class JobForm {
           actualHours: job.actualHours,
           parentId: job.parentId,
         });
+
+        this.updateParentRequirement(job.typeCode);
       }
     });
   }
@@ -117,6 +121,25 @@ export class JobForm {
       this.pageTitle = 'Edit Job';
       this.jobId.set(parseInt(jobId));
     }
+  }
+
+  onTypeChange(event: MatSelectChange) {
+    this.updateParentRequirement(event.value);
+  }
+
+  private updateParentRequirement(typeCode: string) {
+    const parentControl = this.jobForm.get('parentId');
+    const isRequired = typeCode === 'SUB_TASK';
+
+    this.isParentRequired.set(isRequired);
+
+    if(!isRequired) {
+      parentControl?.setValue(null);
+    }
+
+    parentControl?.setValidators(isRequired ? Validators.required : null);
+    parentControl?.updateValueAndValidity();
+    parentControl?.markAsTouched();
   }
 
   onSubmit() {

@@ -38,13 +38,13 @@ export class AuthService {
 
   login() {
     this.keycloak.login({
-      redirectUri: window.location.origin + '/',
+      redirectUri: window.location.origin + '/jtrack',
     });
   }
 
   logout() {
     this.keycloak.logout({
-      redirectUri: window.location.origin,
+      redirectUri: window.location.origin + '/jtrack',
     });
   }
 
@@ -56,6 +56,8 @@ export class AuthService {
 
   private populateSessionData(): void {
     const accessToken: KeycloakTokenParsed | undefined = this.keycloak.tokenParsed;
+
+    console.log('Access Token:', accessToken);
 
     if (!accessToken) {
       console.warn('User is not authenticated.');

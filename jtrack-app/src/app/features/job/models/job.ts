@@ -16,4 +16,6 @@ export interface Job {
   sprintName: string;
   parentId: number;
   parentName: string;
+  childJobs: Job[];
+  isExpanded: boolean;
 }

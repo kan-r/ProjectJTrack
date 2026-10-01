@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,15 +9,29 @@ import { ConfirmationService } from '../../../../shared/confirmation/confirmatio
 import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
 import { AuthService } from '../../../../core/auth/auth-service/auth-service';
 import { Job } from '../../models/job';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { SprintService } from '../../../sprint/sprint-service/sprint-service';
+import { UserService } from '../../../user/user-service/user-service';
 
 @Component({
-  imports: [MatTableModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule, RouterLink],
+  imports: [
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
   selector: 'app-jobs',
   styleUrl: './jobs.css',
   templateUrl: './jobs.html',
 })
 export class Jobs {
   private jobService = inject(JobService);
+  private sprintService = inject(SprintService);
+  private userService = inject(UserService);
   private confirmationService = inject(ConfirmationService);
   private notificationService = inject(NotificationService);
   private authService = inject(AuthService);
@@ -28,6 +42,12 @@ export class Jobs {
   canEdit = this.canCreate;
 
   deleting = signal(false);
+
+  sprints = this.sprintService.getSprints();
+  selectedSprint = signal<number | 'all'>('all');
+
+  users = this.userService.getUsers();
+  selectedUser = signal<String | 'all'>('all');
 
   jobResource = this.jobService.getJobs();
 
@@ -82,14 +102,24 @@ export class Jobs {
       cell: (job: Job) => `${job.actualHours}`,
       visible: true,
     },
-    { name: 'parentId', header: 'Parent ID', cell: (job: Job) => `${job.parentId}`, visible: false },
+    {
+      name: 'parentId',
+      header: 'Parent ID',
+      cell: (job: Job) => `${job.parentId}`,
+      visible: false,
+    },
     {
       name: 'parentName',
       header: 'Parent Name',
       cell: (job: Job) => `${job.parentName ?? ''}`,
-      visible: true,
+      visible: false,
     },
-    { name: 'sprintId', header: 'Sprint ID', cell: (job: Job) => `${job.sprintId}`, visible: false },
+    {
+      name: 'sprintId',
+      header: 'Sprint ID',
+      cell: (job: Job) => `${job.sprintId}`,
+      visible: false,
+    },
     {
       name: 'sprintName',
       header: 'Sprint Name',
@@ -98,9 +128,48 @@ export class Jobs {
     },
     { name: 'edit', header: '', cell: () => 'edit', visible: true },
     { name: 'delete', header: '', cell: () => 'delete', visible: true },
+    { name: 'expand', header: '', cell: () => 'expand', visible: true },
   ];
 
+  childColumns = this.columns
+    .filter((column) => column.name != 'expand')
+    .map((column) => (column.name == 'typeDescription' ? { ...column, visible: false } : column));
+
   displayedColumns = this.columns.filter((column) => column.visible).map((column) => column.name);
+  displayedChildColumns = this.childColumns
+    .filter((column) => column.visible)
+    .map((column) => column.name);
+
+  filteredJobs = computed(() => {
+    const selectedSprint = this.selectedSprint();
+    const selectedUser = this.selectedUser();
+
+    return this.jobResource
+      .value()
+      ?.filter(
+        (job) =>
+          (selectedSprint === 'all' || job.sprintId === selectedSprint) &&
+          (selectedUser === 'all' || job.assignedTo === selectedUser),
+      );
+  });
+
+  jobs = computed(() => {
+    const jobs = this.filteredJobs()?.filter((job) => !job.parentId);
+    jobs?.forEach((job) => {
+      job.childJobs = this.filteredJobs()?.filter((child) => child.parentId === job.id) ?? [];
+    });
+    return jobs;
+  });
+
+  onSprintChange(event: MatSelectChange) {
+    console.log('Sprint changed:', event.value);
+    this.selectedSprint.set(event.value);
+  }
+
+  onUserChange(event: MatSelectChange) {
+    console.log('User changed:', event.value);
+    this.selectedUser.set(event.value);
+  }
 
   onActionClick(action: string, id: number) {
     console.log(`onActionClick: ${action}, ID: ${id}`);
@@ -110,6 +179,10 @@ export class Jobs {
     } else if (action === 'delete') {
       this.confirmAndDeleteJob(id);
     }
+  }
+
+  onToggleRow(row: Job): void {
+    row.isExpanded = !row.isExpanded;
   }
 
   private confirmAndDeleteJob(id: number) {

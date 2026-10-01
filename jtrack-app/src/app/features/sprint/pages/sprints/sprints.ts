@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { SprintService } from '../../sprint-service/sprint-service';
 import { Sprint } from '../../models/sprint';
 import { MatTableModule } from '@angular/material/table';
@@ -10,9 +10,19 @@ import { formatIsoToLocaleDate } from '../../../../shared/utils/date-utils';
 import { NotificationService } from '../../../../shared/notification/notification-service/notification-service';
 import { ConfirmationService } from '../../../../shared/confirmation/confirmation-service/confirmation-service';
 import { AuthService } from '../../../../core/auth/auth-service/auth-service';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  imports: [MatTableModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule, RouterLink],
+  imports: [
+    MatTableModule, 
+    MatProgressSpinnerModule, 
+    MatButtonModule, 
+    MatIconModule, 
+    RouterLink,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
   selector: 'app-sprints',
   styleUrl: './sprints.css',
   templateUrl: './sprints.html',
@@ -29,6 +39,9 @@ export class Sprints {
   canEdit = this.canCreate;
 
   deleting = signal(false);
+
+  stauses = this.sprintService.getSprintStatuses();
+  selectedStatus = signal<String | 'all'>('all');
 
   sprintResource = this.sprintService.getSprints();
 
@@ -55,6 +68,19 @@ export class Sprints {
   ];
 
   displayedColumns = this.columns.map((column) => column.name);
+
+  filteredSprints = computed(() => {
+    const selectedStatus = this.selectedStatus();
+    if (selectedStatus === 'all') {
+      return this.sprintResource.value();
+    }
+    return this.sprintResource.value()?.filter((sprint) => sprint.statusCode === selectedStatus);
+  });
+
+  onStatusChange(event: MatSelectChange) {
+    console.log('Status changed:', event.value);
+    this.selectedStatus.set(event.value);
+  }
 
   onActionClick(action: string, id: number) {
     console.log(`onActionClick: ${action}, ID: ${id}`);

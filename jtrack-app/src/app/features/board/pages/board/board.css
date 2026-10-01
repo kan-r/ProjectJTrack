@@ -13,7 +13,7 @@
 
 .kanban-column {
   flex: 0 0 250px;
-  background-color: rgb(244, 245, 247);
+  background-color: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   display: flex;
@@ -35,12 +35,12 @@
 }
 
 .job-count {
-  width: 24px;
-  border-radius: 12px;
-  padding: 2px 8px;
+  width: 32px;
+  border-radius: 8px;
+  padding: 2px 4px;
   font-size: 0.75rem;
   text-align: center;
-  background: var(--mat-sys-surface-container-low);
+  background-color: white;
 }
 
 .job-list {
@@ -63,14 +63,14 @@
 }
 
 .job-card mat-card-title {
-        color: blue;
-        cursor: pointer;
+  color: blue;
+  cursor: pointer;
 }
 
 .sprint-badge {
   display: inline-block;
   margin-top: 8px;
-  background-color: #edf2f7;
+  background-color: white;
   color: #4a5568;
   padding: 2px 6px;
   border-radius: 4px;
@@ -99,7 +99,7 @@
 
 .empty-placeholder {
   text-align: center;
-  color: #a0aec0;
+  color: rgb(160, 174, 192);
   padding: 20px;
   border: 2px dashed #e2e8f0;
   border-radius: 6px;

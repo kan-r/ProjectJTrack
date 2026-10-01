@@ -29,6 +29,7 @@ describe('Sprints', () => {
   let component: Sprints;
 
   let sprintService: {
+    getSprintStatuses: ReturnType<typeof vi.fn>;
     getSprints: ReturnType<typeof vi.fn>;
     deleteSprint: ReturnType<typeof vi.fn>;
   };
@@ -40,6 +41,13 @@ describe('Sprints', () => {
 
   beforeEach(() => {
     sprintService = {
+      getSprintStatuses: vi.fn(() => ({
+        value: () => [],
+        hasValue: () => true,
+        isLoading: () => false,
+        reload: vi.fn(),
+      })),
+
       getSprints: vi.fn(() => ({
         value: () => mockSprints,
         hasValue: () => true,

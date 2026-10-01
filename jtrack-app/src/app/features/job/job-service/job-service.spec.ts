@@ -25,6 +25,8 @@ const mockJobs = [
     sprintName: 'Sprint 1',
     parentId: 0,
     parentName: '',
+    childJobs: [],
+    isExpanded: false,
   },
 ];
 

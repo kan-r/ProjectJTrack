@@ -18,8 +18,20 @@
     </button>
   </div>
 
-  @if (timesheetResource.hasValue()) {
-    <table mat-table [dataSource]="timesheetResource.value()" class="mat-shadow-2 jt-table">
+  <div class="jt-filter-panel">
+    <mat-form-field appearance="outline">
+      <mat-label>Filter by User</mat-label>
+      <mat-select [value]="selectedUser()" (selectionChange)="onUserChange($event)">
+        <mat-option value="all">All Users</mat-option>
+        @for (user of users.value(); track user) {
+          <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (filteredTimesheets()?.length) {
+    <table mat-table [dataSource]="filteredTimesheets() ?? []" class="mat-shadow-2 jt-table">
       @for (column of columns; track column) {
         <ng-container [matColumnDef]="column.name">
           <th mat-header-cell *matHeaderCellDef>

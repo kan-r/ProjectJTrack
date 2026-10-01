@@ -21,7 +21,7 @@
 
       <div>
         <mat-label>Name :</mat-label>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <input matInput formControlName="name" />
           @if (jobForm.get('name')?.hasError('required')) {
             <mat-error>Name is required</mat-error>
@@ -39,7 +39,7 @@
       <div>
         <mat-label>Type :</mat-label>
         <mat-form-field appearance="outline">
-          <mat-select formControlName="typeCode">
+          <mat-select formControlName="typeCode" (selectionChange)="onTypeChange($event)">
             @for (type of jobTypes.value(); track type.code) {
               <mat-option [value]="type.code">{{ type.description }}</mat-option>
             }
@@ -87,7 +87,7 @@
         <mat-label>Assigned To :</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="assignedTo">
-            <mat-option value=''></mat-option>
+            <mat-option value=""></mat-option>
             @for (user of users.value(); track user.id) {
               <mat-option [value]="user.id">{{ user.fullName }}</mat-option>
             }
@@ -95,23 +95,28 @@
         </mat-form-field>
       </div>
 
-      <div>
-        <mat-label>Parent Job :</mat-label>
-        <mat-form-field appearance="outline">
-          <mat-select formControlName="parentId">
-            <mat-option value=null></mat-option>
-            @for (job of parentJobs(); track job.id) {
-              <mat-option [value]="job.id">{{ job.name }}</mat-option>
+      @if (isParentRequired()) {
+        <div>
+          <mat-label>Parent Job :</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="parentId">
+              <mat-option value=""></mat-option>
+              @for (job of parentJobs(); track job.id) {
+                <mat-option [value]="job.id">{{ job.name }}</mat-option>
+              }
+            </mat-select>
+            @if (jobForm.get('parentId')?.hasError('required')) {
+              <mat-error>Parent Job is required</mat-error>
             }
-          </mat-select>
-        </mat-form-field>
-      </div>
+          </mat-form-field>
+        </div>
+      }
 
       <div>
         <mat-label>Sprint :</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="sprintId">
-            <mat-option value=null></mat-option>
+            <mat-option value=""></mat-option>
             @for (sprint of sprints.value(); track sprint.id) {
               <mat-option [value]="sprint.id">{{ sprint.name }}</mat-option>
             }

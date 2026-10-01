@@ -12,7 +12,7 @@ const mockJobs = [
     id: 1,
     name: 'Parent Job',
     description: 'Top level job',
-    typeCode: 'task',
+    typeCode: 'TASK',
     typeDescription: 'Task',
     priorityCode: 'high',
     priorityDescription: 'High',
@@ -31,8 +31,8 @@ const mockJobs = [
     id: 2,
     name: 'Child Job',
     description: 'Sub task',
-    typeCode: 'task',
-    typeDescription: 'Task',
+    typeCode: 'SUB_TASK',
+    typeDescription: 'Sub Task',
     priorityCode: 'medium',
     priorityDescription: 'Medium',
     statusCode: 'inprogress',
@@ -50,7 +50,7 @@ const mockJobs = [
     id: 3,
     name: 'Other Parent',
     description: 'Another top level task',
-    typeCode: 'task',
+    typeCode: 'TASK',
     typeDescription: 'Task',
     priorityCode: 'low',
     priorityDescription: 'Low',
@@ -71,8 +71,8 @@ const mockJob = {
   id: 99,
   name: 'Existing Job',
   description: 'Loaded from server',
-  typeCode: 'task',
-  typeDescription: 'Task',
+  typeCode: 'SUB_TASK',
+  typeDescription: 'Sub Task',
   priorityCode: 'medium',
   priorityDescription: 'Medium',
   statusCode: 'todo',
@@ -129,21 +129,66 @@ describe('JobForm', () => {
     routeMock = { snapshot: { paramMap: convertToParamMap({}) } };
 
     jobService = {
-      getJobs: vi.fn(() => ({ value: () => mockJobs, hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
-      getJobTypes: vi.fn(() => ({ value: () => [{ code: 'task', description: 'Task' }], hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
-      getJobStatuses: vi.fn(() => ({ value: () => [{ code: 'todo', description: 'To Do' }], hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
-      getJobPriorities: vi.fn(() => ({ value: () => [{ code: 'high', description: 'High' }], hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
-      getJobById: vi.fn(() => ({ value: () => mockJob, hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
-      createJob: vi.fn(() => ({ subscribe: (handlers: any) => { handlers.next?.({ id: 100 }); return { unsubscribe: () => {} }; } })),
-      updateJob: vi.fn(() => ({ subscribe: (handlers: any) => { handlers.next?.({ id: 99 }); return { unsubscribe: () => {} }; } })),
+      getJobs: vi.fn(() => ({
+        value: () => mockJobs,
+        hasValue: () => true,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
+      getJobTypes: vi.fn(() => ({
+        value: () => [{ code: 'task', description: 'Task' }],
+        hasValue: () => true,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
+      getJobStatuses: vi.fn(() => ({
+        value: () => [{ code: 'todo', description: 'To Do' }],
+        hasValue: () => true,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
+      getJobPriorities: vi.fn(() => ({
+        value: () => [{ code: 'high', description: 'High' }],
+        hasValue: () => true,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
+      getJobById: vi.fn((id: any) => ({
+        value: () => (id?.() === mockJob.id ? mockJob : undefined),
+        hasValue: () => id?.() === mockJob.id,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
+      createJob: vi.fn(() => ({
+        subscribe: (handlers: any) => {
+          handlers.next?.({ id: 100 });
+          return { unsubscribe: () => {} };
+        },
+      })),
+      updateJob: vi.fn(() => ({
+        subscribe: (handlers: any) => {
+          handlers.next?.({ id: 99 });
+          return { unsubscribe: () => {} };
+        },
+      })),
     };
 
     sprintService = {
-      getSprints: vi.fn(() => ({ value: () => [{ id: 10, name: 'Sprint 10' }], hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
+      getSprints: vi.fn(() => ({
+        value: () => [{ id: 10, name: 'Sprint 10' }],
+        hasValue: () => true,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
     };
 
     userService = {
-      getUsers: vi.fn(() => ({ value: () => [{ id: 'user-1', name: 'Alice' }], hasValue: () => true, isLoading: vi.fn(() => false), reload: vi.fn() })),
+      getUsers: vi.fn(() => ({
+        value: () => [{ id: 'user-1', name: 'Alice' }],
+        hasValue: () => true,
+        isLoading: vi.fn(() => false),
+        reload: vi.fn(),
+      })),
     };
 
     notificationService = {
@@ -166,16 +211,17 @@ describe('JobForm', () => {
     expect(component.pageTitle).toBe('Create Job');
   });
 
-  it('should filter parent jobs to exclude the current job and non-root jobs', () => {
+  it('should return parent jobs', () => {
     component.jobId.set(1);
     const parents = component.parentJobs();
 
-    expect(parents.map((job) => job.id)).toEqual([3]);
+    expect(parents.map((job) => job.id)).toEqual([3, 1]);
   });
 
   it('should populate the form when editing an existing job', () => {
     routeMock.snapshot.paramMap = convertToParamMap({ id: '99' });
     component.ngOnInit();
+    fixture.detectChanges();
 
     expect(component.isEditMode).toBe(true);
     expect(component.pageTitle).toBe('Edit Job');
@@ -189,8 +235,8 @@ describe('JobForm', () => {
       sprintId: 10,
       name: 'New Job',
       description: 'Fresh task',
-      typeCode: 'task',
-      statusCode: 'todo',
+      typeCode: 'TASK',
+      statusCode: 'Task',
       priorityCode: 'high',
       assignedTo: 'user-1',
       estimatedHours: 4,
