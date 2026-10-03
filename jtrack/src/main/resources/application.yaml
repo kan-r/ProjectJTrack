@@ -8,8 +8,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:9090/realms/jtrack}
-          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:9090/realms/jtrack/protocol/openid-connect/certs}
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/jtrack}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8080/realms/jtrack/protocol/openid-connect/certs}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL:jdbc:mysql://localhost:3306/jtrackdb}
@@ -19,7 +19,7 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
 keycloak:
-  server-url: ${KEYCLOAK_SERVER_URL:http://localhost:9090}
+  server-url: ${KEYCLOAK_SERVER_URL}
   realm: ${KEYCLOAK_REALM}
   client-id: ${KEYCLOAK_CLIENT_ID}
   client-secret: ${KEYCLOAK_CLIENT_SECRET}
