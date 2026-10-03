@@ -1,0 +1,99 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mysql-8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: "jtrackdb"
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+    networks:
+      - jtrack_network
+      
+      
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7
+    container_name: keycloak-26
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_DB: "mysql"
+      KC_DB_URL_HOST: "mysql"
+      KC_DB_URL_DATABASE: "keycloakdb"
+      KC_DB_USERNAME: ${DB_USERNAME}
+      KC_DB_PASSWORD: ${DB_PASSWORD}
+         
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      
+      # Optional: HTTP Configuration
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "8080:8080"
+      - "9000:9000"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    depends_on:
+      - mysql
+    networks:
+      - jtrack_network
+      
+
+  jtrack-api:
+    build:
+      context: ./jtrack
+      dockerfile: Dockerfile
+    image: jtrack-api:v1
+    container_name: jtrack-api-v1
+    ports:
+      - "8082:8082"
+    environment:
+      DB_URL: "jdbc:mysql://mysql:3306/jtrackdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      KEYCLOAK_SERVER_URL: "http://keycloak:8080"
+      KEYCLOAK_JWK_SET_URI: "http://keycloak:8080/realms/jtrack/protocol/openid-connect/certs"
+      KEYCLOAK_ISSUER_URI: "http://localhost:8080/realms/jtrack"
+      KEYCLOAK_REALM: "jtrack"
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+      SPRING_PROFILES_ACTIVE: "dev"
+    depends_on:
+      - mysql
+    networks:
+      - jtrack_network
+
+
+  jtrack-app:
+    image: jtrack-app:v1
+    container_name: jtrack-app-v1
+    build:
+      context: ./jtrack-app
+      dockerfile: Dockerfile
+    ports:
+      - "8084:80"
+    restart: unless-stopped
+    depends_on:
+      - jtrack-api
+    networks:
+      - jtrack_network
+
+
+volumes:
+  mysql_data:
+
+
+networks:
+  jtrack_network:
+    driver: bridge

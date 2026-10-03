@@ -1,3 +1,6 @@
+create database if not exists keycloakdb;
+grant all on keycloakdb.* to 'jtrack';
+
 create table job_types(
   code				varchar(20) not null primary key,
   description		varchar(255)
