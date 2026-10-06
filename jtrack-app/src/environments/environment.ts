@@ -1,8 +1,8 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://localhost:8081',
+    apiUrl: 'http://localhost:8083',
     keycloak: {
-        url: 'http://localhost:9090',
+        url: 'http://localhost:8081',
         realm: 'jtrack',
         clientId: 'jtrack-spa'
     }
