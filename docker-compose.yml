@@ -39,7 +39,7 @@ services:
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
     ports:
-      - "8080:8080"
+      - "${KEYCLOAK_PORT}:8080"
       - "9000:9000"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
@@ -56,16 +56,16 @@ services:
     image: jtrack-api:v1
     container_name: jtrack-api-v1
     ports:
-      - "8082:8082"
+      - "${JTRACK_API_PORT}:8082"
     environment:
-      DB_URL: "jdbc:mysql://mysql:3306/jtrackdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DB_URL: jdbc:mysql://mysql:3306/jtrackdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
 
-      KEYCLOAK_SERVER_URL: "http://keycloak:8080"
-      KEYCLOAK_JWK_SET_URI: "http://keycloak:8080/realms/jtrack/protocol/openid-connect/certs"
-      KEYCLOAK_ISSUER_URI: "http://localhost:8080/realms/jtrack"
-      KEYCLOAK_REALM: "jtrack"
+      KEYCLOAK_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_JWK_SET_URI: http://keycloak:8080/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
+      KEYCLOAK_ISSUER_URI: http://localhost:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
       KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
       SPRING_PROFILES_ACTIVE: "dev"
@@ -82,7 +82,7 @@ services:
       context: ./jtrack-app
       dockerfile: Dockerfile
     ports:
-      - "8084:80"
+      - "${JTRACK_APP_PORT}:80"
     restart: unless-stopped
     depends_on:
       - jtrack-api
