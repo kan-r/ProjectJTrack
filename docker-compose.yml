@@ -15,6 +15,7 @@ services:
       - ./db-scripts/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
       timeout: 5s
       retries: 5
     networks:
@@ -25,6 +26,7 @@ services:
     image: quay.io/keycloak/keycloak:26.7
     container_name: keycloak-26
     command: ["start-dev", "--import-realm"]
+    # command: ["start", "--hostname=kan-r.com", "--import-realm"]
     environment:
       KC_DB: "mysql"
       KC_DB_URL_HOST: "mysql"
@@ -35,6 +37,10 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       
+      # KC_PROXY_HEADERS: xforwarded
+      # KC_HTTP_RELATIVE_PATH: /keycloak
+      # KC_HOSTNAME_URL: https://kan-r.com/keycloak
+      
       # Optional: HTTP Configuration
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
@@ -44,7 +50,8 @@ services:
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
-      - mysql
+      mysql:
+         condition: service_healthy
     networks:
       - jtrack_network
       
