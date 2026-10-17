@@ -47,7 +47,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:4200",
                                          "http://localhost:8084",
                                          "http://127.0.0.1:4200",
-                                         "http://127.0.0.1:8084"));
+                                         "http://127.0.0.1:8084",
+                                         "https://kan-r.com"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         // config.setAllowCredentials(true); // enable only if you use cookies/session auth
